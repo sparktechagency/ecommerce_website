@@ -3,7 +3,7 @@ import image from '../../../../public/slide-image.png';
 const SliderItem = () => {
     return (
         <div className="flex h-[400px]">
-            <div className="w-[40%] bg-black flex flex-col justify-center pl-18">
+            <div className="w-[40%] bg-black dark:bg-[#1d1d1d] flex flex-col justify-center pl-18">
                 <div>
                     <h1 className="text-white text-6xl font-semibold">Up to 10%</h1>
                     <h1 className="text-white text-6xl font-semibold mt-4">off Voucher</h1>

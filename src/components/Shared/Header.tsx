@@ -44,7 +44,7 @@ const Header = () => {
 
     return (
         <div>
-            <div className=" bg-[#df5800] dark:bg-[#df5800] h-10 text-md text-center text-white flex items-center justify-center">
+            <div className=" bg-black dark:bg-[#3f3f3f] h-12 text-md text-center text-white flex items-center justify-center">
                 Summer Sale For All Parking Light And Free Express Delivery - OFF 50%! <span className=" ml-2 font-semibold underline cursor-pointer">ShopNow</span>
             </div>
             <nav className='  border-b border-gray-200 dark:border-gray-600 dark:bg-black'>
