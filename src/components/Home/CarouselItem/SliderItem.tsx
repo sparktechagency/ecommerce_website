@@ -1,5 +1,5 @@
 import { IoArrowForward } from 'react-icons/io5';
-import image from '../../../../../public/slide-image.png';
+import image from '../../../../public/slide-image.png';
 const SliderItem = () => {
     return (
         <div className="flex h-[400px]">
