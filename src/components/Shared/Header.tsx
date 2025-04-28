@@ -9,7 +9,7 @@ import { PiShoppingCartLight } from 'react-icons/pi';
 import { GoPerson } from 'react-icons/go';
 import { useEffect, useState } from 'react';
 import { LuShoppingBag } from 'react-icons/lu';
-import GoogleTranslate from '../translate/GoogleTranslate';
+import GoogleTranslate from '../../translate/GoogleTranslate';
 
 const Header = () => {
 
