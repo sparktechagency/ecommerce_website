@@ -66,7 +66,7 @@ const Header = () => {
                     <div className=' hidden lg:flex items-center justify-between gap-12'>
                         <Link href='/' className=' text-lg dark:text-white'>Home</Link>
                         <Link href='/' className=' text-lg dark:text-white'>Contact</Link>
-                        <Link href='/' className=' text-lg dark:text-white'>About</Link>
+                        <Link href='/about' className=' text-lg dark:text-white'>About</Link>
                         <Link href='/' className=' text-lg dark:text-white'>Sign Up</Link>
                     </div>
                     <div className=' hidden w-[380px] lg:flex items-center justify-between gap-4'>
