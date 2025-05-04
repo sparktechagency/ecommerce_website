@@ -1,13 +1,13 @@
 import { Breadcrumb } from "antd";
 import Link from "next/link";
-import our_story from '../../../public/our_story.png'
+import our_story from '../../../../public/our_story.png'
 import Image from "next/image";
-import delivery from '../../../public/service/delivery.svg'
-import customer_service from '../../../public/service/customer_service.svg'
-import money_back from '../../../public/service/money_back.svg'
-import person1 from '../../../public/about/person1.png'
-import person2 from '../../../public/about/person2.png'
-import person3 from '../../../public/about/person3.png'
+import delivery from '../../../../public/service/delivery.svg'
+import customer_service from '../../../../public/service/customer_service.svg'
+import money_back from '../../../../public/service/money_back.svg'
+import person1 from '../../../../public/about/person1.png'
+import person2 from '../../../../public/about/person2.png'
+import person3 from '../../../../public/about/person3.png'
 import { FaInstagram, FaXTwitter } from "react-icons/fa6";
 import { RiLinkedinLine } from "react-icons/ri";
 
