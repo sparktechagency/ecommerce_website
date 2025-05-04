@@ -1,7 +1,7 @@
 "use client"
-import { JSX, useState } from "react"
+import { JSX } from "react"
 import { Form, Input } from "antd"
-import { FaFacebook, FaEye, FaEyeSlash } from "react-icons/fa"
+import { FaFacebook } from "react-icons/fa"
 import type React from "react"
 import { FcGoogle } from "react-icons/fc"
 import Link from "next/link"
@@ -16,8 +16,6 @@ interface SignUpFormValues {
 
 export default function SignUpForm(): JSX.Element {
     const [form] = Form.useForm<SignUpFormValues>()
-    const [passwordVisible, setPasswordVisible] = useState<boolean>(false)
-
     const onFinish = (values: SignUpFormValues): void => {
         console.log("Success:", values)
     }
@@ -65,11 +63,6 @@ export default function SignUpForm(): JSX.Element {
                         <Input.Password
                             placeholder="Enter your password"
                             className="h-10"
-                            iconRender={(visible: boolean): React.ReactNode => (visible ? <FaEye /> : <FaEyeSlash />)}
-                            visibilityToggle={{
-                                visible: passwordVisible,
-                                onVisibleChange: setPasswordVisible,
-                            }}
                         />
                     </Form.Item>
 

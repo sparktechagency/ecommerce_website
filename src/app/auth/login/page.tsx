@@ -1,7 +1,7 @@
 "use client"
-import { JSX, useState } from "react"
+import { JSX } from "react"
 import { Form, Input } from "antd"
-import { FaFacebook, FaEye, FaEyeSlash } from "react-icons/fa"
+import { FaFacebook } from "react-icons/fa"
 import type React from "react"
 import { FcGoogle } from "react-icons/fc"
 import Link from "next/link"
@@ -14,7 +14,6 @@ interface LogInFormValues {
 
 export default function LogInForm(): JSX.Element {
     const [form] = Form.useForm<LogInFormValues>()
-    const [passwordVisible, setPasswordVisible] = useState<boolean>(false)
 
     const onFinish = (values: LogInFormValues): void => {
         console.log("Success:", values)
@@ -48,11 +47,6 @@ export default function LogInForm(): JSX.Element {
                         <Input.Password
                             placeholder="Enter your password"
                             className="h-10"
-                            iconRender={(visible: boolean): React.ReactNode => (visible ? <FaEye /> : <FaEyeSlash />)}
-                            visibilityToggle={{
-                                visible: passwordVisible,
-                                onVisibleChange: setPasswordVisible,
-                            }}
                         />
                     </Form.Item>
 
@@ -61,11 +55,13 @@ export default function LogInForm(): JSX.Element {
                     </div>
 
                     <Form.Item className="mt-6">
-                        <button
-                            className=" bg-primary  w-full py-2 rounded-md cursor-pointer text-white"
-                        >
-                            Log In
-                        </button>
+                        <Link href={'/'}>
+                            <button
+                                className=" bg-primary  w-full py-2 rounded-md cursor-pointer text-white"
+                            >
+                                Log In
+                            </button>
+                        </Link>
                     </Form.Item>
                 </Form>
 
