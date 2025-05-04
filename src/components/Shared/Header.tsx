@@ -67,7 +67,7 @@ const Header = () => {
                         <Link href='/' className=' text-lg dark:text-white'>Home</Link>
                         <Link href='/contact' className=' text-lg dark:text-white'>Contact</Link>
                         <Link href='/about' className=' text-lg dark:text-white'>About</Link>
-                        <Link href='/' className=' text-lg dark:text-white'>Sign Up</Link>
+                        <Link href='/auth/sign-up' className=' text-lg dark:text-white'>Sign Up</Link>
                     </div>
                     <div className=' hidden w-[380px] lg:flex items-center justify-between gap-4'>
                         <ConfigProvider
