@@ -33,21 +33,13 @@ export default function OtpVerify(): JSX.Element {
                         )}
                     />
                 </div>
-
-
-
-
-
-                <Link href={'/auth/opt-verify'}>
+                <Link href={'/auth/reset-password'}>
                     <button
                         className=" bg-primary  w-full py-2 rounded-md cursor-pointer text-white"
                     >
                         VERIFY
                     </button>
                 </Link>
-
-
-
             </div>
         </div>
     )
