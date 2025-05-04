@@ -89,7 +89,7 @@ export default function LogInForm(): JSX.Element {
                     <span className="text-sm">
                         Don’t have an account?{" "}
                         <Link href="/auth/sign-up" className="text-primary">
-                            SIGN UP
+                            Sign Up
                         </Link>
                     </span>
                 </div>

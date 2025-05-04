@@ -101,7 +101,7 @@ export default function SignUpForm(): JSX.Element {
                 <div className="text-center mt-4">
                     <span className="text-sm">
                         Already have an account?
-                        <Link href="/auth/login" className="text-primary">
+                        <Link href="/auth/login" className="text-primary ml-1">
                             Log in
                         </Link>
                     </span>

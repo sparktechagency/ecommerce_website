@@ -2,6 +2,7 @@
 import { JSX } from "react"
 import { Form, Input } from "antd"
 import type React from "react"
+import Link from "next/link"
 
 
 interface LogInFormValues {
@@ -36,11 +37,13 @@ export default function ForgetPassword(): JSX.Element {
                         <Input placeholder="Enter your email" className="h-10" />
                     </Form.Item>
                     <Form.Item className="mt-6">
-                        <button
-                            className=" bg-primary  w-full py-2 rounded-md cursor-pointer text-white"
-                        >
-                            CONTINUE
-                        </button>
+                        <Link href={'/auth/opt-verify'}>
+                            <button
+                                className=" bg-primary  w-full py-2 rounded-md cursor-pointer text-white"
+                            >
+                                CONTINUE
+                            </button>
+                        </Link>
                     </Form.Item>
                 </Form>
 
