@@ -65,7 +65,7 @@ const Header = () => {
                     </div>
                     <div className=' hidden lg:flex items-center justify-between gap-12'>
                         <Link href='/' className=' text-lg dark:text-white'>Home</Link>
-                        <Link href='/' className=' text-lg dark:text-white'>Contact</Link>
+                        <Link href='/contact' className=' text-lg dark:text-white'>Contact</Link>
                         <Link href='/about' className=' text-lg dark:text-white'>About</Link>
                         <Link href='/' className=' text-lg dark:text-white'>Sign Up</Link>
                     </div>
@@ -124,8 +124,8 @@ const Header = () => {
                             </div>
                         </div>
                     }
-                    <div>
-                        <RxHamburgerMenu size={25} className=' text-black block lg:hidden' />
+                    <div className=' block lg:hidden'>
+                        <RxHamburgerMenu size={25} className=' text-black ' />
                     </div>
                 </div>
 
