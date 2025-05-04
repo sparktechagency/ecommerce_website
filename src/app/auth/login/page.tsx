@@ -57,7 +57,7 @@ export default function LogInForm(): JSX.Element {
                     </Form.Item>
 
                     <div className=" flex justify-end -mt-2 mb-6 text-black">
-                        <Link className=" text-black" href={"#"}>Forgot Password?</Link>
+                        <Link className=" text-black" href={"/auth/forget-password"}>Forgot Password?</Link>
                     </div>
 
                     <Form.Item className="mt-6">
