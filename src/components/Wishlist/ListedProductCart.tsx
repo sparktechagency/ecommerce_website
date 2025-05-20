@@ -49,7 +49,7 @@ const ListedProductCart = () => {
                 Add To Cart
             </button>
             <div className="p-4">
-                <h3 className="text-lg font-bold text-gray-900">{title}</h3>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">{title}</h3>
                 <div className="mt-1 flex items-center">
                     <span className="text-xl font-bold text-orange-500">${price}</span>
                     <span className="ml-2 text-gray-500 line-through">${originalPrice}</span>
