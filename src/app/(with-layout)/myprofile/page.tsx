@@ -15,6 +15,8 @@ const MyProfile = () => {
         setProfilePic(e.file);
     };
 
+    const [menu , setMenu] = useState('AccountDetails');
+
     return (
 
         <div>
@@ -25,7 +27,7 @@ const MyProfile = () => {
                             title: <Link href={`/`}><p className="dark:text-white">Home</p></Link>,
                         },
                         {
-                            title: <Link className="dark:text-white" href={`/cart`}><p className="dark:text-white text-black">My Account</p></Link>,
+                            title: <Link className="dark:text-white" href={`/myprofile`}><p className="dark:text-white text-black">My Account</p></Link>,
                         },
                     ]}
                 />
