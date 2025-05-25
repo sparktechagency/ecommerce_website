@@ -58,7 +58,6 @@ const AccountDetails = () => {
                     <button className=" w-[200px] py-3 rounded border border-primary cursor-pointer">Change Address</button>
                 </div>
             </div>
-
         </div>
     );
 };
