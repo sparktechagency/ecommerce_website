@@ -1,8 +1,75 @@
+"use client";
+import Link from "next/link";
+import { Form, Input } from "antd";
 
 const ChangeAddress = () => {
+    interface AddressFormValues {
+        street: string;
+        city: string;
+        state: string;
+        zip: string;
+    }
+
+    const [form] = Form.useForm<AddressFormValues>();
+
+    const onFinish = (values: AddressFormValues): void => {
+        console.log("Success:", values);
+    };
+
     return (
-        <div>
-            Change Address
+        <div className="space-y-8">
+            <h2 className="text-xl font-medium">Change Address</h2>
+
+            <Form<AddressFormValues>
+                form={form}
+                name="changeAddress"
+                layout="vertical"
+                onFinish={onFinish}
+                autoComplete="off"
+            >
+                <Form.Item
+                    label="Street Address"
+                    name="street"
+                    rules={[{ required: true, message: "Please enter your street address!" }]}
+                >
+                    <Input placeholder="123 Main St" className="h-12" />
+                </Form.Item>
+
+                <Form.Item
+                    label="City"
+                    name="city"
+                    rules={[{ required: true, message: "Please enter your city!" }]}
+                >
+                    <Input placeholder="Enter city" className="h-12" />
+                </Form.Item>
+
+                <Form.Item
+                    label="State"
+                    name="state"
+                    rules={[{ required: true, message: "Please enter your state!" }]}
+                >
+                    <Input placeholder="Enter state" className="h-12" />
+                </Form.Item>
+
+                <Form.Item
+                    label="Zip Code"
+                    name="zip"
+                    rules={[
+                        { required: true, message: "Please enter your zip code!" },
+                        { pattern: /^\d{5}$/, message: "Please enter a valid 5-digit zip code!" },
+                    ]}
+                >
+                    <Input placeholder="12345" className="h-12" />
+                </Form.Item>
+
+                <Form.Item className="mt-6">
+                    <Link href="/">
+                        <button className="bg-primary w-full py-3 rounded-md cursor-pointer text-white">
+                            Update Address
+                        </button>
+                    </Link>
+                </Form.Item>
+            </Form>
         </div>
     );
 };

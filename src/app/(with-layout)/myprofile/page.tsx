@@ -41,7 +41,7 @@ const AccountDetails = () => {
                     </div>
                 </div>
                 <div>
-                    <button className=" w-[200px] py-3 rounded border border-primary cursor-pointer">Change Password</button>
+                    <Link href={`/myprofile/changepassword`}><button className=" w-[200px] py-3 rounded border border-primary cursor-pointer">Change Password</button></Link>
                 </div>
             </div>
 
@@ -57,7 +57,7 @@ const AccountDetails = () => {
                     </div>
                 </div>
                 <div>
-                    <button className=" w-[200px] py-3 rounded border border-primary cursor-pointer">Change Address</button>
+                    <Link href={`/myprofile/changeaddress`}><button className=" w-[200px] py-3 rounded border border-primary cursor-pointer">Change Address</button></Link>
                 </div>
             </div>
         </div>
