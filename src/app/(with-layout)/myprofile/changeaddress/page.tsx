@@ -28,7 +28,7 @@ const ChangeAddress = () => {
                 autoComplete="off"
             >
                 <Form.Item
-                    label="Street Address"
+                    label={<p className="dark:text-white">Street Address</p>}
                     name="street"
                     rules={[{ required: true, message: "Please enter your street address!" }]}
                 >
@@ -36,7 +36,7 @@ const ChangeAddress = () => {
                 </Form.Item>
 
                 <Form.Item
-                    label="City"
+                    label={<p className="dark:text-white">City</p>}
                     name="city"
                     rules={[{ required: true, message: "Please enter your city!" }]}
                 >
@@ -44,7 +44,7 @@ const ChangeAddress = () => {
                 </Form.Item>
 
                 <Form.Item
-                    label="State"
+                    label={<p className="dark:text-white">State</p>}
                     name="state"
                     rules={[{ required: true, message: "Please enter your state!" }]}
                 >
@@ -52,7 +52,7 @@ const ChangeAddress = () => {
                 </Form.Item>
 
                 <Form.Item
-                    label="Zip Code"
+                    label={<p className="dark:text-white">Zip Code</p>}
                     name="zip"
                     rules={[
                         { required: true, message: "Please enter your zip code!" },

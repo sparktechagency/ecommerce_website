@@ -13,14 +13,14 @@ const ProfileLayout = ({
 }>) => {
 
     const [profilePic, setProfilePic] = useState<File | null>(null);
-    const profilePicUrl = profilePic ? URL.createObjectURL(profilePic) : null;
+    const profilePicUrl = profilePic ? URL.createObjectURL(profilePic) : "https://avatar.iran.liara.run/public/11";
     const handleProfilePicUpload = (e: any) => {
         setProfilePic(e.file);
     };
 
 
     return (
-        <div>
+        <div className=" dark:text-white">
             <div className=" container mx-auto py-10 md:py-16 px-3 md:px-0">
                 <Breadcrumb
                     items={[
@@ -40,7 +40,7 @@ const ProfileLayout = ({
                     <Avatar
                         size={140}
                         src={profilePicUrl}
-                        className="border-4 border-buttonPrimary shadow-xl"
+                        className="dark:border-2 dark:border-primary shadow-xl "
                     />
                     <Upload
                         showUploadList={false}
@@ -64,7 +64,7 @@ const ProfileLayout = ({
                         <div className="space-y-8">
                             <div className="space-y-2">
                                 <h1 className="text-2xl font-medium">Welcome to your account!</h1>
-                                <p className="text-gray-600">Update your details, manage addresses and keep your account secure.</p>
+                                <p className="text-gray-600 dark:text-gray-300">Update your details, manage addresses and keep your account secure.</p>
                             </div>
 
                             <div className="space-y-4">
@@ -73,17 +73,17 @@ const ProfileLayout = ({
                                 </p>
 
                                 <div className="flex items-center gap-3">
-                                    <FaPhone className="text-gray-700" />
+                                    <FaPhone className="text-gray-700 dark:text-white" />
                                     <span className="">839949950252</span>
                                 </div>
 
                                 <div className="flex items-center gap-3">
-                                    <FaEnvelope className="text-gray-700" />
+                                    <FaEnvelope className="text-gray-700 dark:text-white" />
                                     <span className="">infocompany@gmail.com</span>
                                 </div>
 
                                 <div className="flex items-start gap-3">
-                                    <FaMapMarkerAlt className="text-gray-700 mt-1" />
+                                    <FaMapMarkerAlt className="text-gray-700 mt-1 dark:text-white" />
                                     <span className="">
                                         2118 Thornridge Cir. Syracuse,
                                         <br />

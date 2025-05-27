@@ -25,16 +25,16 @@ const Contact = () => {
                     <Breadcrumb
                         items={[
                             {
-                                title: <Link href="/">Home</Link>,
+                                title: <Link href="/"><p className="dark:text-white">Home</p></Link>,
                             },
                             {
-                                title: <Link href="/contact">Contact</Link>,
+                                title: <Link href="/contact"><p className="dark:text-white">Contact</p></Link>,
                             }
                         ]}
                     />
                 </div>
                 <div className=" flex flex-col lg:flex-row gap-10 mt-10">
-                    <div className=" w-full lg:w-[33%] xl:w-[27%] shadow-lg px-10 py-10 rounded-md">
+                    <div className=" w-full lg:w-[33%] xl:w-[27%] pt-12 shadow-lg dark:shadow dark:shadow-white px-10 py-10 rounded-md dark:text-white">
                         <div className="border-b">
                             <div className=" flex gap-4 items-center">
                                 <FiPhone className=" bg-primary text-white p-2 rounded-full " size={40} />
@@ -54,14 +54,14 @@ const Contact = () => {
                             <p className=" text-lg pt-0 pb-7">Emails: support@exclusive.com</p>
                         </div>
                     </div>
-                    <div className="w-full lg:w-[67%] xl:w-[70%] shadow-lg px-8 py-5 rounded-md">
+                    <div className="w-full lg:w-[67%] xl:w-[70%] pt-12 shadow-lg dark:shadow dark:shadow-white px-8 py-5 rounded-md">
                         <ConfigProvider
                             theme={{
                                 components: {
                                     Input: {
                                         colorBgContainer: "#f2fcf6",
                                         "controlHeight": 44,
-                                        "colorBorder": "rgba(217,217,217,0)",
+                                        "colorBorder": "rgba(217,217,217,4)",
                                         "activeBorderColor": "rgba(22,119,255,0)",
                                         "hoverBorderColor": "rgba(64,150,255,0)",
                                     },

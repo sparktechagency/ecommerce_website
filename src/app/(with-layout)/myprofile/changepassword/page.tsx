@@ -27,7 +27,7 @@ const ChangePassword = () => {
                 autoComplete="off"
             >
                 <Form.Item
-                    label="Current Password"
+                    label={<p className="dark:text-white">Current Password</p>}
                     name="currentPassword"
                     rules={[{ required: true, message: "Please enter your current password!" }]}
                 >
@@ -35,7 +35,7 @@ const ChangePassword = () => {
                 </Form.Item>
 
                 <Form.Item
-                    label="New Password"
+                    label={<p className="dark:text-white">New Password</p>}
                     name="newPassword"
                     rules={[{ required: true, message: "Please enter your new password!" }]}
                 >
@@ -43,7 +43,7 @@ const ChangePassword = () => {
                 </Form.Item>
 
                 <Form.Item
-                    label="Confirm New Password"
+                    label={<p className="dark:text-white">Confirm New Password</p>}
                     name="confirmNewPassword"
                     dependencies={['newPassword']}
                     rules={[
