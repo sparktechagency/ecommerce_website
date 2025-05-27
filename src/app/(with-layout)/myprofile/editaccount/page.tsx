@@ -22,7 +22,7 @@ const EditAccount = () => {
             <Form<LogInFormValues> form={form} name="signup" layout="vertical" onFinish={onFinish} autoComplete="off">
 
                 <Form.Item
-                    label="Full Name"
+                    label={<p className="dark:text-white">Full Name</p>}
                     name="name"
                     rules={[{ required: true, message: "Please input your name!" }]}
                 >
@@ -33,7 +33,7 @@ const EditAccount = () => {
                 </Form.Item>
 
                 <Form.Item
-                    label="Email"
+                    label={<p className="dark:text-white">Email</p>}
                     name="email"
                     rules={[
                         { required: true, message: "Please input your email!" },
@@ -44,7 +44,7 @@ const EditAccount = () => {
                 </Form.Item>
 
                 <Form.Item
-                    label="Phone Number"
+                    label={<p className="dark:text-white">Phone Number</p>}
                     name="number"
                     rules={[
                         { required: true, message: "Please input your phone number!" },
