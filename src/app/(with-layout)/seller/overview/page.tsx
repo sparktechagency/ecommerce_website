@@ -3,6 +3,7 @@ import logo from '../../../../../public/seller/seller-icon.svg'
 import { LuCalendarCheck } from 'react-icons/lu';
 import { PiWallet } from 'react-icons/pi';
 import CurrentOrders from '@/components/Seller/Overview/CurrentOrders';
+import LastReviews from '@/components/Seller/Overview/LastReviews';
 
 const Overview = () => {
 
@@ -47,8 +48,9 @@ const Overview = () => {
                 </div>
             </div>
 
-            <div>
+            <div className=' grid grid-cols-1 xl:grid-cols-2 gap-10'>
                 <CurrentOrders></CurrentOrders>
+                <LastReviews></LastReviews>
             </div>
         </div>
     );
