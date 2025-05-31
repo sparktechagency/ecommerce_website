@@ -68,7 +68,7 @@ const Header = () => {
                         <Link href='/' className=' text-lg dark:text-white'>Home</Link>
                         <Link href='/contact' className=' text-lg dark:text-white'>Contact</Link>
                         <Link href='/about' className=' text-lg dark:text-white'>About</Link>
-                        <Link href='/seller/myproduct' className=' text-lg dark:text-white'>My Product</Link>
+                        {/* <Link href='/seller/myproduct' className=' text-lg dark:text-white'>My Product</Link> */}
                         <Link href='/auth/sign-up' className=' text-lg dark:text-white'>Sign Up</Link>
                     </div>
                     <div className=' hidden w-[380px] lg:flex items-center justify-between gap-4'>
@@ -124,12 +124,12 @@ const Header = () => {
                                     <p className=' text-md text-white dark:text-black'>My Order</p>
                                 </Link>
                             </div>
-                            <div className=' flex items-center gap-3 mb-4 cursor-pointer'>
+                            {/* <div className=' flex items-center gap-3 mb-4 cursor-pointer'>
                                 <Link className=' flex  gap-3' href={`/seller/overview`}>
                                     <LuShoppingBag className='w-6 h-6 text-white cursor-pointer dark:text-black ' />
                                     <p className=' text-md text-white dark:text-black'>Seller Overview</p>
                                 </Link>
-                            </div>
+                            </div> */}
                             <div className=' mb-3 cursor-pointer'>
                                 <Link className=' flex items-center gap-3' href={`/auth/login`}>
                                     <GoPerson className='w-6 h-6 text-white cursor-pointer dark:text-black ' />
