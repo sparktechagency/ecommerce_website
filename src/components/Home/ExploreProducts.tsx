@@ -1,3 +1,4 @@
+import Link from "next/link";
 import ProductCart from "./ProductCart";
 
 const ExploreProducts = () => {
@@ -22,7 +23,7 @@ const ExploreProducts = () => {
                 <ProductCart></ProductCart>
             </div>
             <div className=" flex justify-center mt-10">
-                <button className=" md:text-xl bg-primary px-8 md:px-16 py-2 md:py-4 text-white rounded cursor-pointer">View All Products</button>
+               <Link href={'/product'}><button className=" md:text-xl bg-primary px-8 md:px-16 py-2 md:py-4 text-white rounded cursor-pointer">View All Products</button></Link>
             </div>
         </div>
     );
