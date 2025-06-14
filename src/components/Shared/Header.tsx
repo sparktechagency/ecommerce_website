@@ -1,5 +1,6 @@
 "use client"
 import Image from 'next/image';
+// import logo from '../../../public/logo.svg';
 import logo from '../../../public/logo.svg';
 import darkLogo from '../../../public/dark-logo.svg';
 import Link from 'next/link';
