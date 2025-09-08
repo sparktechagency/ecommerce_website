@@ -4,6 +4,14 @@ import { baseApi } from "../../api/baseApi";
 const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
 
+        SignUp: builder.mutation({
+            query: (LogInData) => ({
+                url: '/auth/signup',
+                method: 'POST',
+                body: LogInData,
+            }),
+        }),
+
         logIn: builder.mutation({
             query: (LogInData) => ({
                 url: '/auth/login',
@@ -50,7 +58,7 @@ const authApi = baseApi.injectEndpoints({
                 method: 'PATCH',
                 body: data,
             }),
-            invalidatesTags: ['profile'],
+
         }),
 
         getAdminProfile: builder.query({
@@ -58,10 +66,10 @@ const authApi = baseApi.injectEndpoints({
                 url: `/auth/profile`,
                 method: 'GET',
             }),
-            providesTags: ['profile'],
+
         }),
 
     }),
 });
 
-export const { useLogInMutation, useForgetPasswordMutation, useVerifyEmailMutation, useResetAdminPasswordMutation, useChangeAdminPasswordMutation, useEditAdminProfileMutation, useGetAdminProfileQuery } = authApi;
+export const { useSignUpMutation,useLogInMutation, useForgetPasswordMutation, useVerifyEmailMutation, useResetAdminPasswordMutation, useChangeAdminPasswordMutation, useEditAdminProfileMutation, useGetAdminProfileQuery } = authApi;

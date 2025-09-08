@@ -6,7 +6,7 @@ import { message } from 'antd';
 import { setUser } from '../features/auth/authSlice';
 
 const baseQuery = fetchBaseQuery({
-    baseUrl: 'https://backend.alansarilaw.com',
+    baseUrl: 'http://10.10.20.72:5005/api/v1',
     prepareHeaders: (headers, { getState }) => {
         const token = (getState() as { logInUser: { accessToken?: string } }).logInUser.accessToken;
         if (token) {
@@ -34,6 +34,6 @@ const baseQueryWithLogoutOnError = async (
 export const baseApi = createApi({
     reducerPath: 'baseApi',
     baseQuery: baseQueryWithLogoutOnError,
-    tagTypes: ['privacy', 'awards', 'updates', 'events', 'newsletters', 'sectors', 'peopleManagement', 'csr', 'profile', 'AboutCount', 'SocialMedia', 'updateHomeContent'],
+    tagTypes: [],
     endpoints: () => ({}),
 });
