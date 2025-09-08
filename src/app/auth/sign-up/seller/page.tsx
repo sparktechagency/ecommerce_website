@@ -1,12 +1,10 @@
 "use client"
 import { JSX } from "react"
-import { Form, Input, notification } from "antd"
+import { Form, Input } from "antd"
 import { FaFacebook } from "react-icons/fa"
 import type React from "react"
 import { FcGoogle } from "react-icons/fc"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useSignUpMutation } from "@/redux/features/auth/authApi"
 
 
 interface SignUpFormValues {
@@ -16,56 +14,17 @@ interface SignUpFormValues {
     password: string
 }
 
-export default function SignUpForm(): JSX.Element {
-    const [api, contextHolder] = notification.useNotification();
-
-    const [SignUp, { isLoading }] = useSignUpMutation();
-    const router = useRouter();
+export default function SellerSignUp(): JSX.Element {
     const [form] = Form.useForm<SignUpFormValues>()
-
-    const onFinish = (values: SignUpFormValues) => {
-        const signData = {
-            fullName: values.fullName,
-            email: values.email,
-            phoneNumber: values.phoneNumber,
-            role: "BUYER",
-            password: values.password,
-            isSocialLogin: false
-        }
-        const formData = new FormData();
-        formData.append('data', JSON.stringify(signData))
-
-        SignUp(formData).unwrap()
-            .then((data) => {
-                console.log(data);
-                api.open({
-                    type: 'success',
-                    message: 'Sign Up',
-                    description: 'Sign Up successfully!',
-                    placement: 'topRight',
-                });
-
-                router.push(`/auth/opt-verify?email=${values.email}`)
-
-            })
-
-            .catch((error) => {
-                api.open({
-                    type: 'error',
-                    message: error?.data?.message,
-                    description: 'Sign Up failed. Please try again.',
-                    placement: 'topRight',
-                });
-            })
-    };
-
+    const onFinish = (values: SignUpFormValues): void => {
+        console.log("Success:", values)
+    }
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-200 p-4">
-            {contextHolder}
             <div className="w-full max-w-lg shadow-md bg-white px-4 md:px-14  py-10 rounded-lg">
                 <div className="text-center mb-6">
-                    <h1 className="text-2xl font-semibold">SIGN UP</h1>
+                    <h1 className="text-2xl font-semibold">SIGN UP AS A SELLER</h1>
                 </div>
 
                 <Form<SignUpFormValues> form={form} name="signup" layout="vertical" onFinish={onFinish} autoComplete="off">
@@ -109,10 +68,9 @@ export default function SignUpForm(): JSX.Element {
 
                     <Form.Item className="mt-6">
                         <button
-                            disabled={isLoading}
                             className=" bg-primary  w-full py-2 rounded-md cursor-pointer text-white"
                         >
-                            {isLoading ? "Loading..." : "SIGN UP"}
+                            SIGN UP
                         </button>
                     </Form.Item>
                 </Form>
@@ -133,17 +91,11 @@ export default function SignUpForm(): JSX.Element {
                     </button>
                 </div>
 
-                <div className="text-center mt-4 flex flex-col gap-1.5">
+                <div className="text-center mt-4">
                     <span className="text-sm">
                         Already have an account?
                         <Link href="/auth/login" className="text-primary ml-1">
                             Log in
-                        </Link>
-                    </span>
-                    <span className="text-sm">
-                        Want to become a seller?
-                        <Link href="/auth/sign-up/seller" className="text-primary ml-1">
-                            Seller Sign Up
                         </Link>
                     </span>
                 </div>
