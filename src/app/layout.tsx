@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ConfigProvider } from "antd";
 import { mainTheme } from "@/theme/ant-theme";
+import ReduxProviders from "@/utils/ReduxProviders";
 
 
 const geistSans = Geist({
@@ -37,7 +38,9 @@ export default function RootLayout({
           data-new-gr-c-s-check-loaded="14.1238.0"
           data-gr-ext-installed=""
         >
-          {children}
+          <ReduxProviders>
+            {children}
+          </ReduxProviders>
         </body>
       </ConfigProvider>
     </html >
