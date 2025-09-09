@@ -1,11 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client"
 import { Breadcrumb, ConfigProvider, Input } from "antd";
 import Link from "next/link";
-import productImage from '../../../../public/products/monitor.png'
+// import productImage from '../../../../public/products/monitor.png'
 import Image from "next/image";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
+import { Imageurl } from "@/utils/Imageurl";
+import { addToCart, deleteProduct, removeOne } from "@/redux/features/cart/cartSlice";
 
 const Cart = () => {
+    const products = useSelector((state: any) => state.cart)
+    console.log(products.products);
+    const dispatch = useDispatch();
     return (
         <div className="container mx-auto py-16 px-3 md:px-0 ">
             <Breadcrumb
@@ -18,96 +26,126 @@ const Cart = () => {
                     },
                 ]}
             />
-            <div className=" mt-8 overflow-x-scroll md:overflow-x-visible">
-                <div className=" w-[800px] md:w-auto shadow-[0px_5px_5px_rgba(0,0,0,0.03)] dark:shadow-[2px_2px_10px_2px_rgba(255,255,255,0.1)] px-8 py-6 rounded flex justify-between items-center">
-                    <p className=" w-[100px] md:w-full dark:text-white">Product</p>
-                    <p className=" w-[100px] md:w-full text-center dark:text-white">Price</p>
-                    <p className=" w-[100px] md:w-full text-center dark:text-white">Quantity</p>
-                    <p className=" w-[100px] md:w-full text-end dark:text-white">Subtotal</p>
-                </div>
-                {/* table body🙀 While integrating api just run a map here🫡 */}
-                <div className="  overflow-x-scroll  md:overflow-x-visible w-[800px] md:w-auto shadow-[0px_5px_5px_rgba(0,0,0,0.03)] dark:shadow-[2px_2px_10px_2px_rgba(255,255,255,0.1)] px-8 py-6 rounded flex justify-between items-center mt-4">
-                    <div className=" flex items-center gap-5 w-[100px] md:w-full">
-                        <Image src={productImage} alt="img" width={200} height={200} className=" w-10" />
-                        <h1 className=" dark:text-white">LCD Monitor</h1>
-                    </div>
-                    <div className="w-[100px] md:w-full flex justify-center">
-                        <p className=" dark:text-white">$650</p>
+            {
+                !products.products.length ?
+                    <div className="flex flex-col items-center justify-center mt-12 p-6 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md">
+                        <h1 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
+                            Your Cart is Empty
+                        </h1>
+                        <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
+                            Looks like you haven&apos;t added anything to your cart yet. Explore our products and start shopping.
+                        </p>
+                        <Link
+                            href={`/product`}
+                            className=" px-5 md:px-6 py-2 md:py-3 bg-primary text-white text-lg font-semibold rounded-md shadow-md hover:bg-[#ec5f00] transition-all duration-200"
+                        >
+                            Shop Now
+                        </Link>
                     </div>
 
-                    <div className="w-[100px] md:w-full flex justify-center">
-                        <div className=" w-[80px] h-[50px] border-[2px] border-[#999999] rounded-lg flex justify-between items-center px-3">
-                            <div>
-                                <h3 className=" text-lg font-semibold dark:text-white">01</h3>
+                    :
+                    <>
+                        <div className=" mt-8 overflow-x-scroll md:overflow-x-visible">
+                            <div className=" w-[800px] md:w-auto shadow-[0px_5px_5px_rgba(0,0,0,0.03)] dark:shadow-[2px_2px_10px_2px_rgba(255,255,255,0.1)] px-8 py-6 rounded flex justify-between items-center">
+                                <p className=" w-[100px] md:w-full dark:text-white">Product</p>
+                                <p className=" w-[100px] md:w-full text-center dark:text-white">Price</p>
+                                <p className=" w-[100px] md:w-full text-center dark:text-white">Quantity</p>
+                                <p className=" w-[100px] md:w-full text-end dark:text-white">Subtotal</p>
                             </div>
-                            <div className="">
-                                <IoIosArrowUp size={20} className=" cursor-pointer dark:text-white" />
-                                <IoIosArrowDown size={20} className=" cursor-pointer dark:text-white" />
-                            </div>
+                            {/* table body🙀 While integrating api just run a map here🫡 */}
+                            {
+                                products.products.map((product: any) => {
+                                    return (
+                                        <div key={product._id} className="  overflow-x-scroll  md:overflow-x-visible w-[800px] md:w-auto shadow-[0px_5px_5px_rgba(0,0,0,0.03)] dark:shadow-[2px_2px_10px_2px_rgba(255,255,255,0.1)] px-8 py-6 rounded flex justify-between items-center mt-4">
+                                            <div className=" flex items-center gap-5 w-[100px] md:w-full">
+                                                <Image src={`${Imageurl}/${product.images[0]}`} alt="img" width={200} height={200} className=" w-14" />
+                                                <h1 className=" dark:text-white text-xl">{product?.name}</h1>
+                                            </div>
+                                            <div className="w-[100px] md:w-full flex justify-center">
+                                                <p className=" dark:text-white">${product?.price}</p>
+                                            </div>
+
+                                            <div className="w-[100px] md:w-full flex justify-center">
+                                                <div className=" w-[80px] h-[50px] border-[2px] border-[#999999] rounded-lg flex justify-between items-center px-3">
+                                                    <div>
+                                                        <h3 className=" text-lg font-semibold dark:text-white">{product.quantity}</h3>
+                                                    </div>
+                                                    <div className="">
+                                                        <IoIosArrowUp onClick={() => dispatch(addToCart(product))} size={20} className=" cursor-pointer dark:text-white" />
+                                                        <IoIosArrowDown onClick={() => dispatch(removeOne(product))} size={20} className=" cursor-pointer dark:text-white" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div className=" flex items-center gap-5 w-[100px] md:w-full justify-end">
+                                                <p className=" dark:text-white">${product.price * product.quantity}</p>
+                                                <RiDeleteBin6Line onClick={() => dispatch(deleteProduct(product))} size={25} className=" cursor-pointer dark:text-white" />
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
+
 
                         </div>
-                    </div>
+                        <div className=" mt-10 flex flex-col lg:flex-row ">
+                            <div className=" flex items-start">
+                                <ConfigProvider
+                                    theme={{
+                                        components: {
+                                            Input: {
+                                                "colorBorder": "rgb(67,67,67)",
+                                                "activeBorderColor": "rgb(67,67,67)",
+                                                "hoverBorderColor": "rgb(67,67,67)",
+                                                "colorPrimary": "rgb(67,67,67)",
+                                                "controlHeight": 46
+                                            },
+                                        },
+                                    }}
+                                >
+                                    <Input placeholder="Coupon Code" style={{ width: "300px" }} />
+                                </ConfigProvider>
 
-                    <div className=" flex items-center gap-5 w-[100px] md:w-full justify-end">
-                        <p className=" dark:text-white">$650</p>
-                        <RiDeleteBin6Line size={25} className=" cursor-pointer dark:text-white" />
-                    </div>
-                </div>
-                {/* end table body */}
-            </div>
-            <div className=" mt-10 flex flex-col lg:flex-row ">
-                <div className=" flex items-start">
-                    <ConfigProvider
-                        theme={{
-                            components: {
-                                Input: {
-                                    "colorBorder": "rgb(67,67,67)",
-                                    "activeBorderColor": "rgb(67,67,67)",
-                                    "hoverBorderColor": "rgb(67,67,67)",
-                                    "colorPrimary": "rgb(67,67,67)",
-                                    "controlHeight": 46
-                                },
-                            },
-                        }}
-                    >
-                        <Input placeholder="Coupon Code" style={{ width: "300px" }} />
-                    </ConfigProvider>
-
-                    <button className=" bg-primary w-48 py-3 rounded text-white cursor-pointer ml-3">Apply Coupon</button>
-                </div>
-                <div className=" w-full flex lg:justify-end mt-8 lg:mt-0">
-                    <div className=" w-full sm:w-[450px] ">
-                        <div className="border border-gray-600 dark:border-white rounded-md p-6">
-                            <h2 className="text-xl font-medium mb-4 dark:text-white">Cart Total</h2>
-
-                            <div className="space-y-4">
-                                <div className="flex justify-between items-center">
-                                    <span className="text-gray-700 dark:text-white">Subtotal:</span>
-                                    <span className="font-medium dark:text-white">$1750</span>
-                                </div>
-
-                                <div className="border-t border-gray-200 pt-4 flex justify-between items-center">
-                                    <span className="text-gray-700 dark:text-white">Shipping:</span>
-                                    <span className="text-gray-700 dark:text-white">Free</span>
-                                </div>
-
-                                <div className="border-t border-gray-200 pt-4 flex justify-between items-center">
-                                    <span className="text-gray-700 font-medium dark:text-white">Total:</span>
-                                    <span className="font-medium dark:text-white">$1750</span>
-                                </div>
+                                <button className=" bg-primary w-48 py-3 rounded text-white cursor-pointer ml-3">Apply Coupon</button>
                             </div>
+                            <div className=" w-full flex lg:justify-end mt-8 lg:mt-0">
+                                <div className=" w-full sm:w-[450px] ">
+                                    <div className="border border-gray-600 dark:border-white rounded-md p-6">
+                                        <h2 className="text-xl font-medium mb-4 dark:text-white">Cart Total</h2>
 
-                            <div className="mt-6">
-                                <Link href={`/checkout`}>
-                                    <button className="w-full cursor-pointer bg-primary text-white font-medium py-2.5 rounded">
-                                        Proceed to checkout
-                                    </button>
-                                </Link>
+                                        <div className="space-y-4">
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-gray-700 dark:text-white">Subtotal:</span>
+                                                <span className="font-medium dark:text-white">${products.total}</span>
+                                            </div>
+
+                                            <div className="border-t border-gray-200 pt-4 flex justify-between items-center">
+                                                <span className="text-gray-700 dark:text-white">Shipping:</span>
+                                                <span className="text-gray-700 dark:text-white">Free</span>
+                                            </div>
+
+                                            <div className="border-t border-gray-200 pt-4 flex justify-between items-center">
+                                                <span className="text-gray-700 font-medium dark:text-white">Total:</span>
+                                                <span className="font-medium dark:text-white">${products.total}</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="mt-6">
+                                            <Link href={`/checkout`}>
+                                                <button className="w-full cursor-pointer bg-primary text-white font-medium py-2.5 rounded">
+                                                    Proceed to checkout
+                                                </button>
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
+                    </>
+            }
+
+
         </div>
     );
 };
