@@ -1,11 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client"
 import { Breadcrumb, ConfigProvider, Input } from "antd";
 import Link from "next/link";
-import productImage from '../../../../public/products/monitor.png'
+// import productImage from '../../../../public/products/monitor.png'
 import Image from "next/image";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import { useSelector } from "react-redux";
+import { Imageurl } from "@/utils/Imageurl";
 
 const Cart = () => {
+    const products = useSelector((state: any) => state.cart)
+    console.log(products.products);
     return (
         <div className="container mx-auto py-16 px-3 md:px-0 ">
             <Breadcrumb
@@ -26,34 +32,41 @@ const Cart = () => {
                     <p className=" w-[100px] md:w-full text-end dark:text-white">Subtotal</p>
                 </div>
                 {/* table body🙀 While integrating api just run a map here🫡 */}
-                <div className="  overflow-x-scroll  md:overflow-x-visible w-[800px] md:w-auto shadow-[0px_5px_5px_rgba(0,0,0,0.03)] dark:shadow-[2px_2px_10px_2px_rgba(255,255,255,0.1)] px-8 py-6 rounded flex justify-between items-center mt-4">
-                    <div className=" flex items-center gap-5 w-[100px] md:w-full">
-                        <Image src={productImage} alt="img" width={200} height={200} className=" w-10" />
-                        <h1 className=" dark:text-white">LCD Monitor</h1>
-                    </div>
-                    <div className="w-[100px] md:w-full flex justify-center">
-                        <p className=" dark:text-white">$650</p>
-                    </div>
+                {
+                    products.products.map((product: any) => {
+                        return (
+                            <div key={product._id} className="  overflow-x-scroll  md:overflow-x-visible w-[800px] md:w-auto shadow-[0px_5px_5px_rgba(0,0,0,0.03)] dark:shadow-[2px_2px_10px_2px_rgba(255,255,255,0.1)] px-8 py-6 rounded flex justify-between items-center mt-4">
+                                <div className=" flex items-center gap-5 w-[100px] md:w-full">
+                                    <Image src={`${Imageurl}/${product.images[0]}`} alt="img" width={200} height={200} className=" w-14" />
+                                    <h1 className=" dark:text-white text-xl">{product?.name}</h1>
+                                </div>
+                                <div className="w-[100px] md:w-full flex justify-center">
+                                    <p className=" dark:text-white">${product?.price}</p>
+                                </div>
 
-                    <div className="w-[100px] md:w-full flex justify-center">
-                        <div className=" w-[80px] h-[50px] border-[2px] border-[#999999] rounded-lg flex justify-between items-center px-3">
-                            <div>
-                                <h3 className=" text-lg font-semibold dark:text-white">01</h3>
+                                <div className="w-[100px] md:w-full flex justify-center">
+                                    <div className=" w-[80px] h-[50px] border-[2px] border-[#999999] rounded-lg flex justify-between items-center px-3">
+                                        <div>
+                                            <h3 className=" text-lg font-semibold dark:text-white">{product.quantity}</h3>
+                                        </div>
+                                        <div className="">
+                                            <IoIosArrowUp size={20} className=" cursor-pointer dark:text-white" />
+                                            <IoIosArrowDown size={20} className=" cursor-pointer dark:text-white" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div className=" flex items-center gap-5 w-[100px] md:w-full justify-end">
+                                    <p className=" dark:text-white">${product.price * product.quantity}</p>
+                                    <RiDeleteBin6Line size={25} className=" cursor-pointer dark:text-white" />
+                                </div>
                             </div>
-                            <div className="">
-                                <IoIosArrowUp size={20} className=" cursor-pointer dark:text-white" />
-                                <IoIosArrowDown size={20} className=" cursor-pointer dark:text-white" />
-                            </div>
+                        )
+                    })
+                }
 
-                        </div>
-                    </div>
 
-                    <div className=" flex items-center gap-5 w-[100px] md:w-full justify-end">
-                        <p className=" dark:text-white">$650</p>
-                        <RiDeleteBin6Line size={25} className=" cursor-pointer dark:text-white" />
-                    </div>
-                </div>
-                {/* end table body */}
             </div>
             <div className=" mt-10 flex flex-col lg:flex-row ">
                 <div className=" flex items-start">
