@@ -9,6 +9,7 @@ import { useLogInMutation } from "@/redux/features/auth/authApi"
 import { useRouter } from "next/navigation"
 import { useDispatch } from "react-redux"
 import { setUser } from "@/redux/features/auth/authSlice"
+import Cookies from "js-cookie";
 
 
 interface LogInFormValues {
@@ -41,6 +42,7 @@ export default function LogInForm(): JSX.Element {
                 const accessToken = data?.data?.accessToken
                 const refreshToken = data?.data?.refreshToken
                 dispatch(setUser({ user: userData, accessToken: accessToken, refreshToken }))
+                Cookies.set('hatem-ecommerce-token', accessToken)
                 api.open({
                     type: 'success',
                     message: 'Log In',
@@ -48,6 +50,9 @@ export default function LogInForm(): JSX.Element {
                     placement: 'topRight',
                 });
                 if (data?.data?.role === "BUYER") {
+                    router.push(`/`)
+                }
+                if (data?.data?.role === "SELLER") {
                     router.push(`/`)
                 }
             })
