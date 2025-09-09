@@ -6,7 +6,7 @@ import Image from 'next/image';
 // import wheel2 from '../../../../../public/products/wheel2.svg';
 // import wheel3 from '../../../../../public/products/wheel3.svg';
 // import wheel4 from '../../../../../public/products/wheel4.svg';
-import { Rate } from 'antd';
+import { notification, Rate } from 'antd';
 // import { FiMinus } from 'react-icons/fi';
 // import { LuPlus } from 'react-icons/lu';
 import { IoIosHeartEmpty } from 'react-icons/io';
@@ -27,11 +27,12 @@ import { addToCart } from '@/redux/features/cart/cartSlice';
 const SingleProduct = () => {
     const params = useParams();
     const { data, isLoading } = useGetSingleProductQuery(params.id);
+    const [api, contextHolder] = notification.useNotification();
     // const wheels = [wheel1, wheel2, wheel3, wheel4];
     // const sizes = ['17', '18', '19']; // Array of sizes
     const [activeTab, setActiveTab] = useState("description")
     const [selectedWheel, setSelectedWheel] = useState(`${Imageurl}/${data?.data?.images[0]}`);
-    const [selectedSize, setSelectedSize] = useState<string | null>('17');
+    const [selectedSize, setSelectedSize] = useState<string | null>('');
 
     const dispatch = useDispatch();
 
@@ -43,15 +44,33 @@ const SingleProduct = () => {
         setSelectedSize(size);
     };
 
+    const handleAddToCart = (data: any) => {
+        if (!selectedSize) {
+            api.open({
+                type: 'error',
+                message: 'Please select a size',
+                placement: 'top',
+            });
+            console.log('select color');
+            return;
+        }
+        const productToAdd = {
+            ...data,
+            size: selectedSize,
+        };
+        dispatch(addToCart(productToAdd))
+    }
+
     return (
         <div>
+            {contextHolder}
             {
                 isLoading ?
                     <SingleProductSkeleton></SingleProductSkeleton>
                     :
-                    <div className="container mx-auto py-20 flex gap-8">
-                        <div className='w-1/2 flex gap-5'>
-                            <div className=' cursor-pointer flex flex-col gap-5 w-[20%]'>
+                    <div className="px-3 md:container mx-auto py-10 md:py-20 lg:flex gap-8">
+                        <div className='lg:w-1/2 flex gap-5'>
+                            <div className=' cursor-pointer flex flex-col gap-5 w-[35%] md:w-[30%] xl:w-[20%]'>
                                 {data?.data?.images?.map((image: any, index: number) => (
                                     <div
                                         key={index}
@@ -78,16 +97,16 @@ const SingleProduct = () => {
                                 />
                             </div>
                         </div>
-                        <div className=' w-1/2'>
-                            <h2 className=' text-2xl font-semibold'>{data?.data?.name}</h2>
-                            <div className=' flex gap-3 items-center mt-3'>
+                        <div className=' lg:w-1/2'>
+                            <h2 className=' text-xl md:text-2xl font-semibold'>{data?.data?.name}</h2>
+                            <div className=' flex gap-1 md:gap-3 items-center mt-3'>
                                 <Rate disabled defaultValue={4} />
                                 <p className=' text-[#7f7f7f]'>(150 Reviews static)</p>
                                 <p className=' text-[#7f7f7f]'>|</p>
                                 <p className=' text-primary'>{data?.data?.stock}</p>
                             </div>
                             <div className=' py-4'>
-                                <h1 className=' text-5xl font-bold dark:text-white'>${data?.data?.price}</h1>
+                                <h1 className=' text-4xl md:text-5xl font-bold dark:text-white'>${data?.data?.price}</h1>
                             </div>
                             <div>
                                 <p className=' text-lg pb-4 border-b-2 dark:text-white border-[#7f7f7f]'>
@@ -126,14 +145,14 @@ const SingleProduct = () => {
                                     <button className=' py-[10px] rounded-r-md  px-2 border dark:border-white cursor-pointer hover:bg-primary hover:text-white dark:text-white'><LuPlus /></button>
                                 </div> */}
                             </div>
-                            <div className='mt-6 flex justify-between items-center'>
+                            <div className='mt-6 md:flex justify-between items-center'>
                                 <div className=' flex gap-4'>
                                     {/* <Link href={`/cart`}> */}
-                                    <button onClick={() => dispatch(addToCart(data?.data))} className='border-2 border-primary dark:border-white px-14 py-2 text-lg rounded text-primary font-semibold cursor-pointer'>Add to Cart</button>
+                                    <button onClick={() => handleAddToCart(data?.data)} className='border-2 border-primary dark:border-white w-full md:w-auto md:px-14 py-2 text-lg rounded text-primary font-semibold cursor-pointer'>Add to Cart</button>
                                     {/* </Link> */}
-                                    <button className=' text-white bg-primary px-14 py-2 text-lg rounded cursor-pointer  dark:text-white'>Buy Now</button>
+                                    <button className=' text-white bg-primary w-full md:w-auto md:px-14 py-2 text-lg rounded cursor-pointer  dark:text-white'>Buy Now</button>
                                 </div>
-                                <div>
+                                <div className='mt-5 md:mt-0'>
                                     <button className=' cursor-pointer'>
                                         <IoIosHeartEmpty className=' border px-[7px] py-[4px] rounded w-10 h-10 dark:text-white dark:border-white' />
                                     </button>
@@ -200,11 +219,10 @@ const SingleProduct = () => {
                     {/* Reviews Tab Content */}
                     {activeTab === "reviews" && (
                         <Reviews></Reviews>
-
                     )}
+
                     {activeTab === "reference" && (
                         <Reference oe={data?.data?.oe} crn={data?.data?.crm}></Reference>
-
                     )}
                 </div>
             </div>

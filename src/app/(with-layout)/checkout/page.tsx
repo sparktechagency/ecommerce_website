@@ -1,13 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 import { Breadcrumb, Checkbox, ConfigProvider } from 'antd';
 import type { FormProps } from 'antd';
 import { Form, Input } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
-import productImage from '../../../../public/products/monitor.png'
+// import productImage from '../../../../public/products/monitor.png'
+import { useSelector } from 'react-redux';
+import { Imageurl } from '@/utils/Imageurl';
 
 const Checkout = () => {
-
+    const products = useSelector((state: any) => state.cart)
+    console.log(products.products);
     type FieldType = {
         name?: string;
         street?: string;
@@ -132,28 +136,26 @@ const Checkout = () => {
                     <div className="space-y-6">
                         {/* Cart Items */}
                         <div className="space-y-4">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <Image src={productImage} alt="LCD Monitor" width={48} height={48} className="object-contain" />
-                                    <span className="font-medium dark:text-white">LCD Monitor</span>
-                                </div>
-                                <span className="font-medium dark:text-white">$650</span>
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <Image src={productImage} alt="H1 Gamepad" width={48} height={48} className="object-contain" />
-                                    <span className="font-medium dark:text-white">H1 Gamepad</span>
-                                </div>
-                                <span className="font-medium dark:text-white">$1100</span>
-                            </div>
+                            {
+                                products.products.map((product:any) => {
+                                    return (
+                                        <div key={product._id} className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <Image src={`${Imageurl}/${product.images[0]}`} alt="LCD Monitor" width={48} height={48} className="object-contain" />
+                                                <span className="font-medium dark:text-white">{product.name}</span>
+                                            </div>
+                                            <span className="font-medium dark:text-white">${product.price} X {product.quantity}</span>
+                                        </div>
+                                    )
+                                })
+                            }
                         </div>
 
                         {/* Summary */}
                         <div className="space-y-3">
                             <div className="flex justify-between py-3">
                                 <span className="font-medium dark:text-white">Subtotal:</span>
-                                <span className="font-medium dark:text-white">$1750</span>
+                                <span className="font-medium dark:text-white">${products?.total}</span>
                             </div>
 
                             <div className="flex justify-between py-3 border-t border-gray-500">
@@ -163,7 +165,7 @@ const Checkout = () => {
 
                             <div className="flex justify-between py-3 border-t border-gray-500">
                                 <span className="font-medium dark:text-white">Total:</span>
-                                <span className="font-medium dark:text-white">$1750</span>
+                                <span className="font-medium dark:text-white">${products?.total}</span>
                             </div>
                         </div>
 

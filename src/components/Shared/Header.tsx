@@ -22,6 +22,8 @@ import Cookies from "js-cookie";
 
 const Header = () => {
     const user = useSelector((state: any) => state.logInUser)
+    const products = useSelector((state: any) => state.cart)
+    console.log(products.products);
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [subMenu, setSubMenu] = useState(false);
     const dispatch = useDispatch();
@@ -120,7 +122,18 @@ const Header = () => {
 
                         <>
                             <Link href={`/wishlist`}><IoIosHeartEmpty className=' w-8 h-8 cursor-pointer dark:text-white' /></Link>
-                            <Link href={`/cart`}><PiShoppingCartLight className=' w-8 h-8 cursor-pointer dark:text-white' /></Link>
+                            <div className="relative">
+                                <Link href={`/cart`}>
+                                    <PiShoppingCartLight className="w-8 h-8 cursor-pointer dark:text-white" />
+                                </Link>
+
+                                {products.products.length > 0 && (
+                                    <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-semibold">
+                                        {products.products.length}
+                                    </span>
+                                )}
+                            </div>
+
                             {
                                 token &&
                                 <div onClick={() => setSubMenu(!subMenu)} className=' bg-[#df5800] flex items-center justify-center rounded-full p-2 '>
