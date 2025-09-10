@@ -24,7 +24,7 @@ const Header = () => {
     const user = useSelector((state: any) => state.logInUser)
     const products = useSelector((state: any) => state.cart)
     const wishlist = useSelector((state: any) => state.wishlist)
-    console.log(products.products);
+
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [subMenu, setSubMenu] = useState(false);
     const dispatch = useDispatch();
