@@ -17,7 +17,6 @@ const ListedProductCart = ({ product }: any) => {
 
     const dispatch = useDispatch();
 
-
     const handleAddToCart = () => {
         dispatch(addToCart(product))
         dispatch(deleteFromWishlist(product))
@@ -26,9 +25,12 @@ const ListedProductCart = ({ product }: any) => {
     return (
         <div className=" overflow-hidden rounded">
             <div className="relative bg-[#f2fcf6] px-4 py-8">
-                <div className="absolute left-4 top-3 rounded text-md bg-orange-500 px-4 py-1 text-white">
-                    -{discountPercentage}%
-                </div>
+                {
+                    product?.discount &&
+                    <div className="absolute left-4 top-3 rounded text-md bg-orange-500 px-2 shadow py-1 text-white">
+                        -{discountPercentage}%
+                    </div>
+                }
                 <button
                     onClick={() => dispatch(deleteFromWishlist(product))}
                     className="absolute right-2 top-2 "

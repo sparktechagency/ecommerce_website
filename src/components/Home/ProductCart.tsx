@@ -13,18 +13,27 @@ interface ProductCartProps {
   id: any;
   image: any;
   title: string;
-  price: number;
   rating: number;
   reviews: number;
 }
 
-const ProductCart = ({ product, id, image, title, price, rating, reviews }: ProductCartProps) => {
+const ProductCart = ({ product, id, image, title, rating, reviews }: ProductCartProps) => {
+  const discount = product?.discount ? product.discount / 100 : 0;  // If no discount, treat it as 0
+  const price = product?.price - (product?.price * discount);
+  const originalPrice = product?.price;
+  const discountPercentage = discount > 0 ? product?.discount : 0;
   const dispatch = useDispatch();
   const products = useSelector((state: any) => state.wishlist)
   const isAdded = products.products.some((product: any) => product._id === id);
 
   return (
     <div className='relative'>
+      {
+        product?.discount &&
+        <div className="absolute left-4 top-3 rounded text-md bg-orange-500 px-2 shadow py-1 text-white">
+          -{discountPercentage}%
+        </div>
+      }
       <Link href={`/product/${id}`}>
         <Image
           src={`${Imageurl}/${image}`}
@@ -38,7 +47,15 @@ const ProductCart = ({ product, id, image, title, price, rating, reviews }: Prod
       <div className='mt-6 pb-2 md:pb-5'>
         <h2 className='text-sm md:text-xl mb-1 md:mb-4 font-semibold dark:text-white'>{title}</h2>
         <div className='flex flex-col md:flex-row items-start md:text-lg md:items-center gap-0 md:gap-3 font-semibold'>
-          <p className='text-primary mb-1 md:mb-0 text-md'>${price}</p>
+          {
+            product?.discount ?
+              <>
+                <span className="text-xl font-bold text-orange-500">${price}</span>
+                <span className="ml-2 text-gray-500 line-through">${originalPrice}</span>
+              </>
+              :
+              <span className="text-xl font-bold text-orange-500">${price}</span>
+          }
           <Rate disabled defaultValue={rating} />
           <p className='dark:text-white'>({reviews})</p>
         </div>
