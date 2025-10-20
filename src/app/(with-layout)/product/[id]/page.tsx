@@ -8,6 +8,7 @@ import Image from "next/image";
 import ReferencesTab from "./Tabs/ReferencesTab";
 import VehiclesTab from "./Tabs/VehiclesTab";
 import AlternativesTab from "./Tabs/AlternativesTab";
+import ShippingRates from "./Tabs/ShippingRates";
 
 type Tab = "references" | "vehicles" | "alternatives";
 
@@ -72,7 +73,7 @@ export default function SingleProduct() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white py-8 p-6 lg:p-0 mb-6">
-      <div className="mx-auto container">
+      <div className="mx-auto container mt-6">
         {/* Header */}
         <div className="mb-6 flex items-center gap-3 md:mb-8">
           <div className="flex h-8 w-8 items-center justify-center rounded bg-red-600 md:h-10 md:w-10">
@@ -90,7 +91,7 @@ export default function SingleProduct() {
         {/* Main Grid */}
         <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-[minmax(300px,400px)_1fr] xl:grid-cols-[400px_1fr_350px]">
           {/* Product Image */}
-          <div className="flex items-start justify-center rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 md:p-6">
+          <div className="flex items-start justify-center rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1d1d1d] p-4 md:p-6">
             <Image
               src={product.productImages?.[0] || "/placeholder.png"}
               alt={product.productName}
@@ -104,12 +105,12 @@ export default function SingleProduct() {
           {/* Specs & Shipping */}
           <div className="space-y-4">
             {/* Specifications */}
-            <div className="border rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800">
+            <div className="border rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1d1d1d]">
               <div className="flex items-center gap-2 text-base font-medium md:text-lg border-b border-gray-300 dark:border-gray-700 p-4">
                 <Package className="h-4 w-4 md:h-5 md:w-5 text-gray-500 dark:text-gray-300" />
                 Specifications
               </div>
-              <div className="p-4">
+              <div className="px-4">
                 {product.sections?.flatMap((section: any, sectionIndex: number) =>
                   section.fields.map((field: any, fieldIndex: number) => (
                     <div
@@ -125,7 +126,7 @@ export default function SingleProduct() {
             </div>
 
             {/* Shipping Details */}
-            <div className="border rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800">
+            {/* <div className="border rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1d1d1d]">
               <div className="flex items-center gap-2 text-base font-medium md:text-lg p-4">
                 <Truck className="h-4 w-4 md:h-5 md:w-5 text-gray-500 dark:text-gray-300" />
                 Shipping Details
@@ -145,12 +146,12 @@ export default function SingleProduct() {
                   </div>
                 ))}
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Price & Cart */}
           <div className="lg:col-span-2 xl:col-span-1">
-            <div className="sticky top-4 border rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 md:p-6 space-y-4">
+            <div className="sticky top-4 border rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1d1d1d] p-4 md:p-6 space-y-4">
               <div className="space-y-2">
                 <div className="text-3xl font-bold md:text-4xl">${product.price}</div>
                 <div className="flex items-center gap-1 text-xs md:text-sm text-gray-500 dark:text-gray-300">
@@ -177,9 +178,9 @@ export default function SingleProduct() {
                   min={1}
                   value={quantity}
                   onChange={(e) => setQuantity(Number(e.target.value) || 1)}
-                  className="w-20 rounded border border-gray-300 dark:border-gray-700 px-2 text-center bg-white dark:bg-gray-800 text-black dark:text-white"
+                  className="w-20 rounded border border-gray-300 dark:border-gray-700 px-2 text-center bg-white dark:bg-[#1d1d1d] text-black dark:text-white"
                 />
-                <button className="flex-1 py-2 flex items-center justify-center gap-2 rounded bg-blue-600 hover:bg-blue-700 text-white">
+                <button className="flex-1 py-2 flex items-center justify-center gap-2 rounded bg-primary text-white">
                   Add To Cart
                 </button>
               </div>
@@ -195,7 +196,7 @@ export default function SingleProduct() {
               onClick={() => setActiveTab(tab as Tab)}
               className={`pb-3 text-sm font-medium ${
                 activeTab === tab
-                  ? "border-b-2 border-blue-600 text-blue-600"
+                  ? "border-b-2  text-primary"
                   : "text-gray-500 dark:text-gray-300"
               }`}
             >
@@ -203,6 +204,11 @@ export default function SingleProduct() {
             </button>
           ))}
         </div>
+
+ <div className="py-2">
+         <ShippingRates shippings={product.shippings || []} />
+
+ </div>
 
         {/* Tab Content */}
         {activeTab === "references" && <ReferencesTab referenceItems={referenceItems} />}

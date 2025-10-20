@@ -35,7 +35,7 @@ export default function ShippingRates({ shippings }: ShippingRatesProps) {
   return (
     <section>
       <h2 className="mb-6 text-lg font-semibold text-foreground mt-6">Shipping rates</h2>
-      <div className="rounded-lg border border-border bg-card p-6">
+      <div className="rounded-lg border border-gray-300 bg-card p-6">
         <div className="mb-6 flex items-center gap-4">
           <label htmlFor="country-select" className="text-sm text-foreground">
             Shipping to:
@@ -60,17 +60,17 @@ export default function ShippingRates({ shippings }: ShippingRatesProps) {
 
           <button
             onClick={handleGetRates}
-            className="rounded border border-border px-3 py-1 text-sm hover:bg-muted"
+            className="rounded border border-gray-300 px-3 py-1 text-sm hover:bg-muted"
           >
             Get rates
           </button>
         </div>
 
         {shippingRates?.length > 0 && (
-          <div className="overflow-hidden rounded-md border border-border">
+          <div className="overflow-hidden rounded-md border border-gray-300">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-border bg-muted/50">
+                <tr className="border-b border-gray-300 bg-muted/50">
                   <th className="p-4 text-left text-sm font-medium text-foreground">
                     Carrier
                   </th>

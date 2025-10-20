@@ -1,49 +1,85 @@
-"use client";
+"use client"
+
+import { useState } from "react"
+import { ShoppingCart } from "lucide-react"
 
 interface AlternativeProduct {
-  id: string;
-  companyName: string;
-  productName: string;
-  image?: string;
-  price: number;
+  id: string
+  companyName: string
+  productCode: string
+  productName: string
+  image?: string
+  price: number
+  dispatch?: string
 }
 
 interface AlternativesTabProps {
-  similarProducts: AlternativeProduct[];
+  similarProducts: AlternativeProduct[]
 }
 
 export default function AlternativesTab({ similarProducts }: AlternativesTabProps) {
+  const [quantities, setQuantities] = useState<Record<string, number>>({})
+
+  const handleQuantityChange = (id: string, value: string) => {
+    const num = Number.parseInt(value) || 1
+    setQuantities((prev) => ({ ...prev, [id]: Math.max(1, num) }))
+  }
+
+  const handleAddToCart = (id: string) => {
+    const quantity = quantities[id] || 1
+    console.log(`Added ${quantity} of product ${id} to cart`)
+  }
+
   return (
     <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-foreground">Alternatives</h3>
+      <h3 className="text-lg font-semibold text-foreground  pb-4">Alternatives</h3>
       {similarProducts?.length ? (
-        similarProducts.map((alt) => (
-          <div key={alt.id} className="flex gap-6 border border-border bg-card p-6">
-            <div className="h-[150px] w-[150px] flex-shrink-0 overflow-hidden rounded-md border border-border bg-muted">
-              <img
-                src={alt.image || "/placeholder.png"}
-                alt={alt.productName}
-                className="h-full w-full object-contain"
-              />
-            </div>
+        <div className="space-y-4">
+          {similarProducts.map((alt) => (
+            <div key={alt.id} className="flex gap-6 border border-gray-300 bg-card p-6 rounded-lg">
+              <div className="h-[150px] w-[150px] flex-shrink-0 overflow-hidden rounded-md border border-gray-300 bg-muted flex items-center justify-center">
+                <img
+                  src={alt.image || "/placeholder.svg?height=150&width=150&query=product"}
+                  alt={alt.productName}
+                  className="h-full w-full object-contain p-2"
+                />
+              </div>
 
-            <div className="flex flex-1 flex-col justify-between">
-              <h4 className="text-base font-semibold text-foreground">
-                {alt.companyName} - {alt.productName}
-              </h4>
-              <p className="text-sm text-muted-foreground">Price: €{alt.price}</p>
-            </div>
+              <div className="flex-1 flex flex-col justify-start gap-2">
+                <h4 className="text-base font-semibold text-foreground">
+                  {alt.companyName} ® {alt.productCode}
+                </h4>
+                <p className="text-sm text-muted-foreground">{alt.productName}</p>
+              </div>
 
-            <div className="flex flex-col items-end justify-between">
-              <button className="bg-blue-600 py-2 px-4 text-white rounded hover:bg-blue-700 flex items-center gap-2">
-                Add to Cart
-              </button>
+              <div className="flex flex-col items-end justify-between gap-4">
+                <div className="text-right">
+                  <p className="text-lg font-semibold text-foreground">€{alt.price.toFixed(2)}</p>
+                  {alt.dispatch && <p className="text-sm text-green-600 font-medium">{alt.dispatch}</p>}
+                </div>
+
+                <div className="flex gap-3 items-center">
+                  <input
+                    type="number"
+                    min="1"
+                    value={quantities[alt.id] || 1}
+                    onChange={(e) => handleQuantityChange(alt.id, e.target.value)}
+                    className="w-16 px-3 py-2 border border-border rounded text-center text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  />
+                  <button
+                    onClick={() => handleAddToCart(alt.id)}
+                    className="bg-primary text-white font-medium py-2 px-6 rounded flex items-center gap-2 transition-colors"
+                  >
+                    <ShoppingCart size={20} />
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        ))
+          ))}
+        </div>
       ) : (
         <p className="text-muted-foreground">No alternative products available.</p>
       )}
     </div>
-  );
+  )
 }

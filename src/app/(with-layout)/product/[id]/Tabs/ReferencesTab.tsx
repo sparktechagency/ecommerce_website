@@ -20,7 +20,7 @@ export default function ReferencesTab({ referenceItems }: ReferencesTabProps) {
       {referenceItems.map((item) => (
         <div
           key={item.manufacturer}
-          className="rounded-lg border border-border bg-card p-6"
+          className="rounded-lg border border-gray-300 bg-card p-6"
         >
           <h3 className="mb-4 text-base font-semibold text-foreground">
             {item.manufacturer}
@@ -30,7 +30,7 @@ export default function ReferencesTab({ referenceItems }: ReferencesTabProps) {
               <a
                 key={idx}
                 href={num.isLink ? "#" : undefined}
-                className={`text-sm ${num.isLink ? "text-blue-600 underline" : "text-foreground"}`}
+                className={`text-sm ${num.isLink ? "text-black dark:text-white underline" : "text-foreground"}`}
               >
                 {num.value}
               </a>
