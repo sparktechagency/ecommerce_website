@@ -1,11 +1,5 @@
 "use client";
-
-import { useState } from "react";
-
 export default function SingleProductSkeleton() {
-  const [specsOpen, setSpecsOpen] = useState(true);
-  const [shippingOpen, setShippingOpen] = useState(true);
-  const [activeTab, setActiveTab] = useState<"reference" | "description" | "reviews">("description");
 
   return (
     <div className="min-h-screen p-4 md:p-6 animate-pulse">

@@ -1,5 +1,5 @@
 "use client"
-import { JSX, useState, useEffect } from "react"
+import { useState, useEffect, JSX } from "react"
 import OTPInput from "react-otp-input"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useOtpVerificationMutation } from "@/redux/features/auth/authApi"
@@ -41,7 +41,7 @@ export default function OtpVerify(): JSX.Element {
             return
         }
 
-        const otpNumber = Number(otp) // convert string to number
+        const otpNumber = Number(otp)
 
         otpVerification({ email, otp: otpNumber, otpToken })
             .unwrap()
@@ -52,7 +52,6 @@ export default function OtpVerify(): JSX.Element {
                     description: 'OTP Verified Successfully!',
                     placement: 'topRight',
                 })
-                // Clear OTP token after successful verification
                 localStorage.removeItem("otpToken")
                 router.push(`/auth/login`)
             })
@@ -82,7 +81,7 @@ export default function OtpVerify(): JSX.Element {
                         value={otp}
                         onChange={(value: string) => setOtp(value.replace(/\D/g, ''))}
                         numInputs={6}
-                        isInputNum
+                        inputType="number"   // ✅ fixed
                         renderSeparator={<span className="w-4" />}
                         renderInput={(props) => (
                             <input

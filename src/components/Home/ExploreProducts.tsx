@@ -1,57 +1,140 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-"use client"
+// "use client";
+
+// import Link from "next/link";
+// import ProductCart from "./ProductCart";
+// import { useGetAllProductsQuery } from "@/redux/features/products/productsApi";
+// import ProductSkeleton from "@/utils/ProductSkeleton";
+
+// // ------------------- Types -------------------
+// interface Seller {
+//     userId: string;
+//     companyName: string;
+//     logo: string | null;
+// }
+
+// interface Product {
+//     id: string;
+//     productName: string;
+//     price: number;
+//     productImages?: string[];
+//     _count?: {
+//         review: number;
+//     };
+//     seller: Seller;
+// }
+
+// interface ApiResponse {
+//     success: boolean;
+//     statusCode: number;
+//     message: string;
+//     data: Product[];
+// }
+
+// // ------------------- Component -------------------
+// const ExploreProducts = () => {
+//     const { data, isLoading } = useGetAllProductsQuery(undefined) as { data?: ApiResponse; isLoading: boolean };
+
+//     return (
+//         <div className="container mx-auto pb-20">
+//             <div className="flex gap-2 items-center mb-5">
+//                 <span className="bg-primary h-10 px-[10px] rounded-md"></span>
+//                 <p className="text-primary font-semibold text-lg">Our Products</p>
+//             </div>
+
+//             <div className="flex justify-between items-center mb-16">
+//                 <h2 className="text-2xl md:text-3xl lg:text-5xl dark:text-white">
+//                     Explore Our Products
+//                 </h2>
+//             </div>
+
+//             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-10">
+//                 {isLoading
+//                     ? [...Array(8)].map((_, index) => <ProductSkeleton key={index} />)
+//                     : data?.data?.map((product) => (
+//                         <ProductCart
+//                             key={product.id}
+//                             product={{
+//                                 ...product,
+//                                 productImages: product.productImages || [], // default to empty array
+//                             }}
+//                         />
+
+//                     ))}
+//             </div>
+
+//             <div className="flex justify-center mt-10">
+//                 <Link href="/product">
+//                     <button className="md:text-xl bg-primary px-8 md:px-16 py-2 md:py-4 text-white rounded cursor-pointer">
+//                         View All Products
+//                     </button>
+//                 </Link>
+//             </div>
+//         </div>
+//     );
+// };
+
+// export default ExploreProducts;
+
+
+"use client";
+
 import Link from "next/link";
-import ProductCart from "./ProductCart";
+import ProductCart, { Product } from "./ProductCart";
 import { useGetAllProductsQuery } from "@/redux/features/products/productsApi";
 import ProductSkeleton from "@/utils/ProductSkeleton";
 
+// ------------------- API Response Type -------------------
+interface ApiResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: Product[];
+}
+
+// ------------------- Component -------------------
 const ExploreProducts = () => {
-    const { data, isLoading } = useGetAllProductsQuery(undefined);
+  const { data, isLoading } = useGetAllProductsQuery(undefined) as {
+    data?: ApiResponse;
+    isLoading: boolean;
+  };
 
-    console.log("API response:", data);
+  return (
+    <div className="container mx-auto pb-20">
+      <div className="flex gap-2 items-center mb-5">
+        <span className="bg-primary h-10 px-[10px] rounded-md"></span>
+        <p className="text-primary font-semibold text-lg">Our Products</p>
+      </div>
 
-    return (
-        <div className="container mx-auto pb-20">
-            <div className="flex gap-2 items-center mb-5">
-                <span className="bg-primary h-10 px-[10px] rounded-md"></span>
-                <p className="text-primary font-semibold text-lg">Our Products</p>
-            </div>
+      <div className="flex justify-between items-center mb-16">
+        <h2 className="text-2xl md:text-3xl lg:text-5xl dark:text-white">
+          Explore Our Products
+        </h2>
+      </div>
 
-            <div className="flex justify-between items-center mb-16">
-                <h2 className="text-2xl md:text-3xl lg:text-5xl dark:text-white">
-                    Explore Our Products
-                </h2>
-            </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-10">
+        {isLoading
+          ? [...Array(8)].map((_, index) => <ProductSkeleton key={index} />)
+          : data?.data?.map((product) => (
+              <ProductCart
+                key={product.id}
+                product={{
+                  ...product,
+                  productImages: product.productImages || [], // ensure array
+                  _count: { review: product._count?.review || 0 }, // ensure review exists
+                }}
+              />
+          ))}
+      </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-10">
-                {isLoading ? (
-                    [...Array(8)].map((_, index) => (
-                        <ProductSkeleton key={index} />
-                    ))
-                ) : (
-                    data?.data?.map((product: any) => (
-                        <ProductCart
-                            key={product?.id}
-                            product={product}
-                            id={product?.id}
-                            image={product?.productImages?.[0]}
-                            title={product?.productName}
-                            rating={product?._count?.review || 0}
-                            reviews={product?._count?.review || 0}
-                        />
-                    ))
-                )}
-            </div>
-
-            <div className="flex justify-center mt-10">
-                <Link href="/product">
-                    <button className="md:text-xl bg-primary px-8 md:px-16 py-2 md:py-4 text-white rounded cursor-pointer">
-                        View All Products
-                    </button>
-                </Link>
-            </div>
-        </div>
-    );
+      <div className="flex justify-center mt-10">
+        <Link href="/product">
+          <button className="md:text-xl bg-primary px-8 md:px-16 py-2 md:py-4 text-white rounded cursor-pointer">
+            View All Products
+          </button>
+        </Link>
+      </div>
+    </div>
+  );
 };
 
 export default ExploreProducts;

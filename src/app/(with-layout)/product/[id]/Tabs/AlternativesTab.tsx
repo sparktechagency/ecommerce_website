@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { ShoppingCart } from "lucide-react"
+import Image from "next/image"
 
 interface AlternativeProduct {
   id: string
@@ -37,13 +38,15 @@ export default function AlternativesTab({ similarProducts }: AlternativesTabProp
         <div className="space-y-4">
           {similarProducts.map((alt) => (
             <div key={alt.id} className="flex gap-6 border border-gray-300 bg-card p-6 rounded-lg">
-              <div className="h-[150px] w-[150px] flex-shrink-0 overflow-hidden rounded-md border border-gray-300 bg-muted flex items-center justify-center">
-                <img
+              <div className="h-[150px] w-[150px] flex-shrink-0 overflow-hidden rounded-md border border-gray-300 bg-muted flex items-center justify-center relative">
+                <Image
                   src={alt.image || "/placeholder.svg?height=150&width=150&query=product"}
                   alt={alt.productName}
-                  className="h-full w-full object-contain p-2"
+                  fill
+                  className="object-contain p-2"
                 />
               </div>
+
 
               <div className="flex-1 flex flex-col justify-start gap-2">
                 <h4 className="text-base font-semibold text-foreground">

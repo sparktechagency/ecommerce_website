@@ -2,11 +2,28 @@
 
 import Link from "next/link";
 import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store"; // adjust the path if needed
+import { RootState } from "@/redux/store"; // make sure this path is correct
+
+// Define the user type
+interface Address {
+  street?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+}
+
+interface User {
+  fullName?: string;
+  email?: string;
+  phoneNumber?: string;
+  address?: Address;
+}
 
 const AccountDetails = () => {
-  // Get the logged-in user from Redux
-  const user = useSelector((state: RootState) => state.logInUser.user);
+  // Get the logged-in user from Redux and type it
+  const user = useSelector<RootState, User | null>(
+    (state) => state.logInUser.user
+  );
 
   // If user is not logged in
   if (!user) {

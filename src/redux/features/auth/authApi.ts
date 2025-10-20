@@ -20,7 +20,7 @@ const authApi = baseApi.injectEndpoints({
             }),
         }),
 
-         resendOtpVerification: builder.mutation({
+        resendOtpVerification: builder.mutation({
             query: (data) => ({
                 url: '/users/verify-otp',
                 method: 'PUT',
@@ -77,6 +77,15 @@ const authApi = baseApi.injectEndpoints({
         }),
 
         getAdminProfile: builder.query({
+            query: () => ({
+                url: `/auth/profile`,
+                method: 'GET',
+            }),
+
+        }),
+
+
+        updateUserRole: builder.query({
             query: () => ({
                 url: `/auth/profile`,
                 method: 'GET',

@@ -1,124 +1,170 @@
 "use client";
+
 import ProductCart from "@/components/Home/ProductCart";
 import { Input, Pagination, Select } from "antd";
 import { useState } from "react";
 import { CiSearch } from "react-icons/ci";
+
+// Product image imports (local placeholders)
 import wheel from '../../../../public/products/wheels.jpg';
 import sparksPlug from '../../../../public/products/car-sparks-plug.jpg';
-import engine from '../../../../public/products/engine.jpg';
-import engine1 from '../../../../public/products/engine1.jpg';
-import engineOil from '../../../../public/products/engine_oil.jpg';
-import exhaust from '../../../../public/products/exhaust.jpg';
-import exhaust1 from '../../../../public/products/exhaust1.jpg';
-import lights from '../../../../public/products/lights.jpg';
 
-const Product = () => {
-    const [currentPage, setCurrentPage] = useState(1);
-    const pageSize = 10;
 
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-    };
+// ------------------- Type Definitions -------------------
+interface Seller {
+  userId: string;
+  companyName: string;
+  logo: string | null;
+}
 
-    const products = [
-        { id: '1', title: 'Wheels', image: wheel, price: 250, rating: 4, reviews: 84 },
-        { id: '2', title: 'Spark Plug', image: sparksPlug, price: 35, rating: 5, reviews: 42 },
-        { id: '3', title: 'Engine', image: engine, price: 950, rating: 4, reviews: 110 },
-        { id: '4', title: 'Engine Type 2', image: engine1, price: 1000, rating: 4, reviews: 89 },
-        { id: '5', title: 'Engine Oil', image: engineOil, price: 45, rating: 4, reviews: 67 },
-        { id: '7', title: 'Exhaust', image: exhaust, price: 320, rating: 5, reviews: 96 },
-        { id: '8', title: 'Exhaust Type 2', image: exhaust1, price: 350, rating: 4, reviews: 78 },
-        { id: '9', title: 'Lights', image: lights, price: 120, rating: 4, reviews: 123 },
-    ];
+interface Category {
+  id: string;
+  name: string;
+}
 
-    return (
-        <div className="container mx-auto py-8 md:py-16">
-            {/* Vehicle selectors */}
-            <div className="container mx-auto shadow-md border-t-[10px] border-t-[#f56100] border border-[#FCCEB0] py-14">
-                <div className="text-center">
-                    <h2 className="text-4xl font-semibold dark:text-white">Select Your Vehicle</h2>
-                    <p className="text-[#5A5B54] mt-3 dark:text-gray-300">For finding the correct part</p>
-                </div>
-                <div className="px-4 md:px-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mt-8">
-                    {/* Year */}
-                    <div className="flex items-center w-full">
-                        <span className="bg-[#f56100] py-[10px] px-4 text-white">1</span>
-                        <Select
-                            placeholder="Year"
-                            className="w-full"
-                            options={[{ value: '2025', label: '2025' }, { value: '2024', label: '2024' }, { value: '2023', label: '2023' }, { value: '2022', label: '2022' }, { value: '2021', label: '2021' }]}
-                        />
-                    </div>
-                    {/* Brand */}
-                    <div className="flex items-center w-full">
-                        <span className="bg-[#f56100] py-[10px] px-4 text-white">2</span>
-                        <Select
-                            placeholder="Brand"
-                            className="w-full"
-                            options={[{ value: 'toyota', label: 'Toyota' }, { value: 'honda', label: 'Honda' }, { value: 'ford', label: 'Ford' }, { value: 'chevrolet', label: 'Chevrolet' }, { value: 'bmw', label: 'BMW' }, { value: 'audi', label: 'Audi' }, { value: 'mercedes', label: 'Mercedes-Benz' }]}
-                        />
-                    </div>
-                    {/* Model */}
-                    <div className="flex items-center w-full">
-                        <span className="bg-[#f56100] py-[10px] px-4 text-white">3</span>
-                        <Select
-                            placeholder="Model"
-                            className="w-full"
-                            options={[{ value: 'camry', label: 'Toyota Camry' }, { value: 'accord', label: 'Honda Accord' }, { value: 'mustang', label: 'Ford Mustang' }, { value: 'impala', label: 'Chevrolet Impala' }, { value: 'x5', label: 'BMW X5' }, { value: 'a4', label: 'Audi A4' }, { value: 'c_class', label: 'Mercedes-Benz C-Class' }]}
-                        />
-                    </div>
-                    {/* Engine Power */}
-                    <div className="flex items-center w-full">
-                        <span className="bg-[#f56100] py-[10px] px-4 text-white">4</span>
-                        <Select
-                            placeholder="Engine Power"
-                            className="w-full"
-                            options={[{ value: '150', label: '150 HP' }, { value: '200', label: '200 HP' }, { value: '250', label: '250 HP' }, { value: '300', label: '300 HP' }, { value: '350', label: '350 HP' }, { value: '400', label: '400 HP' }]}
-                        />
-                    </div>
-                </div>
-            </div>
+interface Brand {
+  id: string;
+  brandName: string;
+  brandImage: string | null;
+}
 
-            {/* Search and title */}
-            <div className="mt-10 flex justify-between items-center">
-                <div className="flex gap-2 items-center">
-                    <span className="bg-primary h-10 px-[10px] rounded-md" />
-                    <p className="text-primary font-semibold text-lg">Our Products</p>
-                </div>
-                <div className="w-[280px]">
-                    <Input placeholder="Search product" suffix={<CiSearch size={20} />} />
-                </div>
-            </div>
+interface Product {
+  id: string;
+  productName: string;
+  description: string;
+  price: number;
+  discount: number;
+  stock: number;
+  productImages: string[];
+  isVisible: boolean;
+  createdAt: string;
+  updatedAt: string;
+  seller: Seller;
+  category: Category;
+  brand: Brand;
+  _count: {
+    review: number;
+  };
+}
 
-            {/* Product Grid */}
-            <div className="container mx-auto mt-10 mb-8">
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-10">
-                    {products.map((product) => (
-                        // <ProductCart
-                        //     key={product.id}
-                        //     id={product.id} // ✅ Pass ID explicitly
-                        //     image={product.image}
-                        //     title={product.title}
-                        //     price={product.price}
-                        //     rating={product.rating}
-                        //     reviews={product.reviews}
-                        // />
+// ------------------- Component -------------------
+const ProductPage = () => {
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const pageSize = 10;
 
-                        <ProductCart key={product.id} product={product} />
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
-                    ))}
-                </div>
-            </div>
+  // Example placeholder products (local images)
+  const products: Product[] = [
+    {
+      id: "1",
+      productName: "Wheels",
+      description: "High quality wheels",
+      price: 250,
+      discount: 0,
+      stock: 100,
+      productImages: [wheel.src],
+      isVisible: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      seller: { userId: "1", companyName: "Wheel Co", logo: null },
+      category: { id: "1", name: "Car Parts" },
+      brand: { id: "1", brandName: "Toyota", brandImage: null },
+      _count: { review: 12 },
+    },
+    {
+      id: "2",
+      productName: "Spark Plug",
+      description: "High quality spark plug",
+      price: 35,
+      discount: 0,
+      stock: 200,
+      productImages: [sparksPlug.src],
+      isVisible: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      seller: { userId: "2", companyName: "Spark Co", logo: null },
+      category: { id: "1", name: "Car Parts" },
+      brand: { id: "2", brandName: "Honda", brandImage: null },
+      _count: { review: 5 },
+    },
+  ];
 
-            {/* Pagination */}
-            <Pagination
-                current={currentPage}
-                pageSize={pageSize}
-                total={50}
-                onChange={handlePageChange}
-            />
+  return (
+    <div className="container mx-auto py-8 md:py-16">
+      {/* Vehicle selectors */}
+      <div className="container mx-auto shadow-md border-t-[10px] border-t-[#f56100] border border-[#FCCEB0] py-14">
+        <div className="text-center">
+          <h2 className="text-4xl font-semibold dark:text-white">Select Your Vehicle</h2>
+          <p className="text-[#5A5B54] mt-3 dark:text-gray-300">For finding the correct part</p>
         </div>
-    );
+        <div className="px-4 md:px-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mt-8">
+          <div className="flex items-center w-full">
+            <span className="bg-[#f56100] py-[10px] px-4 text-white">1</span>
+            <Select
+              placeholder="Year"
+              className="w-full"
+              options={[{ value: '2025', label: '2025' }, { value: '2024', label: '2024' }]}
+            />
+          </div>
+          <div className="flex items-center w-full">
+            <span className="bg-[#f56100] py-[10px] px-4 text-white">2</span>
+            <Select
+              placeholder="Brand"
+              className="w-full"
+              options={[{ value: 'toyota', label: 'Toyota' }, { value: 'honda', label: 'Honda' }]}
+            />
+          </div>
+          <div className="flex items-center w-full">
+            <span className="bg-[#f56100] py-[10px] px-4 text-white">3</span>
+            <Select
+              placeholder="Model"
+              className="w-full"
+              options={[{ value: 'camry', label: 'Camry' }, { value: 'accord', label: 'Accord' }]}
+            />
+          </div>
+          <div className="flex items-center w-full">
+            <span className="bg-[#f56100] py-[10px] px-4 text-white">4</span>
+            <Select
+              placeholder="Engine Power"
+              className="w-full"
+              options={[{ value: '150', label: '150 HP' }, { value: '200', label: '200 HP' }]}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Search and title */}
+      <div className="mt-10 flex justify-between items-center">
+        <div className="flex gap-2 items-center">
+          <span className="bg-primary h-10 px-[10px] rounded-md" />
+          <p className="text-primary font-semibold text-lg">Our Products</p>
+        </div>
+        <div className="w-[280px]">
+          <Input placeholder="Search product" suffix={<CiSearch size={20} />} />
+        </div>
+      </div>
+
+      {/* Product Grid */}
+      <div className="container mx-auto mt-10 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-10">
+          {products.map((product) => (
+            <ProductCart key={product.id} product={product} />
+          ))}
+        </div>
+      </div>
+
+      {/* Pagination */}
+      <Pagination
+        current={currentPage}
+        pageSize={pageSize}
+        total={products.length}
+        onChange={handlePageChange}
+      />
+    </div>
+  );
 };
 
-export default Product;
+export default ProductPage;

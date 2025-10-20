@@ -1,45 +1,50 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-// Define the types for the product and the state
-// interface Product {
-//   _id: string;
-//   name: string;
-//   price: number;
-//   quantity: number;
-// }
-
-interface CartState {
-    products: any;
+// ------------------- Define Product type -------------------
+export interface Product {
+  id: string;
+  productName: string;
+  price: number;
+  discount?: number;
+  productImages?: string[];
+  _count: {
+    review: number;
+  };
+  // Add other fields if needed (like seller, category, brand)
 }
 
-const initialState: CartState = {
-    products: [],
+// ------------------- Wishlist state -------------------
+interface WishlistState {
+  products: Product[];
+}
+
+const initialState: WishlistState = {
+  products: [],
 };
 
+// ------------------- Slice -------------------
 export const wishlistSlice = createSlice({
-    name: 'wishlist',
-    initialState,
-    reducers: {
-        addRemoveToWishlist: (state, action: any) => {
-            const existing = state.products.find((product: any) => product._id === action.payload._id);
-            if (existing) {
-                state.products = state.products.filter((product: any) => product._id !== action.payload._id);
-            } else {
-                state.products.push(action.payload);
-            }
-        },
-
-        deleteFromWishlist: (state, action: any) => {
-            state.products = state.products.filter((product: any) => product._id !== action.payload._id);
-        },
-
-        makeWishlistEmpty: (state) => {
-            state.products = [];
-        },
+  name: "wishlist",
+  initialState,
+  reducers: {
+    addRemoveToWishlist: (state, action: PayloadAction<Product>) => {
+      const existing = state.products.find((p) => p.id === action.payload.id);
+      if (existing) {
+        state.products = state.products.filter((p) => p.id !== action.payload.id);
+      } else {
+        state.products.push(action.payload);
+      }
     },
+
+    deleteFromWishlist: (state, action: PayloadAction<Product>) => {
+      state.products = state.products.filter((p) => p.id !== action.payload.id);
+    },
+
+    makeWishlistEmpty: (state) => {
+      state.products = [];
+    },
+  },
 });
 
 export const { addRemoveToWishlist, deleteFromWishlist, makeWishlistEmpty } = wishlistSlice.actions;
-
 export default wishlistSlice.reducer;

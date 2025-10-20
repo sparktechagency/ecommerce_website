@@ -6,29 +6,45 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useEditAdminProfileMutation } from "@/redux/features/auth/authApi";
 
-const EditAccount = () => {
-  interface EditFormValues {
-    userName: string;
-    email: string;
-    phone: string;
+// Type for user from Redux
+interface User {
+  id: string;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  dateOfBirth: string;
+  gender: "Male" | "Female" | "Other";
+  address?: {
     street?: string;
     city?: string;
     state?: string;
     zip?: string;
-  }
+  };
+}
 
+// Type for the edit form values
+interface EditFormValues {
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  street?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+}
+
+const EditAccount = () => {
   const [form] = Form.useForm<EditFormValues>();
-  const user = useSelector((state: RootState) => state.logInUser.user);
-
+  const user = useSelector((state: RootState) => state.logInUser.user as User | null);
   const [editProfile, { isLoading }] = useEditAdminProfileMutation();
 
   // Prefill form with existing user data
   useEffect(() => {
     if (user) {
       form.setFieldsValue({
-        userName: user.userName || "",
-        email: user.email || "",
-        phone: user.phone || "",
+        fullName: user.fullName,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
         street: user.address?.street || "",
         city: user.address?.city || "",
         state: user.address?.state || "",
@@ -41,8 +57,12 @@ const EditAccount = () => {
     try {
       await editProfile(values).unwrap();
       message.success("Profile updated successfully!");
-    } catch (err: any) {
-      message.error(err?.data?.message || "Failed to update profile.");
+    } catch (err) {
+      if (err instanceof Error) {
+        message.error(err.message || "Failed to update profile.");
+      } else {
+        message.error("Failed to update profile.");
+      }
     }
   };
 
@@ -67,7 +87,7 @@ const EditAccount = () => {
         {/* Full Name */}
         <Form.Item
           label="Full Name"
-          name="userName"
+          name="fullName"
           rules={[{ required: true, message: "Please input your name!" }]}
         >
           <Input placeholder="Enter your full name" className="h-12" />
@@ -88,7 +108,7 @@ const EditAccount = () => {
         {/* Phone */}
         <Form.Item
           label="Phone Number"
-          name="phone"
+          name="phoneNumber"
           rules={[
             { required: true, message: "Please input your phone number!" },
             {

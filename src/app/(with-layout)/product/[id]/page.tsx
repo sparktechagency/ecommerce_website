@@ -2,15 +2,97 @@
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import { Package, Truck, Info, Check, RotateCcw } from "lucide-react";
-import { useGetSingleProductQuery } from "@/redux/features/products/productsApi";
 import Image from "next/image";
+import { Package, Info, Check, RotateCcw } from "lucide-react";
 import ReferencesTab from "./Tabs/ReferencesTab";
 import VehiclesTab from "./Tabs/VehiclesTab";
 import AlternativesTab from "./Tabs/AlternativesTab";
 import ShippingRates from "./Tabs/ShippingRates";
+import { useGetSingleProductQuery } from "@/redux/features/products/productsApi";
 
 type Tab = "references" | "vehicles" | "alternatives";
+
+interface Seller {
+  userId: string;
+  companyName: string;
+  logo: string | null;
+}
+
+interface Category {
+  id: string;
+  name: string;
+}
+
+interface Brand {
+  id: string;
+  brandName: string;
+  brandImage: string | null;
+}
+
+interface Reference {
+  id: string;
+  type: string;
+  number: string;
+}
+
+interface Shipping {
+  id: string;
+  countryName: string;
+  countryCode: string;
+  carrier: string;
+  cost: number;
+  deliveryMin: number;
+  deliveryMax: number;
+  isDefault: boolean;
+}
+
+interface SectionField {
+  id: string;
+  sectionId: string;
+  fieldName: string;
+  valueString: string | null;
+  valueInt: number | null;
+  valueFloat: number | null;
+  valueDate: string | null;
+}
+
+interface Section {
+  id: string;
+  sectionName: string;
+  parentId: string | null;
+  fields: SectionField[];
+}
+
+interface Product {
+  id: string;
+  productName: string;
+  description: string;
+  price: number;
+  discount: number;
+  stock: number;
+  productImages: string[];
+  isVisible: boolean;
+  createdAt: string;
+  updatedAt: string;
+  seller: Seller;
+  category?: Category;
+  brand?: Brand;
+  sections?: Section[];
+  references?: Reference[];
+  shippings?: Shipping[];
+  fitVehicles?: string[];
+  similarProducts?: AlternativeProduct[];
+}
+
+interface AlternativeProduct {
+  id: string;
+  companyName: string;
+  productCode: string;
+  productName: string;
+  image?: string;
+  price: number;
+  dispatch?: string;
+}
 
 interface NumberItem {
   value: string;
@@ -20,6 +102,26 @@ interface NumberItem {
 interface ReferenceItem {
   manufacturer: string;
   numbers: NumberItem[];
+}
+
+interface FitVehicle {
+  id: string;
+  engine: {
+    engineCode: string;
+    hp: number;
+    ccm: number;
+    fuelType: string;
+    generation: {
+      generationName: string;
+      body: string;
+      productionStart: string;
+      productionEnd: string | null;
+      model: {
+        modelName: string;
+        brand: { brandName: string };
+      };
+    };
+  };
 }
 
 export default function SingleProduct() {
@@ -48,28 +150,48 @@ export default function SingleProduct() {
     );
   }
 
-  const product = data.data;
+  const product: Product = data.data;
 
-  // Prepare references
+  // Map references
   const referenceItems: ReferenceItem[] = [];
   if (product.references?.length) {
     referenceItems.push({
       manufacturer: "OE Numbers",
-      numbers: product.references.map((ref: any) => ({
+      numbers: product.references.map((ref) => ({
         value: ref.number,
-        isLink: true,
+        isLink: ref.type === "OE",
       })),
     });
-  }
-  if (product.crossReferences?.length) {
     referenceItems.push({
-      manufacturer: "Cross Reference Numbers",
-      numbers: product.crossReferences.map((ref: any) => ({
-        value: ref.number,
-        isLink: false,
-      })),
+      manufacturer: "Supplier Numbers",
+      numbers: product.references
+        .filter((r) => r.type !== "OE")
+        .map((ref) => ({ value: ref.number, isLink: false })),
     });
   }
+
+  // Map fitVehicles (string[] to FitVehicle[])
+  const mappedFitVehicles: FitVehicle[] = (product.fitVehicles || []).map(
+    (modelName, index) => ({
+      id: String(index),
+      engine: {
+        engineCode: "N/A",
+        hp: 0,
+        ccm: 0,
+        fuelType: "Unknown",
+        generation: {
+          generationName: "N/A",
+          body: "N/A",
+          productionStart: "2000-01-01",
+          productionEnd: null,
+          model: {
+            modelName,
+            brand: { brandName: "Unknown" },
+          },
+        },
+      },
+    })
+  );
 
   return (
     <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white py-8 p-6 lg:p-0 mb-6">
@@ -105,48 +227,32 @@ export default function SingleProduct() {
           {/* Specs & Shipping */}
           <div className="space-y-4">
             {/* Specifications */}
-            <div className="border rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1d1d1d]">
-              <div className="flex items-center gap-2 text-base font-medium md:text-lg border-b border-gray-300 dark:border-gray-700 p-4">
-                <Package className="h-4 w-4 md:h-5 md:w-5 text-gray-500 dark:text-gray-300" />
-                Specifications
-              </div>
-              <div className="px-4">
-                {product.sections?.flatMap((section: any, sectionIndex: number) =>
-                  section.fields.map((field: any, fieldIndex: number) => (
+            {product.sections?.map((section) => (
+              <div
+                key={section.id}
+                className="border rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1d1d1d]"
+              >
+                <div className="flex items-center gap-2 text-base font-medium md:text-lg border-b border-gray-300 dark:border-gray-700 p-4">
+                  <Package className="h-4 w-4 md:h-5 md:w-5 text-gray-500 dark:text-gray-300" />
+                  {section.sectionName}
+                </div>
+                <div className="px-4">
+                  {section.fields.map((field) => (
                     <div
-                      key={`${sectionIndex}-${fieldIndex}`}
+                      key={field.id}
                       className="flex flex-col gap-1 border-b border-gray-300 dark:border-gray-700 py-2 last:border-0 sm:flex-row sm:justify-between"
                     >
-                      <span className="text-sm text-gray-500 dark:text-gray-300">{field.fieldName}</span>
-                      <span className="text-sm font-medium">{field.valueString ?? field.valueInt ?? field.valueFloat ?? "-"}</span>
+                      <span className="text-sm text-gray-500 dark:text-gray-300">
+                        {field.fieldName}
+                      </span>
+                      <span className="text-sm font-medium">
+                        {field.valueString ?? field.valueInt ?? field.valueFloat ?? "-"}
+                      </span>
                     </div>
-                  ))
-                )}
+                  ))}
+                </div>
               </div>
-            </div>
-
-            {/* Shipping Details */}
-            {/* <div className="border rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1d1d1d]">
-              <div className="flex items-center gap-2 text-base font-medium md:text-lg p-4">
-                <Truck className="h-4 w-4 md:h-5 md:w-5 text-gray-500 dark:text-gray-300" />
-                Shipping Details
-              </div>
-              <div className="p-4">
-                {product.shippings?.map((ship: any, i: number) => (
-                  <div
-                    key={i}
-                    className="flex flex-col gap-1 border-b border-gray-300 dark:border-gray-700 py-2 last:border-0 sm:flex-row sm:justify-between"
-                  >
-                    <span className="text-sm text-gray-500 dark:text-gray-300">
-                      {ship.countryName} ({ship.carrier})
-                    </span>
-                    <span className="text-sm font-medium">
-                      ${ship.cost} — {ship.deliveryMin}-{ship.deliveryMax} days
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div> */}
+            ))}
           </div>
 
           {/* Price & Cart */}
@@ -196,7 +302,7 @@ export default function SingleProduct() {
               onClick={() => setActiveTab(tab as Tab)}
               className={`pb-3 text-sm font-medium ${
                 activeTab === tab
-                  ? "border-b-2  text-primary"
+                  ? "border-b-2 text-primary"
                   : "text-gray-500 dark:text-gray-300"
               }`}
             >
@@ -205,15 +311,16 @@ export default function SingleProduct() {
           ))}
         </div>
 
- <div className="py-2">
-         <ShippingRates shippings={product.shippings || []} />
-
- </div>
+        <div className="py-2">
+          <ShippingRates shippings={product.shippings || []} />
+        </div>
 
         {/* Tab Content */}
         {activeTab === "references" && <ReferencesTab referenceItems={referenceItems} />}
-        {activeTab === "vehicles" && <VehiclesTab fitVehicles={product.fitVehicles || []} />}
-        {activeTab === "alternatives" && <AlternativesTab similarProducts={product.similarProducts || []} />}
+        {activeTab === "vehicles" && <VehiclesTab fitVehicles={mappedFitVehicles} />}
+        {activeTab === "alternatives" && (
+          <AlternativesTab similarProducts={product.similarProducts || []} />
+        )}
       </div>
     </div>
   );
