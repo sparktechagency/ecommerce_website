@@ -213,6 +213,7 @@ import { useAddToCartMutation } from "@/redux/features/cart/cartApi";
 import { toast } from "react-toastify";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { Package, Info, Check, RotateCcw } from "lucide-react";
+import SingleProductSkeleton from "@/utils/SingleProductSkeleton";
 
 type Tab = "references" | "vehicles" | "alternatives";
 
@@ -275,7 +276,7 @@ export default function SingleProduct() {
   const [activeTab, setActiveTab] = useState<Tab>("references");
   const [addToCart, { isLoading: isAdding }] = useAddToCartMutation();
 
-  if (isLoading) return <p>Loading product...</p>;
+  if (isLoading) return <SingleProductSkeleton />;
   if (isError || !data?.data) return <p>Failed to load product details.</p>;
 
   const product: Product = data.data;

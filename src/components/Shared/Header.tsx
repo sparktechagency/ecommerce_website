@@ -18,17 +18,29 @@ import MobileMenu from './MobileMenu';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '@/redux/features/auth/authSlice';
 import Cookies from "js-cookie";
-
+import { useGetCartQuery } from "@/redux/features/cart/cartApi";
 
 const Header = () => {
     const user = useSelector((state: any) => state.logInUser)
     const products = useSelector((state: any) => state.cart)
     const wishlist = useSelector((state: any) => state.wishlist)
 
+    console.log("product in header:", products);
+
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [subMenu, setSubMenu] = useState(false);
     const dispatch = useDispatch();
     const token = Cookies.get('hatem-ecommerce-token')
+
+
+ const { data, isLoading,} = useGetCartQuery(undefined, {
+    // skip retry / token check for testing
+    refetchOnMountOrArgChange: true,
+  });
+
+  // Safely get cart count (data?.data is your array from API)
+  const cartCount = data?.data?.length || 0;
+
     useEffect(() => {
         const storedMode = localStorage.getItem('darkMode');
         console.log(storedMode);
@@ -132,7 +144,7 @@ const Header = () => {
                                 )}
                             </div>
 
-                            <div className="relative">
+                            {/* <div className="relative">
                                 <Link href={`/cart`}>
                                     <PiShoppingCartLight className="w-8 h-8 cursor-pointer dark:text-white" />
                                 </Link>
@@ -142,7 +154,20 @@ const Header = () => {
                                         {products.products.length}
                                     </span>
                                 )}
+                            </div> */}
+
+                            <div className="relative">
+                                <Link href={`/cart`}>
+                                    <PiShoppingCartLight className="w-8 h-8 cursor-pointer dark:text-white" />
+                                </Link>
+
+                                {!isLoading && cartCount > 0 && (
+                                    <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-semibold">
+                                        {cartCount}
+                                    </span>
+                                )}
                             </div>
+
 
                             {
                                 token &&
