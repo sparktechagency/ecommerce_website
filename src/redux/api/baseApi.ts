@@ -136,15 +136,15 @@ const baseQueryWithLogoutOnError = async (
 ) => {
   const result = await baseQuery(args, api, extraOptions);
 
-  if (result.error) {
-    const error = result.error as FetchBaseQueryError;
-    if (error.status === 401) {
-      api.dispatch(setUser({ user: null, accessToken: null, refreshToken: null }));
-      localStorage.removeItem("persist:root");
-      message.error("Session expired. Please log in again.");
-      if (typeof window !== "undefined") window.location.href = "/auth/login";
-    }
-  }
+  // if (result.error) {
+  //   const error = result.error as FetchBaseQueryError;
+  //   // if (error.status === 400) {
+  //   //   api.dispatch(setUser({ user: null, accessToken: null, refreshToken: null }));
+  //   //   localStorage.removeItem("persist:root");
+  //   //   message.error("Session expired. Please log in again.");
+  //   //   if (typeof window !== "undefined") window.location.href = "/auth/login";
+  //   // }
+  // }
 
   return result;
 };
@@ -152,6 +152,6 @@ const baseQueryWithLogoutOnError = async (
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQueryWithLogoutOnError,
-  tagTypes: ["Cart", "Product"],
+  tagTypes: ["Cart", "Product", "Wishlist"],
   endpoints: () => ({}),
 });
