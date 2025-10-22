@@ -1,82 +1,344 @@
-import { Select } from "antd";
 
+
+"use client";
+
+import { useState, useEffect } from "react";
+import { Select, Pagination } from "antd";
+import Image from "next/image";
+
+import {
+    useGetBrandsByYearQuery,
+    useGetModelsByBrandQuery,
+    useGetEnginesByModelQuery,
+    useGetCarBrandsQuery,
+} from "@/redux/features/carBrand/carBrandApi";
+
+// -------------------- Types --------------------
+interface Brand {
+    brandId: string;
+    brandName: string;
+}
+
+interface Model {
+    modelId: string;
+    modelName: string;
+}
+
+interface Engine {
+    engineId: string;
+    engineCode: string;
+    hp: number;
+    kw: number;
+    ccm: number;
+    fuelType: string;
+}
+
+interface VehicleApiItem {
+    engineId: string;
+    brandId: string;
+    brandName: string;
+    brandImage?: string;
+    modelId: string;
+    modelName: string;
+    generationId?: string;
+    generationName?: string;
+    hp: number;
+    kw: number;
+    ccm: number;
+    productionStart: string;
+    productionEnd: string;
+}
+
+interface Product {
+    id: string;
+    brandId: string;
+    brandName: string;
+    brandImage?: string;
+    modelId: string;
+    modelName: string;
+    generationId?: string;
+    generationName?: string;
+    hp: number;
+    kw: number;
+    ccm: number;
+    yearRange: string;
+}
+
+// -------------------- Component --------------------
 const SelectYourVehicle = () => {
+    // Filters
+    const [year, setYear] = useState<string>();
+    const [brandId, setBrandId] = useState<string>();
+    const [brandName, setBrandName] = useState<string>();
+    const [modelId, setModelId] = useState<string>();
+    const [modelName, setModelName] = useState<string>();
+    const [hp, setHp] = useState<string>();
+
+    // Pagination
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const pageSize = 8;
+
+    // Expanded card
+
+    // Year options hardcoded 1976 → current year
+    const currentYear = new Date().getFullYear();
+    const yearOptions = Array.from({ length: currentYear - 1976 + 1 }, (_, i) => {
+        const y = String(1976 + i);
+        return { value: y, label: y };
+    });
+
+    // 1️⃣ Brands
+    const {
+        data: brandsData,
+        isLoading: isBrandsLoading,
+        // isError: isBrandsError,
+    } = useGetBrandsByYearQuery(year!, { skip: !year });
+
+    const brandOptions =
+        brandsData?.data.map((b: Brand) => ({
+            value: b.brandId,
+            label: b.brandName,
+        })) || [];
+
+    // 2️⃣ Models
+    const {
+        data: modelsData,
+        isLoading: isModelsLoading,
+        // isError: isModelsError,
+    } = useGetModelsByBrandQuery(
+        { brandId: brandId!, year: year! },
+        { skip: !brandId || !year }
+    );
+
+    const modelOptions =
+        modelsData?.data.map((m: Model) => ({
+            value: m.modelId,
+            label: m.modelName,
+        })) || [];
+
+    // 3️⃣ Engines
+    const {
+        data: enginesData,
+        isLoading: isEnginesLoading,
+        // isError: isEnginesError,
+    } = useGetEnginesByModelQuery(modelId!, { skip: !modelId });
+
+    const hpOptions: { value: string; label: string }[] =
+        enginesData?.data.map((e: Engine) => ({ value: String(e.hp), label: `${e.hp} HP` })) || [];
+
+    // 4️⃣ Final vehicle list
+    const {
+        data: vehiclesData,
+        isLoading: isVehiclesLoading,
+        isError: isVehiclesError,
+    } = useGetCarBrandsQuery(
+        { year, brandName, modelName, hp },
+        { skip: !year || !brandName || !modelName || !hp }
+    );
+
+    const products: Product[] =
+        vehiclesData?.data.map((item: VehicleApiItem) => ({
+            id: item.engineId,
+            brandId: item.brandId,
+            brandName: item.brandName,
+            brandImage: item.brandImage || "",
+            modelId: item.modelId,
+            modelName: item.modelName,
+            generationId: item.generationId,
+            generationName: item.generationName,
+            hp: item.hp,
+            kw: item.kw,
+            ccm: item.ccm,
+            yearRange: `${new Date(item.productionStart).getFullYear()} - ${new Date(
+                item.productionEnd
+            ).getFullYear()}`,
+        })) || [];
+
+    // Reset dependent selections
+    useEffect(() => {
+        setBrandId(undefined);
+        setBrandName(undefined);
+        setModelId(undefined);
+        setModelName(undefined);
+        setHp(undefined);
+        setCurrentPage(1);
+    }, [year]);
+
+    useEffect(() => {
+        setModelId(undefined);
+        setModelName(undefined);
+        setHp(undefined);
+        setCurrentPage(1);
+    }, [brandId]);
+
+    useEffect(() => {
+        setHp(undefined);
+        setCurrentPage(1);
+    }, [modelId]);
+
+    useEffect(() => setCurrentPage(1), [hp]);
+
+    // Pagination
+    const paginatedProducts = products.slice(
+        (currentPage - 1) * pageSize,
+        currentPage * pageSize
+    );
+
     return (
-        <div className=" container mx-auto shadow-md border-t-[10px] border-t-[#f56100] border-b border-b-[#FCCEB0] border-r border-r-[#FCCEB0] border-l border-l-[#FCCEB0] py-14 mt-10">
-            <div className="text-center">
-                <h2 className="text-4xl font-semibold dark:text-white">Select Your Vehicle</h2>
-                <p className="text-[#5A5B54] mt-3 dark:text-gray-300">For finding the correct part</p>
-            </div>
-            <div className=" px-4 md:px-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mt-8">
-                {/* Select 1 */}
-                <div className="flex items-center w-full">
-                    <span className="bg-[#f56100] py-[10px] px-4 text-white">1</span>
-                    <Select
-                        // defaultValue="2025"
-                        placeholder="Year"
-                        className="w-full"
-                        options={[
-                            { value: '2025', label: '2025' },
-                            { value: '2024', label: '2024' },
-                            { value: '2023', label: '2023' },
-                            { value: '2022', label: '2022' },
-                            { value: '2021', label: '2021' },
-                        ]}
-                    />
+        <div className="container mx-auto py-8 md:py-16">
+            {/* Vehicle selectors */}
+            <div className="container mx-auto shadow-md border-t-[10px] border-t-[#f56100] border border-[#FCCEB0] py-14">
+                <div className="text-center">
+                    <h2 className="text-4xl font-semibold dark:text-white">Select Your Vehicle</h2>
+                    <p className="text-[#5A5B54] mt-3 dark:text-gray-300">For finding the correct part</p>
                 </div>
-                {/* Select 2 */}
-                <div className="flex items-center w-full">
-                    <span className="bg-[#f56100] py-[10px] px-4 text-white">2</span>
-                    <Select
-                        placeholder="Brand"
-                        className="w-full"
-                        options={[
-                            { value: 'toyota', label: 'Toyota' },
-                            { value: 'honda', label: 'Honda' },
-                            { value: 'ford', label: 'Ford' },
-                            { value: 'chevrolet', label: 'Chevrolet' },
-                            { value: 'bmw', label: 'BMW' },
-                            { value: 'audi', label: 'Audi' },
-                            { value: 'mercedes', label: 'Mercedes-Benz' },
-                        ]}
-                    />
-                </div>
-                {/* Select 3 */}
-                <div className="flex items-center w-full">
-                    <span className="bg-[#f56100] py-[10px] px-4 text-white">3</span>
-                    <Select
-                        placeholder="Model"
-                        className="w-full"
-                        options={[
-                            { value: 'camry', label: 'Toyota Camry' },
-                            { value: 'accord', label: 'Honda Accord' },
-                            { value: 'mustang', label: 'Ford Mustang' },
-                            { value: 'impala', label: 'Chevrolet Impala' },
-                            { value: 'x5', label: 'BMW X5' },
-                            { value: 'a4', label: 'Audi A4' },
-                            { value: 'c_class', label: 'Mercedes-Benz C-Class' },
-                        ]}
-                    />
-                </div>
-                {/* Select 4 */}
-                <div className="flex items-center w-full">
-                    <span className="bg-[#f56100] py-[10px] px-4 text-white">4</span>
-                    <Select
-                        placeholder="Engine Power"
-                        className="w-full"
-                        options={[
-                            { value: '150', label: '150 HP' },
-                            { value: '200', label: '200 HP' },
-                            { value: '250', label: '250 HP' },
-                            { value: '300', label: '300 HP' },
-                            { value: '350', label: '350 HP' },
-                            { value: '400', label: '400 HP' },
-                        ]}
-                    />
+
+                <div className="px-4 md:px-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mt-8">
+                    {/* Year */}
+                    <div className="flex items-center w-full">
+                        <span className="bg-[#f56100] py-[10px] px-4 text-white rounded-l-md">1</span>
+                        <Select
+                            className="w-full"
+                            placeholder="Year"
+                            options={yearOptions}
+                            onChange={setYear}
+                            value={year}
+                        />
+                    </div>
+
+                    {/* Brand */}
+                    <div className="flex items-center w-full">
+                        <span className="bg-[#f56100] py-[10px] px-4 text-white rounded-l-md">2</span>
+                        <Select
+                            className="w-full"
+                            placeholder="Brand"
+                            options={brandOptions}
+                            loading={isBrandsLoading}
+                            onChange={val => {
+                                setBrandId(val);
+                                const selected = brandsData?.data.find((b: Brand) => b.brandId === val);
+                                setBrandName(selected?.brandName);
+                            }}
+                            value={brandId}
+                        />
+                    </div>
+
+                    {/* Model */}
+                    <div className="flex items-center w-full">
+                        <span className="bg-[#f56100] py-[10px] px-4 text-white rounded-l-md">3</span>
+                        <Select
+                            className="w-full"
+                            placeholder="Model"
+                            options={modelOptions}
+                            loading={isModelsLoading}
+                            onChange={val => {
+                                setModelId(val);
+                                const selected = modelsData?.data.find((m: Model) => m.modelId === val);
+                                setModelName(selected?.modelName);
+                            }}
+                            value={modelId}
+                        />
+                    </div>
+
+                    {/* Engine HP */}
+                    <div className="flex items-center w-full">
+                        <span className="bg-[#f56100] py-[10px] px-4 text-white rounded-l-md">4</span>
+                        <Select
+                            className="w-full"
+                            placeholder="Engine Power"
+                            options={hpOptions}
+                            loading={isEnginesLoading}
+                            onChange={setHp}
+                            value={hp}
+                        />
+                    </div>
                 </div>
             </div>
+
+            <div className="mt-10">
+                {/* <Tabs defaultActiveKey="1" items={[{ key: "1", label: "Car Model" }]} /> */}
+
+                <div className="mt-8 space-y-4">
+                    {isVehiclesLoading ? (
+                        <p className="text-center text-gray-500">Loading...</p>
+                    ) : isVehiclesError ? (
+                        <p className="text-center text-red-500">Failed to load products</p>
+                    ) : paginatedProducts.length > 0 ? (
+                        paginatedProducts.map(product => (
+                            <div
+                                key={product.id}
+                                className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow"
+                            >
+                                <div className="w-full px-6 py-4 flex items-center justify-between bg-white hover:bg-gray-50 transition-colors">
+                                    <div className="flex items-center gap-4 flex-1">
+                                        {product.brandImage ? (
+                                            <Image
+                                                src={product.brandImage}
+                                                alt={product.brandName}
+                                                width={48}
+                                                height={48}
+                                                className="object-contain"
+                                            />
+                                        ) : (
+                                            <div className="w-12 h-12 bg-gray-100 rounded flex items-center justify-center flex-shrink-0">
+                                                <span className="text-2xl">🚗</span>
+                                            </div>
+                                        )}
+                                        <div className="text-left">
+                                            <h3 className="font-semibold text-gray-900">{product.brandName}</h3>
+                                            <p className="text-sm text-gray-600">
+                                                {product.modelName} {product.generationName}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Display all car details directly */}
+                                <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                        <div>
+                                            <p className="text-xs text-gray-500 uppercase">Power</p>
+                                            <p className="text-lg font-semibold text-gray-900">{product.kw} (KW)</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-xs text-gray-500 uppercase">Displacement</p>
+                                            <p className="text-lg font-semibold text-gray-900">{product.ccm} (CCM)</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-xs text-gray-500 uppercase">Horsepower</p>
+                                            <p className="text-lg font-semibold text-gray-900">{product.hp} (HP)</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-xs text-gray-500 uppercase">Year Range</p>
+                                            <p className="text-lg font-semibold text-gray-900">{product.yearRange}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="text-center text-gray-500">
+                            No products found. Please select your vehicle.
+                        </p>
+                    )}
+                </div>
+
+                {/* Pagination */}
+                {products.length > pageSize && (
+                    <div className="mt-8 flex justify-center">
+                        <Pagination
+                            current={currentPage}
+                            pageSize={pageSize}
+                            total={products.length}
+                            onChange={setCurrentPage}
+                        />
+                    </div>
+                )}
+            </div>
+
         </div>
     );
 };
 
 export default SelectYourVehicle;
+
