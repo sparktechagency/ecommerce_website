@@ -1,270 +1,12 @@
-// /* eslint-disable @typescript-eslint/no-explicit-any */
-// "use client"
-// import Image from 'next/image';
-// // import logo from '../../../public/logo.svg';
-// import logo from '../../../public/logo.svg';
-// import darkLogo from '../../../public/dark-logo.svg';
-// import Link from 'next/link';
-// import { FiSearch } from 'react-icons/fi';
-// import { ConfigProvider, Input } from 'antd';
-// import { IoIosHeartEmpty } from 'react-icons/io';
-// import { PiShoppingCartLight } from 'react-icons/pi';
-// import { GoPerson, GoVersions, } from 'react-icons/go';
-// import { useEffect, useState } from 'react';
-// import { LuShoppingBag } from 'react-icons/lu';
-// // import GoogleTranslate from '../../translate/GoogleTranslate';
-// import { RxHamburgerMenu } from 'react-icons/rx';
-// import MobileMenu from './MobileMenu';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { logout } from '@/redux/features/auth/authSlice';
-// import Cookies from "js-cookie";
-// import { useGetCartQuery } from "@/redux/features/cart/cartApi";
-
-// const Header = () => {
-//     const user = useSelector((state: any) => state.logInUser)
-//     const products = useSelector((state: any) => state.cart)
-//     const wishlist = useSelector((state: any) => state.wishlist)
-
-//     console.log("product in header:", products);
-
-//     const [isDarkMode, setIsDarkMode] = useState(false);
-//     const [subMenu, setSubMenu] = useState(false);
-//     const dispatch = useDispatch();
-//     const token = Cookies.get('hatem-ecommerce-token')
-
-
-//  const { data, isLoading,} = useGetCartQuery(undefined, {
-//     // skip retry / token check for testing
-//     refetchOnMountOrArgChange: true,
-//   });
-
-//   // Safely get cart count (data?.data is your array from API)
-//   const cartCount = data?.data?.length || 0;
-
-//     useEffect(() => {
-//         const storedMode = localStorage.getItem('darkMode');
-//         console.log(storedMode);
-//         if (storedMode === 'true') {
-//             setIsDarkMode(true);
-//             document.documentElement.classList.add('dark');
-//         }
-//         else {
-//             setIsDarkMode(false);
-//             document.documentElement.classList.remove('dark');
-//         }
-//     }, []);
-
-//     // Toggle theme between light and dark
-//     const handleToggle = () => {
-//         setIsDarkMode(prevMode => {
-//             const newMode = !prevMode;
-//             if (newMode) {
-//                 document.documentElement.classList.add('dark');
-//             } else {
-//                 document.documentElement.classList.remove('dark');
-//             }
-//             localStorage.setItem('darkMode', String(newMode));
-//             return newMode;
-//         });
-//     };
-
-//     // mobile menu
-//     // ========================================================
-//     const [open, setOpen] = useState(false);
-
-//     const showDrawer = () => {
-//         setOpen(true);
-//     };
-
-//     const onClose = () => {
-//         setOpen(false);
-//     };
-
-//     const handleLogOut = () => {
-//         dispatch(logout());
-//         Cookies.remove("hatem-ecommerce-token");
-//         window.location.replace('/auth/login')
-//     };
-
-//     return (
-//         <div>
-//             <div className=" bg-[#df5800] dark:bg-[#df5800] h-12 text-sm md:text-md text-center text-white flex items-center justify-center px-3 md:px-0 ">
-//                 Summer Sale For All Parking Light And Free Express Delivery - OFF 50%! <Link href={`/product`}><span className=" ml-2 font-semibold underline cursor-pointer">ShopNow</span></Link>
-//                 <div className=' flex justify-center items-center '>
-//                     {/* <GoogleTranslate /> */}
-//                 </div>
-//             </div>
-//             <nav className='  border-b border-gray-200 dark:border-gray-600 dark:bg-black px-3 lg:px-0'>
-//                 <div className=' container mx-auto py-4 flex items-center justify-between relative'>
-//                     <div>
-//                         {
-//                             isDarkMode ?
-//                                 <Link href={`/`}><Image className='w-42' src={darkLogo} width={500} height={500} alt="logo" /></Link>
-//                                 :
-//                                 <Link href={`/`}><Image className='w-42' src={logo} width={500} height={500} alt="logo" /></Link>
-//                         }
-
-//                     </div>
-//                     <div className=' hidden lg:flex items-center justify-between gap-12'>
-//                         <Link href='/' className=' text-lg dark:text-white'>Home</Link>
-//                         <Link href='/contact' className=' text-lg dark:text-white'>Contact</Link>
-//                         <Link href='/about' className=' text-lg dark:text-white'>About</Link>
-//                         {/* <Link href='/seller/myproduct' className=' text-lg dark:text-white'>My Product</Link> */}
-//                         {
-//                             !token &&
-//                             <Link href='/auth/login' className=' text-lg dark:text-white'>Log In</Link>
-//                         }
-//                     </div>
-//                     <div className=' hidden w-[380px] lg:flex items-center justify-between gap-4'>
-//                         <ConfigProvider
-//                             theme={{
-//                                 components: {
-//                                     "Input": {
-//                                         "activeBorderColor": "rgba(22,119,255,0)",
-//                                         "hoverBorderColor": "rgba(64,150,255,0)",
-//                                         "colorBorder": "rgba(217,217,217,0)",
-//                                         "colorPrimaryHover": "rgba(64,150,255,0)",
-//                                         "colorPrimaryActive": "rgba(9,89,217,0)",
-//                                         "controlHeight": 36,
-//                                     }
-//                                 },
-//                             }}
-//                         >
-//                             <Input style={{ backgroundColor: '#f0f0f0' }} suffix={<FiSearch className=" text-black w-6 h-6" />} className=' w-[280px]' placeholder='What are you looking for?' type="text" />
-//                         </ConfigProvider>
-
-//                         <>
-//                             <div className="relative">
-//                                 <Link href={`/wishlist`}><IoIosHeartEmpty className=' w-8 h-8 cursor-pointer dark:text-white' /></Link>
-
-//                                 {wishlist.products.length > 0 && (
-//                                     <span className="absolute -top-2 -right-2 bg-yellow-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-semibold">
-//                                         {wishlist.products.length}
-//                                     </span>
-//                                 )}
-//                             </div>
-
-//                             {/* <div className="relative">
-//                                 <Link href={`/cart`}>
-//                                     <PiShoppingCartLight className="w-8 h-8 cursor-pointer dark:text-white" />
-//                                 </Link>
-
-//                                 {products.products.length > 0 && (
-//                                     <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-semibold">
-//                                         {products.products.length}
-//                                     </span>
-//                                 )}
-//                             </div> */}
-
-//                             <div className="relative">
-//                                 <Link href={`/cart`}>
-//                                     <PiShoppingCartLight className="w-8 h-8 cursor-pointer dark:text-white" />
-//                                 </Link>
-
-//                                 {!isLoading && cartCount > 0 && (
-//                                     <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-semibold">
-//                                         {cartCount}
-//                                     </span>
-//                                 )}
-//                             </div>
-
-
-//                             {
-//                                 token &&
-//                                 <div onClick={() => setSubMenu(!subMenu)} className=' bg-[#df5800] flex items-center justify-center rounded-full p-2 mb-0.5'>
-//                                     <GoPerson className='w-6 h-6 text-white cursor-pointer ' />
-//                                 </div>
-//                             }
-//                         </>
-//                     </div>
-//                     {token && subMenu && (
-//                         <div className='absolute w-[250px] bg-[#444444] dark:bg-[#c5c5c5] right-0 top-[80px] px-8 py-5 rounded-lg shadow-2xl transition-all z-50'>
-
-//                             {/* Dark Mode Toggle */}
-//                             <div className='flex items-center justify-between mb-5'>
-//                                 <p className='text-gray-200 dark:text-black'>Dark Mode:</p>
-//                                 <button
-//                                     onClick={handleToggle}
-//                                     className={`w-14 h-6 cursor-pointer flex items-center rounded-full p-1 ${isDarkMode ? 'bg-gray-700' : 'bg-gray-300'}`}
-//                                 >
-//                                     <div className={`w-4 h-4 bg-white rounded-full transition-all ${isDarkMode ? 'translate-x-8' : ''}`}></div>
-//                                 </button>
-//                             </div>
-
-//                             {/* Manage My Account */}
-//                             <div className='flex items-center gap-3 mb-4 cursor-pointer'>
-//                                 <Link className='flex gap-3' href={`/myprofile`}>
-//                                     <GoPerson className='w-6 h-6 text-white cursor-pointer dark:text-black' />
-//                                     <p className='text-md text-white dark:text-black'>Manage My Account</p>
-//                                 </Link>
-//                             </div>
-
-//                             {/* Switch Role */}
-//                             <div className='flex items-center gap-3 mb-4 cursor-pointer'>
-//                                 {user?.user?.role === "BUYER" ? (
-//                                     <div onClick={() => window.location.replace('/seller/overview')} className='flex gap-3'>
-//                                         <GoVersions className='w-6 h-6 text-white cursor-pointer dark:text-black' />
-//                                         <p className='text-md text-white dark:text-black'>Switch to Seller</p>
-//                                     </div>
-//                                 ) : (
-//                                     <div onClick={() => window.location.replace('/myorder')} className='flex gap-3'>
-//                                         <LuShoppingBag className='w-6 h-6 text-white cursor-pointer dark:text-black' />
-//                                         <p className='text-md text-white dark:text-black'>Switch to Buyer</p>
-//                                     </div>
-//                                 )}
-//                             </div>
-
-//                             {/* Seller Overview / My Order depending on role */}
-//                             {user?.user?.role !== "BUYER" ? (
-//                                 <div className='flex items-center gap-3 mb-4 cursor-pointer'>
-//                                     <Link className='flex gap-3' href={`/seller/overview`}>
-//                                         <GoVersions className='w-6 h-6 text-white cursor-pointer dark:text-black' />
-//                                         <p className='text-md text-white dark:text-black'>Seller Overview</p>
-//                                     </Link>
-//                                 </div>
-//                             ) : (
-//                                 <div className='flex items-center gap-3 mb-4 cursor-pointer'>
-//                                     <Link className='flex gap-3' href={`/myorder`}>
-//                                         <LuShoppingBag className='w-6 h-6 text-white cursor-pointer dark:text-black' />
-//                                         <p className='text-md text-white dark:text-black'>My Order</p>
-//                                     </Link>
-//                                 </div>
-//                             )}
-
-//                             {/* Logout */}
-//                             <div className='mb-3 cursor-pointer'>
-//                                 <div onClick={handleLogOut} className='flex items-center gap-3'>
-//                                     <GoPerson className='w-6 h-6 text-white cursor-pointer dark:text-black' />
-//                                     <p className='text-md text-white dark:text-black'>Logout</p>
-//                                 </div>
-//                             </div>
-//                         </div>
-//                     )}
-
-
-//                     <div className=' block lg:hidden'>
-//                         <RxHamburgerMenu onClick={showDrawer} size={25} className=' text-black ' />
-//                     </div>
-//                     <MobileMenu open={open} onClose={onClose}></MobileMenu>
-//                 </div>
-
-//             </nav>
-
-//         </div>
-//     );
-// };
-
-// export default Header;
-
-
 "use client";
 
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import Cookies from "js-cookie";
-import { ConfigProvider, Input } from "antd";
+import { ConfigProvider, Input, message } from "antd";
 import { FiSearch } from "react-icons/fi";
 import { IoIosHeartEmpty } from "react-icons/io";
 import { PiShoppingCartLight } from "react-icons/pi";
@@ -274,19 +16,25 @@ import { RxHamburgerMenu } from "react-icons/rx";
 
 import logo from "../../../public/logo.svg";
 import darkLogo from "../../../public/dark-logo.svg";
-
 import MobileMenu from "./MobileMenu";
-import { logout } from "@/redux/features/auth/authSlice";
+import { logout, setUser } from "@/redux/features/auth/authSlice";
 import { useGetCartQuery } from "@/redux/features/cart/cartApi";
 import { useGetWishlistQuery } from "@/redux/features/wishlist/wishlistApi";
+import { useSwitchUserRoleMutation } from "@/redux/features/auth/switchRoleApi";
 import { RootState } from "@/redux/store";
+
 const Header = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.logInUser?.user);
-  console.log("user in header:", user);
-  const token = Cookies.get("hatem-ecommerce-token");
+  const router = useRouter();
 
-  // ------------------- Dark Mode -------------------
+  const user = useSelector((state: RootState) => state.logInUser?.user);
+
+  // Use correct token based on current role
+  const token = user?.role === "BUYER"
+    ? Cookies.get("hatem-ecommerce-token")
+    : Cookies.get("hatem-seller-token");
+
+  // ---------------- Dark Mode ----------------
   const [isDarkMode, setIsDarkMode] = useState(false);
   useEffect(() => {
     const storedMode = localStorage.getItem("darkMode");
@@ -308,35 +56,90 @@ const Header = () => {
     });
   };
 
-  // ------------------- Mobile Menu -------------------
+  // ---------------- Mobile Menu ----------------
   const [open, setOpen] = useState(false);
   const showDrawer = () => setOpen(true);
   const onClose = () => setOpen(false);
 
-  // ------------------- Submenu -------------------
+  // ---------------- Submenu ----------------
   const [subMenu, setSubMenu] = useState(false);
 
-  // ------------------- Cart -------------------
+  // ---------------- Cart ----------------
   const { data: cartData, isLoading: isCartLoading } = useGetCartQuery(undefined, {
     refetchOnMountOrArgChange: true,
   });
   const cartCount = cartData?.data?.length || 0;
 
-  // ------------------- Wishlist -------------------
+  // ---------------- Wishlist ----------------
   const { data: wishlistData, isLoading: isWishlistLoading } = useGetWishlistQuery();
   const wishlistCount = wishlistData?.length || 0;
 
-  // ------------------- Logout -------------------
+  // ---------------- Logout ----------------
   const handleLogOut = () => {
     dispatch(logout());
     Cookies.remove("hatem-ecommerce-token");
-    window.location.replace("/auth/login");
+    Cookies.remove("hatem-seller-token");
+    localStorage.removeItem("hatem-ecommerce-token");
+    localStorage.removeItem("hatem-seller-token");
+    localStorage.removeItem("hatem-ecommerce-refreshToken");
+    router.replace("/auth/login");
   };
+
+  // ---------------- Switch Role ----------------
+  const [switchUserRole, { isLoading }] = useSwitchUserRoleMutation();
+
+  const handleRoleSwitch = async () => {
+    if (!user) return;
+
+    try {
+      const newRole = user.role === "BUYER" ? "SELLER" : "BUYER";
+      const res = await switchUserRole({ role: newRole }).unwrap();
+
+      if (!res?.data?.accessToken) {
+        return message.error("No access token received from server!");
+      }
+
+      const accessToken = res.data.accessToken;
+
+      // Remove old tokens
+      if (newRole === "SELLER") {
+        Cookies.remove("hatem-ecommerce-token");
+        localStorage.removeItem("hatem-ecommerce-token");
+      } else {
+        Cookies.remove("hatem-seller-token");
+        localStorage.removeItem("hatem-seller-token");
+      }
+
+      // Save new token
+      if (newRole === "SELLER") {
+        Cookies.set("hatem-seller-token", accessToken, { expires: 7 });
+        localStorage.setItem("hatem-seller-token", accessToken);
+      } else {
+        Cookies.set("hatem-ecommerce-token", accessToken, { expires: 7 });
+        localStorage.setItem("hatem-ecommerce-token", accessToken);
+      }
+
+      // Update Redux properly
+      dispatch(setUser({
+        user: { ...user, role: newRole },
+        accessToken: accessToken,
+        refreshToken:"", // or keep existing
+      }));
+
+      message.success(res.message || "Role switched successfully!");
+      router.replace(newRole === "SELLER" ? "/seller/overview" : "/myorder");
+
+    } catch (err: any) {
+      console.error("Switch Role Error:", err);
+      message.error(err?.data?.message || "Failed to switch role");
+    }
+  };
+
 
   return (
     <header>
       {/* Top Banner */}
-      <div className="bg-[#df5800] dark:bg-[#df5800] h-12 text-sm md:text-md text-center text-white flex items-center justify-center px-3 md:px-0">
+      <div className="bg-[#df5800] h-12 text-sm md:text-md text-center text-white flex items-center justify-center px-3 md:px-0">
         Summer Sale For All Parking Light And Free Express Delivery - OFF 50%!{" "}
         <Link href={`/product`}>
           <span className="ml-2 font-semibold underline cursor-pointer">ShopNow</span>
@@ -347,48 +150,35 @@ const Header = () => {
       <nav className="border-b border-gray-200 dark:border-gray-600 dark:bg-black px-3 lg:px-0">
         <div className="container mx-auto py-4 flex items-center justify-between relative">
           {/* Logo */}
-          <div>
-            <Link href="/">
-              <Image
-                className="w-42"
-                src={isDarkMode ? darkLogo : logo}
-                width={500}
-                height={500}
-                alt="logo"
-              />
-            </Link>
-          </div>
+          <Link href="/">
+            <Image
+              className="w-42"
+              src={isDarkMode ? darkLogo : logo}
+              width={150}
+              height={50}
+              alt="logo"
+            />
+          </Link>
 
           {/* Desktop Links */}
           <div className="hidden lg:flex items-center justify-between gap-12">
-            <Link href="/" className="text-lg dark:text-white">
-              Home
-            </Link>
-            <Link href="/contact" className="text-lg dark:text-white">
-              Contact
-            </Link>
-            <Link href="/about" className="text-lg dark:text-white">
-              About
-            </Link>
+            <Link href="/" className="text-lg dark:text-white">Home</Link>
+            <Link href="/contact" className="text-lg dark:text-white">Contact</Link>
+            <Link href="/about" className="text-lg dark:text-white">About</Link>
             {!token && (
-              <Link href="/auth/login" className="text-lg dark:text-white">
-                Log In
-              </Link>
+              <Link href="/auth/login" className="text-lg dark:text-white">Log In</Link>
             )}
           </div>
 
           {/* Search, Wishlist, Cart, User */}
           <div className="hidden w-[380px] lg:flex items-center justify-between gap-4">
-            {/* Search */}
             <ConfigProvider
               theme={{
                 components: {
                   Input: {
-                    activeBorderColor: "rgba(22,119,255,0)",
-                    hoverBorderColor: "rgba(64,150,255,0)",
-                    colorBorder: "rgba(217,217,217,0)",
-                    colorPrimaryHover: "rgba(64,150,255,0)",
-                    colorPrimaryActive: "rgba(9,89,217,0)",
+                    activeBorderColor: "transparent",
+                    hoverBorderColor: "transparent",
+                    colorBorder: "transparent",
                     controlHeight: 36,
                   },
                 },
@@ -399,7 +189,6 @@ const Header = () => {
                 suffix={<FiSearch className="text-black w-6 h-6" />}
                 className="w-[280px]"
                 placeholder="What are you looking for?"
-                type="text"
               />
             </ConfigProvider>
 
@@ -446,69 +235,67 @@ const Header = () => {
           {/* Submenu */}
           {token && subMenu && (
             <div className="absolute w-[250px] bg-[#444444] dark:bg-[#c5c5c5] right-0 top-[80px] px-8 py-5 rounded-lg shadow-2xl z-50">
-              {/* Dark Mode Toggle */}
+              {/* Dark Mode */}
               <div className="flex items-center justify-between mb-5">
                 <p className="text-gray-200 dark:text-black">Dark Mode:</p>
                 <button
                   onClick={handleToggle}
-                  className={`w-14 h-6 cursor-pointer flex items-center rounded-full p-1 ${
-                    isDarkMode ? "bg-gray-700" : "bg-gray-300"
-                  }`}
+                  className={`w-14 h-6 flex items-center rounded-full p-1 ${isDarkMode ? "bg-gray-700" : "bg-gray-300"}`}
                 >
                   <div
-                    className={`w-4 h-4 bg-white rounded-full transition-all ${
-                      isDarkMode ? "translate-x-8" : ""
-                    }`}
+                    className={`w-4 h-4 bg-white rounded-full transition-all ${isDarkMode ? "translate-x-8" : ""}`}
                   ></div>
                 </button>
               </div>
 
               {/* Account Links */}
-              <div className="flex items-center gap-3 mb-4 cursor-pointer">
-                <Link className="flex gap-3" href={`/myprofile`}>
-                  <GoPerson className="w-6 h-6 text-white cursor-pointer dark:text-black" />
-                  <p className="text-md text-white dark:text-black">Manage My Account</p>
-                </Link>
-              </div>
+              <Link href={`/myprofile`} className="flex items-center gap-3 mb-4">
+                <GoPerson className="w-6 h-6 text-white dark:text-black" />
+                <p className="text-md text-white dark:text-black">Manage My Account</p>
+              </Link>
 
               {/* Switch Role */}
-              <div className="flex items-center gap-3 mb-4 cursor-pointer">
+              <div
+                className="flex items-center gap-3 mb-4 cursor-pointer"
+                onClick={handleRoleSwitch}
+              >
                 {user?.role === "BUYER" ? (
-                  <div onClick={() => window.location.replace("/seller/overview")} className="flex gap-3">
-                    <GoVersions className="w-6 h-6 text-white cursor-pointer dark:text-black" />
-                    <p className="text-md text-white dark:text-black">Switch to Seller</p>
-                  </div>
+                  <>
+                    <GoVersions className="w-6 h-6 text-white dark:text-black" />
+                    <p className="text-md text-white dark:text-black">
+                      {isLoading ? "Switching..." : "Switch to Seller"}
+                    </p>
+                  </>
                 ) : (
-                  <div onClick={() => window.location.replace("/myorder")} className="flex gap-3">
-                    <LuShoppingBag className="w-6 h-6 text-white cursor-pointer dark:text-black" />
-                    <p className="text-md text-white dark:text-black">Switch to Buyer</p>
-                  </div>
+                  <>
+                    <LuShoppingBag className="w-6 h-6 text-white dark:text-black" />
+                    <p className="text-md text-white dark:text-black">
+                      {isLoading ? "Switching..." : "Switch to Buyer"}
+                    </p>
+                  </>
                 )}
               </div>
 
-              {/* Role-specific link */}
-              {user?.role !== "BUYER" ? (
-                <div className="flex items-center gap-3 mb-4 cursor-pointer">
-                  <Link className="flex gap-3" href={`/seller/overview`}>
-                    <GoVersions className="w-6 h-6 text-white cursor-pointer dark:text-black" />
-                    <p className="text-md text-white dark:text-black">Seller Overview</p>
-                  </Link>
-                </div>
+              {/* Role-specific Link */}
+              {user?.role === "SELLER" ? (
+                <Link href={`/seller/overview`} className="flex items-center gap-3 mb-4">
+                  <GoVersions className="w-6 h-6 text-white dark:text-black" />
+                  <p className="text-md text-white dark:text-black">Seller Overview</p>
+                </Link>
               ) : (
-                <div className="flex items-center gap-3 mb-4 cursor-pointer">
-                  <Link className="flex gap-3" href={`/myorder`}>
-                    <LuShoppingBag className="w-6 h-6 text-white cursor-pointer dark:text-black" />
-                    <p className="text-md text-white dark:text-black">My Order</p>
-                  </Link>
-                </div>
+                <Link href={`/myorder`} className="flex items-center gap-3 mb-4">
+                  <LuShoppingBag className="w-6 h-6 text-white dark:text-black" />
+                  <p className="text-md text-white dark:text-black">My Order</p>
+                </Link>
               )}
 
               {/* Logout */}
-              <div className="mb-3 cursor-pointer">
-                <div onClick={handleLogOut} className="flex items-center gap-3">
-                  <GoPerson className="w-6 h-6 text-white cursor-pointer dark:text-black" />
-                  <p className="text-md text-white dark:text-black">Logout</p>
-                </div>
+              <div
+                onClick={handleLogOut}
+                className="flex items-center gap-3 mb-2 cursor-pointer"
+              >
+                <GoPerson className="w-6 h-6 text-white dark:text-black" />
+                <p className="text-md text-white dark:text-black">Logout</p>
               </div>
             </div>
           )}
