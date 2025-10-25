@@ -90,13 +90,6 @@ const categoriesApi = baseApi.injectEndpoints({
       },
     }),
 
-    // Get single category by ID
-    getCategoryById: builder.query<SingleCategoryResponse, string>({
-      query: (id) => ({
-        url: `/categories/${id}`,
-        method: "GET",
-      }),
-    }),
 
     // Get products by category ID
     getProductsByCategory: builder.query<ProductsResponse, string>({
@@ -114,7 +107,6 @@ const categoriesApi = baseApi.injectEndpoints({
 
 export const {
   useGetAllCategoriesQuery,
-  useGetCategoryByIdQuery,
   useGetProductsByCategoryQuery,
 } = categoriesApi
 
