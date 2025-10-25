@@ -123,16 +123,17 @@ const Header = () => {
       dispatch(setUser({
         user: { ...user, role: newRole },
         accessToken: accessToken,
-        refreshToken:"", // or keep existing
+        refreshToken: "", // or keep existing
       }));
 
       message.success(res.message || "Role switched successfully!");
       router.replace(newRole === "SELLER" ? "/seller/overview" : "/myorder");
 
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Switch Role Error:", err);
-      message.error(err?.data?.message || "Failed to switch role");
+      message.error((err as { data?: { message?: string } })?.data?.message ?? "Failed to switch role");
     }
+
   };
 
 

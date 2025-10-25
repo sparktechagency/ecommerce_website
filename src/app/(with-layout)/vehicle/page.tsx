@@ -1,6 +1,7 @@
 "use client"
 
 import { Input } from "antd"
+import Image from "next/image"
 import { useState } from "react"
 
 
@@ -92,7 +93,7 @@ export default function Home() {
               <div key={index} className="flex gap-4">
                 {/* Icon */}
                 <div className="flex-shrink-0">
-                  <img
+                  <Image
                     src={category.image || "/placeholder.svg"}
                     alt={category.title}
                     className="w-20 h-20 object-contain"
