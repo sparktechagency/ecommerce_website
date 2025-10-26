@@ -1,4 +1,3 @@
-
 "use client";
 import { useState, useEffect, JSX } from "react";
 import OTPInput from "react-otp-input";

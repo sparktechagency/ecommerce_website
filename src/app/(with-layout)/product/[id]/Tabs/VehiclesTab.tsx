@@ -91,7 +91,8 @@ export default function VehiclesTab({ fitVehicles }: VehiclesTabProps) {
               {/* Brand header */}
               <button
                 onClick={() => toggleBrand(brand)}
-                className="flex w-full justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors"
+               className="flex w-full justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors dark:bg-black dark:hover:text-black"
+
               >
                 <span className="font-semibold">{brand}</span>
                 <span>{vehicles.length} vehicle{vehicles.length !== 1 ? "s" : ""}</span>
@@ -109,14 +110,14 @@ export default function VehiclesTab({ fitVehicles }: VehiclesTabProps) {
                       {/* Model header */}
                       <button
                         onClick={() => toggleModel(modelKey)}
-                        className="flex w-full justify-between items-center px-6 py-3 bg-gray-100 hover:bg-gray-200 transition-colors"
+                        className="flex w-full justify-between items-center px-6 py-3 bg-gray-100 hover:bg-gray-200 transition-colors dark:bg-black dark:hover:text-black"
                       >
                         <span className="font-medium">{modelName}</span>
                         <div className="flex items-center gap-4">
                           <span className="text-gray-600 text-sm">{yearRange}</span>
                           <ChevronDown
                             size={20}
-                            className={`text-gray-400 transition-transform ${isModelExpanded ? "rotate-180" : ""}`}
+                            className={`text-gray-400 transition-transform  ${isModelExpanded ? "rotate-180" : ""}`}
                           />
                         </div>
                       </button>
@@ -126,7 +127,7 @@ export default function VehiclesTab({ fitVehicles }: VehiclesTabProps) {
                         <div className="overflow-x-auto">
                           <table className="w-full text-sm">
                             <thead>
-                              <tr className="bg-white border-t border-gray-200">
+                              <tr className="bg-white border-t border-gray-200 dark:bg-black ">
                                 <th className="px-6 py-3 text-left font-semibold">Body</th>
                                 <th className="px-6 py-3 text-left font-semibold">Engine</th>
                                 <th className="px-6 py-3 text-left font-semibold">Produced</th>
@@ -148,7 +149,7 @@ export default function VehiclesTab({ fitVehicles }: VehiclesTabProps) {
                                 const kw = getKW(engine.hp);
 
                                 return (
-                                  <tr key={v.id} className={`${idx % 2 === 0 ? "bg-white" : "bg-gray-50"} border-t border-gray-200`}>
+                                  <tr key={v.id} className={`${idx % 2 === 0 ? "bg-white" : "bg-gray-50"} border-t border-gray-200 dark:bg-black `}>
                                     <td className="px-6 py-3">{generation.body}</td>
                                     <td className="px-6 py-3">{engine.engineCode}</td>
                                     <td className="px-6 py-3">{producedRange}</td>

@@ -1,8 +1,4 @@
-
-
-
 "use client";
-
 import Link from "next/link";
 import ProductCart, { Product } from "./ProductCart";
 import { useGetAllProductsQuery } from "@/redux/features/products/productsApi";

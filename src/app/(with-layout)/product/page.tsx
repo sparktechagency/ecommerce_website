@@ -1,6 +1,3 @@
-
-
-
 "use client";
 
 import Link from "next/link";
@@ -26,7 +23,13 @@ const ExploreProducts = () => {
 
   return (
     <div className="container mx-auto pb-20 mt-20">
+      <div className="flex gap-2 items-center mb-5">
+        <span className="bg-primary h-10 px-[10px] rounded-md"></span>
+        <p className="text-primary font-semibold text-lg">Our Products</p>
+      </div>
+      
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-10">
+        
         {isLoading
           ? [...Array(8)].map((_, index) => <ProductSkeleton key={index} />)
           : data?.data?.map((product) => (

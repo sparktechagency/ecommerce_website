@@ -77,7 +77,7 @@ const CategoryComponent = () => {
               onClick={() => setSelectedCategoryId(item.id)}
               className={`${
                 item.id === selectedCategoryId ? "bg-primary" : ""
-              } border flex flex-col items-center justify-center h-[170px] rounded cursor-pointer transition`}
+              } border flex flex-col items-center justify-center h-[170px] rounded cursor-pointer transition dark:border-gray-100`}
             >
               <Image
                 src={item.iconUrl}

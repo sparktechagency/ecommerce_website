@@ -73,22 +73,22 @@ export default function Reviews({ avgReview, id }: ReviewsProps) {
     if (isError) return <p>Failed to load reviews.</p>;
 
     return (
-        <div className="bg-[#f2fcf6] dark:bg-black p-8">
+        <div className="bg-[#f2fcf6] dark:bg-gray-900 p-8">
             {contextHolder}
 
             {/* Overall Rating */}
-            <div className="bg-white rounded-lg py-10 mb-8 flex flex-col items-center">
+            <div className="bg-white rounded-lg py-10 mb-8 flex flex-col items-center dark:bg-[#C5C5C5]  dark:text-black ">
                 <div className="font-semibold flex items-center gap-3">
                     <p className="text-4xl">{data?.data.averageRating ?? avgReview}</p>
                     <ConfigProvider theme={{ components: { Rate: { starColor: "rgb(0,0,0)" } } }}>
                         <Rate disabled defaultValue={data?.data.averageRating ?? avgReview} allowHalf />
                     </ConfigProvider>
                 </div>
-                <div className="mt-4 text-xl dark:text-white">Overall Rating</div>
+                <div className="mt-4 text-xl dark:text-black">Overall Rating</div>
             </div>
 
             {/* Filter by Rating */}
-            <div className="mb-6">
+            <div className="mb-6 ">
                 <div className="font-medium text-gray-700 mb-3 text-lg dark:text-white">Rating</div>
                 <ConfigProvider
                     theme={{
@@ -107,7 +107,7 @@ export default function Reviews({ avgReview, id }: ReviewsProps) {
                         defaultValue={0}
                         onChange={(value) => setSelectedRating(value)}
                         style={{ width: "100%", maxWidth: "300px" }}
-                        className="border border-gray-200 rounded"
+                        className="border border-gray-200 rounded dark:bg-[#C5C5C5]  dark:text-black"
                     >
                         <Option value={0}>All Rating</Option>
                         <Option value={5}>5 Stars</Option>
@@ -120,14 +120,14 @@ export default function Reviews({ avgReview, id }: ReviewsProps) {
             </div>
 
             {/* Reviews List */}
-            <div className="space-y-6 mt-8">
+            <div className="space-y-6 mt-8 ">
                 {data?.data.reviews?.map((review: Review) => (
                     <div
                         key={review.id}
-                        className="bg-white mb-5 px-5 py-6 rounded flex flex-col md:flex-row gap-6"
+                        className="bg-white mb-5 px-5 py-6 rounded flex flex-col md:flex-row gap-6 dark:bg-[#C5C5C5]  dark:text-black"
                     >
                         {/* User Info */}
-                        <div className="flex items-start gap-4 md:gap-6 w-full md:w-auto">
+                        <div className="flex items-start gap-4 md:gap-6 w-full md:w-auto ">
                             <Image
                                 src={review.user?.image || "/placeholder.png"}
                                 alt={review.user?.fullName ?? "User"}
@@ -167,54 +167,52 @@ export default function Reviews({ avgReview, id }: ReviewsProps) {
 
                     <Form.Item
                         name="rating"
-                        label="Your Rating"
+                        label={<span className="dark:text-white">Your Rating</span>}
                         rules={[{ required: true, message: "Please select a rating" }]}
                         className="mb-4"
                     >
-                        <ConfigProvider theme={{ components: { Rate: { starColor: "rgb(0,0,0)" } } }}>
-                            <Rate
-                                onChange={(value) => form.setFieldValue("rating", value)} // update form value
-                            />
+                        <ConfigProvider theme={{ components: { Rate: { starColor: "rgb(0, 0, 0)" } } }}>
+                            <Rate onChange={(value) => form.setFieldValue("rating", value)} />
                         </ConfigProvider>
                     </Form.Item>
-
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <Form.Item
                             name="name"
-                            label="Your Name"
+                            label={<span className="dark:text-white">Your Name</span>}
                             rules={[{ required: true, message: "Please enter your name" }]}
                         >
-                            <Input placeholder="Robert Smith" />
+                            <Input className="dark:bg-black dark:text-white dark:border-gray-700" placeholder="Robert Smith" />
                         </Form.Item>
 
                         <Form.Item
                             name="email"
-                            label="Your Email"
+                            label={<span className="dark:text-white">Your Email</span>}
                             rules={[
                                 { required: true, message: "Please enter your email" },
                                 { type: "email", message: "Please enter a valid email" },
                             ]}
                         >
-                            <Input placeholder="robert@gmail.com" />
+                            <Input className="dark:bg-black dark:text-white dark:border-gray-700" placeholder="robert@gmail.com" />
                         </Form.Item>
                     </div>
 
                     <Form.Item
                         name="review"
-                        label="Review"
+                        label={<span className="dark:text-white">Review</span>}
                         rules={[{ required: true, message: "Please write your review" }]}
                     >
-                        <TextArea rows={6} placeholder="Write your review here..." />
+                        <TextArea className="dark:bg-black dark:text-white  dark:border-gray-700" rows={6} placeholder="Write your review here..." />
                     </Form.Item>
 
                     <div className="flex justify-center">
-                        <Button type="primary" htmlType="submit" loading={isPosting}>
+                        <Button  htmlType="submit" loading={isPosting} className="!bg-primary  dark:text-black">
                             Submit
                         </Button>
                     </div>
                 </Form>
             </div>
+
         </div>
     );
 }
