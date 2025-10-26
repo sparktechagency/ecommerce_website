@@ -1,4 +1,3 @@
-
 // "use client";
 
 // import { useState } from "react";
@@ -10,12 +9,10 @@
 // import ShippingRates from "./Tabs/ShippingRates";
 // import { useGetSingleProductQuery } from "@/redux/features/products/productsApi";
 // import { useAddToCartMutation } from "@/redux/features/cart/cartApi";
-// // import { toast } from "react-toastify";
-// // import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 // import { Package, Info, Check, RotateCcw } from "lucide-react";
 // import SingleProductSkeleton from "@/utils/SingleProductSkeleton";
 // import Cookies from "js-cookie";
-// import { notification } from "antd";
+// import { notification, Button } from "antd";
 // import Reviews from "@/components/Products/Review";
 
 // type Tab = "references" | "vehicles" | "alternatives" | "reviews";
@@ -67,6 +64,7 @@
 //   shippings?: Shipping[];
 //   fitVehicles?: FitVehicle[];
 //   similarProducts?: AlternativeProduct[];
+//   averageRating?: number; // optional average rating
 // }
 
 // // Add to cart request
@@ -79,18 +77,14 @@
 //   const [activeTab, setActiveTab] = useState<Tab>("references");
 //   const [addToCart, { isLoading: isAdding }] = useAddToCartMutation();
 //   const [api, contextHolder] = notification.useNotification();
+
 //   if (isLoading) return <SingleProductSkeleton />;
 //   if (isError || !data?.data) return <p>Failed to load product details.</p>;
 
 //   const product: Product = data.data;
 
-
-
-
-
 //   const handleAddToCart = async () => {
 //     try {
-//       // ✅ Check if user is logged in
 //       const token = Cookies.get("hatem-ecommerce-token");
 //       if (!token) {
 //         api.open({
@@ -101,7 +95,6 @@
 //         });
 //         return;
 //       }
-
 
 //       const payload: AddToCartRequest = { productId: product.id };
 //       const response = await addToCart(payload).unwrap();
@@ -114,7 +107,6 @@
 //       });
 //     } catch (err: unknown) {
 //       let errorMessage = "Failed to add product to cart";
-
 //       if (err && typeof err === "object" && "data" in err) {
 //         const fetchError = err as { data?: { message?: string } };
 //         errorMessage = fetchError.data?.message || errorMessage;
@@ -132,24 +124,25 @@
 //       console.error("Add to cart failed:", err);
 //     }
 //   };
+
 //   const referenceItems = product.references?.length
 //     ? [
-//       {
-//         manufacturer: "OE Numbers",
-//         numbers: product.references.filter(r => r.type === "OE").map(ref => ({ value: ref.number, isLink: true })),
-//       },
-//       {
-//         manufacturer: "Supplier Numbers",
-//         numbers: product.references.filter(r => r.type !== "OE").map(ref => ({ value: ref.number, isLink: false })),
-//       }
-//     ]
+//         {
+//           manufacturer: "OE Numbers",
+//           numbers: product.references.filter(r => r.type === "OE").map(ref => ({ value: ref.number, isLink: true })),
+//         },
+//         {
+//           manufacturer: "Supplier Numbers",
+//           numbers: product.references.filter(r => r.type !== "OE").map(ref => ({ value: ref.number, isLink: false })),
+//         }
+//       ]
 //     : [];
 
-//   // Vehicles
 //   const fitVehicles: FitVehicle[] = product.fitVehicles || [];
 
 //   return (
 //     <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white py-8 p-6 lg:p-0 mb-6">
+//       {contextHolder}
 //       <div className="mx-auto container mt-6">
 //         {/* Header */}
 //         <div className="mb-6 flex items-center gap-3 md:mb-8">
@@ -191,9 +184,6 @@
 
 //           {/* Price & Shipping Column */}
 //           <div className="lg:col-span-2 xl:col-span-1 flex flex-col gap-4">
-
-
-
 //             {/* Price & Cart */}
 //             <div className="sticky top-4 border rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 md:p-6 space-y-4">
 //               <div className="space-y-2">
@@ -224,24 +214,22 @@
 //                   onChange={(e) => setQuantity(Number(e.target.value) || 1)}
 //                   className="w-20 rounded border border-gray-300 dark:border-gray-700 px-2 text-center bg-white dark:bg-gray-800 text-black dark:text-white"
 //                 />
-//                 {contextHolder}
-//                 <button
-
+//                 <Button
+//                   type="primary"
 //                   onClick={handleAddToCart}
-//                   disabled={isAdding}
-//                   className="flex-1 py-2 flex items-center justify-center gap-2 rounded bg-primary text-white"
+//                   loading={isAdding}
+//                   className="flex-1"
 //                 >
-//                   {isAdding ? "Adding..." : "Add To Cart"}
-//                 </button>
+//                   Add To Cart
+//                 </Button>
 //               </div>
 //             </div>
 //           </div>
 //         </div>
 
-
 //         {/* Tabs */}
 //         <div className="flex gap-4 my-6">
-//           {["references", "vehicles", "alternatives"].map(tab => (
+//           {["references", "vehicles", "alternatives", "reviews"].map(tab => (
 //             <button
 //               key={tab}
 //               onClick={() => setActiveTab(tab as Tab)}
@@ -259,15 +247,16 @@
 //         {activeTab === "references" && <ReferencesTab referenceItems={referenceItems} />}
 //         {activeTab === "vehicles" && <VehiclesTab fitVehicles={fitVehicles} />}
 //         {activeTab === "alternatives" && <AlternativesTab similarProducts={product.similarProducts || []} />}
-
-//         {activeTab === "reviews" && <Reviews avgReview={avgReview} id={productId} />}
-
+//         {activeTab === "reviews" && (
+//           <Reviews
+//             avgReview={product.averageRating ?? 0}
+//             id={product.id}
+//           />
+//         )}
 //       </div>
 //     </div>
 //   );
 // }
-
-
 
 
 "use client";
@@ -275,21 +264,22 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+import { notification, Button } from "antd";
+import Cookies from "js-cookie";
+import { Package, Info, Check, RotateCcw } from "lucide-react";
+
 import ReferencesTab from "./Tabs/ReferencesTab";
 import VehiclesTab from "./Tabs/VehiclesTab";
 import AlternativesTab from "./Tabs/AlternativesTab";
 import ShippingRates from "./Tabs/ShippingRates";
+import Reviews from "@/components/Products/Review";
+import SingleProductSkeleton from "@/utils/SingleProductSkeleton";
 import { useGetSingleProductQuery } from "@/redux/features/products/productsApi";
 import { useAddToCartMutation } from "@/redux/features/cart/cartApi";
-import { Package, Info, Check, RotateCcw } from "lucide-react";
-import SingleProductSkeleton from "@/utils/SingleProductSkeleton";
-import Cookies from "js-cookie";
-import { notification, Button } from "antd";
-import Reviews from "@/components/Products/Review";
 
+// -------------------- TYPES --------------------
 type Tab = "references" | "vehicles" | "alternatives" | "reviews";
 
-// Interfaces
 interface Seller { userId: string; companyName: string; logo: string | null }
 interface Category { id: string; name: string }
 interface Brand { id: string; brandName: string; brandImage: string | null }
@@ -320,15 +310,15 @@ interface AlternativeProduct { id: string; companyName: string; productCode?: st
 interface Product {
   id: string;
   productName: string;
-  description: string;
+  description?: string;
   price: number;
-  discount: number;
-  stock: number;
-  productImages: string[];
-  isVisible: boolean;
-  createdAt: string;
-  updatedAt: string;
-  seller: Seller;
+  discount?: number;
+  stock?: number;
+  productImages?: string[];
+  isVisible?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  seller?: Seller;
   category?: Category;
   brand?: Brand;
   sections?: Section[];
@@ -336,12 +326,17 @@ interface Product {
   shippings?: Shipping[];
   fitVehicles?: FitVehicle[];
   similarProducts?: AlternativeProduct[];
-  averageRating?: number; // optional average rating
+  averageRating?: number;
 }
+
+
+// API response type
+
 
 // Add to cart request
 interface AddToCartRequest { productId: string }
 
+// -------------------- COMPONENT --------------------
 export default function SingleProduct() {
   const { id } = useParams<{ id: string }>();
   const { data, isLoading, isError } = useGetSingleProductQuery(id);
@@ -355,6 +350,7 @@ export default function SingleProduct() {
 
   const product: Product = data.data;
 
+  // -------------------- ADD TO CART --------------------
   const handleAddToCart = async () => {
     try {
       const token = Cookies.get("hatem-ecommerce-token");
@@ -397,6 +393,7 @@ export default function SingleProduct() {
     }
   };
 
+  // -------------------- REFERENCE ITEMS --------------------
   const referenceItems = product.references?.length
     ? [
         {
@@ -412,6 +409,7 @@ export default function SingleProduct() {
 
   const fitVehicles: FitVehicle[] = product.fitVehicles || [];
 
+  // -------------------- RENDER --------------------
   return (
     <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white py-8 p-6 lg:p-0 mb-6">
       {contextHolder}
@@ -454,9 +452,8 @@ export default function SingleProduct() {
             ))}
           </div>
 
-          {/* Price & Shipping Column */}
+          {/* Price & Cart */}
           <div className="lg:col-span-2 xl:col-span-1 flex flex-col gap-4">
-            {/* Price & Cart */}
             <div className="sticky top-4 border rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 md:p-6 space-y-4">
               <div className="space-y-2">
                 <div className="text-3xl font-bold md:text-4xl">${product.price}</div>
@@ -477,7 +474,6 @@ export default function SingleProduct() {
                 </div>
               </div>
 
-              {/* Quantity & Add to Cart */}
               <div className="flex gap-2">
                 <input
                   type="number"
@@ -486,12 +482,7 @@ export default function SingleProduct() {
                   onChange={(e) => setQuantity(Number(e.target.value) || 1)}
                   className="w-20 rounded border border-gray-300 dark:border-gray-700 px-2 text-center bg-white dark:bg-gray-800 text-black dark:text-white"
                 />
-                <Button
-                  type="primary"
-                  onClick={handleAddToCart}
-                  loading={isAdding}
-                  className="flex-1"
-                >
+                <Button type="primary" onClick={handleAddToCart} loading={isAdding} className="flex-1">
                   Add To Cart
                 </Button>
               </div>
@@ -519,12 +510,7 @@ export default function SingleProduct() {
         {activeTab === "references" && <ReferencesTab referenceItems={referenceItems} />}
         {activeTab === "vehicles" && <VehiclesTab fitVehicles={fitVehicles} />}
         {activeTab === "alternatives" && <AlternativesTab similarProducts={product.similarProducts || []} />}
-        {activeTab === "reviews" && (
-          <Reviews
-            avgReview={product.averageRating ?? 0}
-            id={product.id}
-          />
-        )}
+        {activeTab === "reviews" && <Reviews avgReview={product.averageRating ?? 0} id={product.id} />}
       </div>
     </div>
   );
