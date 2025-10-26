@@ -57,20 +57,19 @@ const Footer = () => {
                 <div>
                     <h2 className="text-2xl text-white mb-4">Account</h2>
                     <div className=" flex flex-col gap-5 text-white">
-                        <Link href={'/'}>My Account</Link>
-                        <Link href={'/'}>Sign Up As a Seller</Link>
-                        <Link href={'/'}>Cart</Link>
-                        <Link href={'/'}>Wishlist</Link>
-                        <Link href={'/'}>Shop</Link>
+                        <Link href={'/myprofile'}>My Account</Link>
+                        <Link href={'/cart'}>Cart</Link>
+                        <Link href={'/wishlist'}>Wishlist</Link>
+                        <Link href={'/product'}>Shop</Link>
                     </div>
                 </div>
                 <div>
                     <h2 className="text-2xl text-white mb-4">Quick Link</h2>
                     <div className=" flex flex-col gap-5 text-white">
-                        <Link href={'/'}>Privacy Policy</Link>
-                        <Link href={'/'}>Terms Of Use</Link>
-                        <Link href={'/'}>FAQ</Link>
-                        <Link href={'/'}>Contact</Link>
+                        <Link href={'/privacy-policy'}>Privacy Policy</Link>
+                        <Link href={'/terms-and-conditions'}>Terms Of Use</Link>
+                        <Link href={'/faq'}>FAQ</Link>
+                        <Link href={'/contact'}>Contact</Link>
                     </div>
                 </div>
                 <div>

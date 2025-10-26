@@ -115,7 +115,7 @@ export const authApi = baseApi.injectEndpoints({
       }),
     }),
 
-    
+
     resendOtpForgotPassword: builder.mutation({
       query: (data) => ({
         url: '/users/resend-otp',
@@ -154,39 +154,54 @@ export const authApi = baseApi.injectEndpoints({
       }),
     }),
 
-    // ------------------------
-    // Admin endpoints (optional)
-    // ------------------------
-    resetAdminPassword: builder.mutation({
-      query: ({ email, data }) => ({
-        url: `/auth/reset-password?email=${email}`,
-        method: 'POST',
-        body: data,
-      }),
-    }),
-
-    changeAdminPassword: builder.mutation({
+    editUserProfile: builder.mutation({
       query: (data) => ({
-        url: '/auth/change-password',
+        url: '/users/update-profile',
         method: 'PATCH',
         body: data,
       }),
     }),
 
-    editAdminProfile: builder.mutation({
-      query: (data) => ({
-        url: '/users/update-profile',
-        method: 'PUT',
-        body: data,
-      }),
-    }),
-
-    getAdminProfile: builder.query({
+    getUserProfile: builder.query({
       query: () => ({
-        url: '/auth/profile',
+        url: '/users/me',
         method: 'GET',
       }),
     }),
+
+    // ------------------------
+    // Admin endpoints (optional)
+    // ------------------------
+    // resetAdminPassword: builder.mutation({
+    //   query: ({ email, data }) => ({
+    //     url: `/auth/reset-password?email=${email}`,
+    //     method: 'POST',
+    //     body: data,
+    //   }),
+    // }),
+
+    // changeAdminPassword: builder.mutation({
+    //   query: (data) => ({
+    //     url: '/auth/change-password',
+    //     method: 'PATCH',
+    //     body: data,
+    //   }),
+    // }),
+
+    // editAdminProfile: builder.mutation({
+    //   query: (data) => ({
+    //     url: '/users/update-profile',
+    //     method: 'PUT',
+    //     body: data,
+    //   }),
+    // }),
+
+    // getAdminProfile: builder.query({
+    //   query: () => ({
+    //     url: '/auth/profile',
+    //     method: 'GET',
+    //   }),
+    // }),
   }),
 });
 
@@ -203,8 +218,7 @@ export const {
   useForgetPasswordMutation,
   useChangePasswordMutation,
   useUpdatePasswordMutation,
-  useResetAdminPasswordMutation,
-  useChangeAdminPasswordMutation,
-  useEditAdminProfileMutation,
-  useGetAdminProfileQuery,
+  useGetUserProfileQuery,
+  useEditUserProfileMutation,
+
 } = authApi;

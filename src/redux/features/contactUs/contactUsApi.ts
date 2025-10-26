@@ -13,6 +13,8 @@ export interface ContactUsInfo {
   linkedin?: string;
   createdAt: string;
   updatedAt: string;
+  phone:string,
+  address:string,
 }
 
 // ✅ Inject endpoints
