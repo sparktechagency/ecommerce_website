@@ -6,6 +6,19 @@ import { baseApi } from "../../api/baseApi";
 // ------------------------
 
 // Change password (logged-in user)
+
+
+interface UpdateProfileImageResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    id: string;
+    fullName: string;
+    email: string;
+    image: string; // image URL
+  };
+}
 interface ChangePasswordRequest {
   oldPassword?: string;
   newPassword?: string;
@@ -69,6 +82,24 @@ interface UpdatePasswordResponse {
 // ------------------------
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+
+    updateProfileImage: builder.mutation<
+      UpdateProfileImageResponse,
+      File
+    >({
+      query: (file) => {
+        const formData = new FormData();
+        formData.append("profileImage", file); // must match backend key
+
+        return {
+          url: "/users/update-profile-image",
+          method: "PUT", // ✅ backend expects PUT
+          body: formData,
+        };
+      },
+    }),
+
+
     // ------------------------
     // Signup & Login
     // ------------------------
@@ -220,5 +251,6 @@ export const {
   useUpdatePasswordMutation,
   useGetUserProfileQuery,
   useEditUserProfileMutation,
+  useUpdateProfileImageMutation,
 
 } = authApi;
