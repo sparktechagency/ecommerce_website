@@ -70,7 +70,7 @@ export default function SignUpForm(): JSX.Element {
                     <h1 className="text-2xl font-semibold">SIGN UP</h1>
                 </div>
 
-                <Form<SignUpFormValues>
+                {/* <Form<SignUpFormValues>
                     form={form}
                     name="signup"
                     layout="vertical"
@@ -120,7 +120,83 @@ export default function SignUpForm(): JSX.Element {
                             {isLoading ? "Loading..." : "SIGN UP"}
                         </button>
                     </Form.Item>
+                </Form> */}
+
+
+                <Form<SignUpFormValues>
+                    form={form}
+                    name="signup"
+                    layout="vertical"
+                    onFinish={onFinish}
+                    autoComplete="off"
+                >
+                    <Form.Item
+                        label="Full Name"
+                        name="fullName"
+                        rules={[
+                            { required: true, message: "Full name is required!" },
+                            { min: 3, message: "Full name must be at least 3 characters." },
+                            { max: 50, message: "Full name cannot exceed 50 characters." },
+                            {
+                                pattern: /^[A-Za-z\s]+$/,
+                                message: "Full name can only contain letters and spaces."
+                            }
+                        ]}
+                    >
+                        <Input placeholder="Enter your full name" className="h-10" />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Email"
+                        name="email"
+                        rules={[
+                            { required: true, message: "Email is required!" },
+                            { type: "email", message: "Please enter a valid email!" }
+                        ]}
+                    >
+                        <Input placeholder="Enter your email" className="h-10" />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Phone Number"
+                        name="phoneNumber"
+                        rules={[
+                            { required: true, message: "Phone number is required!" },
+                            {
+                                pattern: /^[0-9]{10,15}$/,
+                                message: "Enter a valid phone number."
+                            }
+                        ]}
+                    >
+                        <Input placeholder="Enter your mobile number" className="h-10" />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Password"
+                        name="password"
+                        rules={[
+                            { required: true, message: "Password is required!" },
+                            {
+                                pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,20}$/,
+                                message:
+                                    "Password must be at least 8 characters, include uppercase, lowercase, number, and special character, no spaces."
+                            }
+                        ]}
+                        hasFeedback
+                    >
+                        <Input.Password placeholder="Enter your password" className="h-10" />
+                    </Form.Item>
+
+                    <Form.Item className="mt-6">
+                        <button
+                            disabled={isLoading}
+                            className="bg-primary w-full py-2 rounded-md cursor-pointer text-white"
+                        >
+                            {isLoading ? "Loading..." : "SIGN UP"}
+                        </button>
+                    </Form.Item>
                 </Form>
+
 
                 <div className="mt-4">
                     <button
