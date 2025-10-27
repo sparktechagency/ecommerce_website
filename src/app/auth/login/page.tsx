@@ -1,103 +1,173 @@
 "use client";
+
 import { JSX, useEffect } from "react";
 import { Form, Input, notification } from "antd";
 import { FaFacebook } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
+import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import Link from "next/link";
-import { useLogInMutation } from "@/redux/features/auth/authApi";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
+import { useLogInMutation, useSocialLoginMutation } from "@/redux/features/auth/authApi";
 import { setUser } from "@/redux/features/auth/authSlice";
 import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
+import { requestForToken } from "@/utils/firebase";
 
 interface LogInFormValues {
   email: string;
   password: string;
 }
 
+interface GoogleUser {
+  email: string;
+  name: string;
+  picture: string;
+}
+
+
+
 export default function LogInForm(): JSX.Element {
   const [api, contextHolder] = notification.useNotification();
   const [form] = Form.useForm<LogInFormValues>();
   const [logIn, { isLoading }] = useLogInMutation();
+  const [socialLogin] = useSocialLoginMutation();
   const router = useRouter();
   const dispatch = useDispatch();
 
-  // ✅ Redirect if user already logged in
+  // ✅ Redirect if already logged in
   useEffect(() => {
     const token = Cookies.get("hatem-ecommerce-token");
     const user = localStorage.getItem("hatem-ecommerce-user");
-
-    if (token && user) {
-      router.push("/"); // or your dashboard route if needed
-    }
+    if (token && user) router.push("/");
   }, [router]);
 
-  const onFinish = (values: LogInFormValues) => {
-    const loginData = {
-      email: values.email,
-      password: values.password,
+  const handleAuthSuccess = (data: any) => {
+    const userData = {
+      _id: data?.data?._id || data?.data?.id,
+      fullName: data?.data?.fullName || data?.data?.name,
+      email: data?.data?.email,
+      role: data?.data?.role || data?.data?.roles?.[0],
+      image: data?.data?.image,
     };
 
-    logIn(loginData)
-      .unwrap()
-      .then((data) => {
-        const userData = {
-          _id: data?.data?._id,
-          fullName: data?.data?.fullName,
-          email: data?.data?.email,
-          role: data?.data?.role,
-        };
-        const accessToken = data?.data?.accessToken;
-        const refreshToken = data?.data?.refreshToken;
+    const accessToken = data?.data?.accessToken;
+    const refreshToken = data?.data?.refreshToken;
 
-        dispatch(setUser({ user: userData, accessToken, refreshToken }));
-        Cookies.set("hatem-ecommerce-token", accessToken, { expires: 7 });
-        localStorage.setItem("hatem-ecommerce-refreshToken", refreshToken);
-        localStorage.setItem("hatem-ecommerce-user", JSON.stringify(userData));
+    dispatch(setUser({ user: userData, accessToken, refreshToken }));
+    Cookies.set("hatem-ecommerce-token", accessToken, { expires: 7 });
+    localStorage.setItem("hatem-ecommerce-refreshToken", refreshToken);
+    localStorage.setItem("hatem-ecommerce-user", JSON.stringify(userData));
+  };
 
-        api.open({
-          type: "success",
-          message: "Log In",
-          description: "Log In successfully!",
-          placement: "topRight",
-        });
+  // const onFinish = (values: LogInFormValues) => {
+  //   logIn(values)
+  //     .unwrap()
+  //     .then(handleAuthSuccess)
+  //     .catch((error) =>
+  //       api.open({
+  //         type: "error",
+  //         message: error?.data?.message || "Login failed. Try again.",
+  //         placement: "topRight",
+  //       })
+  //     );
+  // };
 
-        // ✅ Redirect based on role
-        if (data?.data?.role === "BUYER" || data?.data?.role === "SELLER") {
-          router.push("/");
-        }
-      })
-      .catch((error) => {
-        api.open({
-          type: "error",
-          message: error?.data?.message,
-          description: "Log In failed. Please try again.",
-          placement: "topRight",
-        });
+  const onFinish = async (values: LogInFormValues) => {
+    try {
+      const data = await logIn(values).unwrap();
+
+      // ✅ Store user + tokens
+      handleAuthSuccess(data);
+
+      // ✅ Show success toast
+      api.success({
+        message: "Login Successful",
+        description: "You are logged in successfully!",
+        placement: "topRight",
       });
+
+      // ✅ Redirect after short delay
+      setTimeout(() => router.push("/"), 800);
+    } catch (error) {
+  api.error({
+    message: "Google login failed",
+    description:
+      (error as { data?: { message?: string }; message?: string })?.data?.message ||
+      (error as Error)?.message ||
+      "Something went wrong.",
+  });
+}
+
+  };
+
+
+  const handleGoogleLogin = async (credentialResponse: CredentialResponse) => {
+    try {
+      if (!credentialResponse.credential) return;
+
+      const decoded: GoogleUser = jwtDecode(credentialResponse.credential);
+
+      let fcmToken = await requestForToken();
+      if (!fcmToken) {
+        api.warning({
+          message: "Notification Permission Denied",
+          description: "You must allow notifications for login to work.",
+        });
+        fcmToken = "fallback-fcm-token-" + Date.now();
+      }
+
+      console.log("📲 Using FCM token:", fcmToken);
+
+
+      const payload = {
+        email: decoded.email,
+        fcmToken: fcmToken,      // ✅ matches backend
+        plateForm: "GOOGLE",     // ✅ matches backend’s spelling
+        image: decoded.picture,
+        fullName: decoded.name,
+        phoneNumber: "",
+        address: "",
+      };
+
+
+      console.log("🚀 Social Login Payload:", payload);
+
+
+      const data = await socialLogin(payload).unwrap();
+      handleAuthSuccess(data);
+
+      api.success({
+        message: "Google Login",
+        description: "You are logged in successfully!",
+      });
+
+      router.push("/");
+    } catch (error) {
+      api.error({
+        message: "Google login failed",
+        description:
+          (error as { data?: { message?: string }; message?: string })?.data?.message ||
+          (error as Error)?.message ||
+          "Something went wrong.",
+      });
+    }
+
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-200 p-4">
       {contextHolder}
       <div className="w-full max-w-lg shadow-md bg-white px-4 md:px-14 py-10 rounded-lg">
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-semibold">Log In</h1>
-        </div>
+        <h1 className="text-2xl font-semibold text-center mb-6">Log In</h1>
 
-        <Form<LogInFormValues>
-          form={form}
-          name="signup"
-          layout="vertical"
-          onFinish={onFinish}
-          autoComplete="off"
-        >
+        {/* Email/Password Login */}
+        <Form form={form} layout="vertical" onFinish={onFinish}>
           <Form.Item
             label="Email"
             name="email"
             rules={[
               { required: true, message: "Please input your email!" },
-              { type: "email", message: "Please enter a valid email!" },
+              { type: "email", message: "Enter a valid email!" },
             ]}
           >
             <Input placeholder="Enter your email" className="h-10" />
@@ -108,54 +178,42 @@ export default function LogInForm(): JSX.Element {
             name="password"
             rules={[{ required: true, message: "Please input your password!" }]}
           >
-            <Input.Password
-              placeholder="Enter your password"
-              className="h-10"
-            />
+            <Input.Password placeholder="Enter your password" className="h-10" />
           </Form.Item>
 
-          <div className="flex justify-end -mt-2 mb-6 text-black">
-            <Link href={"/auth/forget-password"} className="text-black">
+          <div className="flex justify-end mb-6">
+            <Link href="/auth/forget-password" className="text-black">
               Forgot Password?
             </Link>
           </div>
 
-          <Form.Item className="mt-6">
+          <Form.Item>
             <button
               disabled={isLoading}
-              className="bg-primary w-full py-2 rounded-md cursor-pointer text-white"
+              className="bg-primary w-full py-2 rounded-md text-white"
             >
               {isLoading ? "Loading..." : "Log In"}
             </button>
           </Form.Item>
         </Form>
 
-        <div className="mt-4">
-          <button
-            className="w-full flex items-center justify-center border border-[#00000066] py-1 rounded-md mb-4 cursor-pointer"
-            onClick={() => console.log("Google Log In clicked")}
-          >
-            <FcGoogle size={25} className="mr-2" /> Log In with Google
-          </button>
-
-          <button
-            className="w-full flex items-center justify-center border border-[#00000066] py-1 rounded-md cursor-pointer"
-            onClick={() => console.log("Facebook Log In clicked")}
-          >
-            <FaFacebook size={25} className="mr-2 text-[#0689ff]" /> Log In with
-            Facebook
+        {/* Social Login */}
+        <div className="mt-4 space-y-3">
+          <GoogleLogin onSuccess={handleGoogleLogin} onError={() => console.log("Google login failed")} />
+          <button className="w-full flex items-center justify-center border border-[#00000066] py-1 rounded-md cursor-pointer">
+            <FaFacebook size={25} className="mr-2 text-[#0689ff]" /> Log In with Facebook
           </button>
         </div>
 
-        <div className="text-center mt-4">
-          <span className="text-sm">
-            Don’t have an account?{" "}
-            <Link href="/auth/sign-up" className="text-primary">
-              Sign Up
-            </Link>
-          </span>
-        </div>
+        <p className="text-center mt-4 text-sm">
+          Don’t have an account?{" "}
+          <Link href="/auth/sign-up" className="text-primary">
+            Sign Up
+          </Link>
+        </p>
       </div>
     </div>
   );
 }
+
+
