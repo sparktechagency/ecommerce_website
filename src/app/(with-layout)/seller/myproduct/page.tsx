@@ -62,7 +62,8 @@
 import AddProductModal from "@/components/Seller/MyProduct/AddProductModal";
 import MyProductCart from "@/components/Seller/MyProduct/MyProductCart";
 import SelectProduct from "@/components/Seller/MyProduct/SelectProduct";
-import { useGetMyProductsQuery } from "@/redux/features/seller/productApi";
+import { useGetMyProductsQuery } from "@/redux/features/seller/product/productApi";
+
 import { useState } from "react";
 import { IoAdd } from "react-icons/io5";
 

@@ -109,16 +109,19 @@ interface Review {
 }
 
 // Define Order interface matching CurrentOrders props
-interface Order {
+
+interface OrderItem {
   id: string;
   customerName: string;
   customerImage: string;
   createdAt: string;
   productName: string;
-  productDescription: string;
   productImages: string[];
-  timeAgo: string;
+  productDescription?: string;
+  timeAgo?: string;
+  status: string; // ❗ Must exist
 }
+
 
 const Overview = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -148,17 +151,34 @@ const Overview = () => {
   };
 
   // Map API orders to CurrentOrders component props
-  const mappedOrders: Order[] =
-    ordersData?.data.map((order) => ({
+//   const mappedOrders: Order[] =
+//     ordersData?.data.map((order) => ({
+//       id: order.orderId,
+//       customerName: order.customerName,
+//       customerImage: order.customerImage || "https://via.placeholder.com/40",
+//       createdAt: order.createdAt,
+//       productName: order.items[0]?.productName || "-",
+//       productDescription: `Price: $${order.items[0]?.price || 0}`,
+//       productImages: order.items[0]?.productImages || [],
+//       timeAgo: getTimeAgo(order.createdAt),
+//     })) || [];
+
+const mappedOrders: OrderItem[] =
+  ordersData?.data.map((order) => {
+    const firstProduct = order.items[0];
+    return {
       id: order.orderId,
       customerName: order.customerName,
       customerImage: order.customerImage || "https://via.placeholder.com/40",
       createdAt: order.createdAt,
-      productName: order.items[0]?.productName || "-",
-      productDescription: `Price: $${order.items[0]?.price || 0}`,
-      productImages: order.items[0]?.productImages || [],
+      productName: firstProduct?.productName || "-",
+      productDescription: `Price: $${firstProduct?.price || 0}`,
+      productImages: firstProduct?.productImages || [],
       timeAgo: getTimeAgo(order.createdAt),
-    })) || [];
+      status: order.status || "PENDING",  // ✅ Include status
+    };
+  }) || [];
+
 
   // Map API reviews to LastReviews component props
   const mappedReviews: Review[] =
