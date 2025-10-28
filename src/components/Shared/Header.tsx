@@ -281,18 +281,26 @@ const Header = () => {
                 )}
               </div>
 
-              {/* Role-specific Link */}
+              {/* Role-specific Links */}
               {user?.role === "SELLER" ? (
-                <Link href={`/seller/overview`} className="flex items-center gap-3 mb-4">
-                  <GoVersions className="w-6 h-6 text-white dark:text-black" />
-                  <p className="text-md text-white dark:text-black">Seller Overview</p>
-                </Link>
+                <div className="flex flex-col gap-2 mb-4">
+                  <Link href={`/seller/myproduct`} className="flex items-center gap-3">
+                    <LuShoppingBag className="w-6 h-6 text-white dark:text-black" />
+                    <p className="text-md text-white dark:text-black">My Products</p>
+                  </Link>
+
+                  <Link href={`/seller/overview`} className="flex items-center gap-3 mt-1">
+                    <GoVersions className="w-6 h-6 text-white dark:text-black" />
+                    <p className="text-md text-white dark:text-black">Seller Overview</p>
+                  </Link>
+                </div>
               ) : (
                 <Link href={`/myorder`} className="flex items-center gap-3 mb-4">
                   <LuShoppingBag className="w-6 h-6 text-white dark:text-black" />
                   <p className="text-md text-white dark:text-black">My Order</p>
                 </Link>
               )}
+
 
               {/* Logout */}
               <div onClick={handleLogOut} className="flex items-center gap-3 mb-2 cursor-pointer">

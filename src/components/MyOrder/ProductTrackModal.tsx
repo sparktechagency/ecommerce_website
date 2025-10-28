@@ -1,106 +1,253 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-"use client"
-import { ConfigProvider, Steps } from "antd";
-// import { useState } from "react";
-import { Modal } from 'antd';
+// "use client";
+
+// import { ConfigProvider, Steps, Modal } from "antd";
+// import { FaCheck } from "react-icons/fa6";
+
+// interface OrderItem {
+//   id: string | number;
+//   productName: string;
+//   quantity: number;
+// }
+
+// interface Order {
+//   orderId: string;
+//   createdAt?: string;
+//   status: string;
+//   items: OrderItem[];
+// }
+
+// interface ProductTrackModalProps {
+//   isModalOpen: boolean;
+//   handleOk: () => void;
+//   handleCancel: () => void;
+//   order?: Order; // optional order prop
+// }
+
+// const ProductTrackModal: React.FC<ProductTrackModalProps> = ({
+//   isModalOpen,
+//   handleOk,
+//   handleCancel,
+//   order,
+// }) => {
+//   if (!order) return null;
+
+//   const itemCount = order.items?.length || 0;
+//   const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "";
+
+//   // Determine the current step dynamically
+//   const statusSteps = ["Order Placed", "Processing", "Confirmed", "Packing", "Delivering", "Delivered"];
+//   const currentStepIndex = statusSteps.findIndex(step => step.toLowerCase() === order.status.toLowerCase());
+
+//   return (
+//     <Modal
+//       closable
+//       className="w-full md:w-[800px]"
+//       footer={false}
+//       width={800}
+//       open={isModalOpen}
+//       onOk={handleOk}
+//       onCancel={handleCancel}
+//     >
+//       <h2 className="text-2xl font-semibold mb-4">Order Track</h2>
+
+//       <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 border-t border-primary pt-8 pb-4 mb-6 text-sm text-gray-700 overflow-x-auto">
+//         <span className="whitespace-nowrap">Order ID</span>
+//         <span className="h-4 border-l border-gray-300"></span>
+//         <span className="whitespace-nowrap">{order.orderId}</span>
+//         <span className="h-4 border-l border-gray-300"></span>
+//         <span className="whitespace-nowrap">{orderDate}</span>
+//         <span className="h-4 border-l border-gray-300"></span>
+//         <span className="whitespace-nowrap">{itemCount} Items</span>
+//         <span className="h-4 border-l border-gray-300"></span>
+//         <span className="text-orange-500 whitespace-nowrap">{order.status}</span>
+//       </div>
+
+//       <div className="flex justify-center mb-10">
+//         <div className="w-[350px] shadow-[0px_10px_30px_rgba(0,0,0,0.1)] border border-primary rounded-xl p-4 flex justify-center">
+//           <ConfigProvider
+//             theme={{
+//               components: {
+//                 Steps: {
+//                   colorPrimary: "rgb(223,88,0)",
+//                   colorPrimaryBorder: "rgb(223,88,0)",
+//                   lineHeightSM: 2.6666666666666665,
+//                   lineWidth: 1,
+//                 },
+//               },
+//             }}
+//           >
+//             <Steps
+//               direction="vertical"
+//               current={currentStepIndex >= 0 ? currentStepIndex : 0} // highlight current step
+//               items={statusSteps.map((title, index) => ({
+//                 title,
+//                 description: getStepDescription(title, order.orderId),
+//                 icon: (
+//                   <FaCheck
+//                     size={25}
+//                     className={`${
+//                       index <= currentStepIndex
+//                         ? "bg-primary text-white"
+//                         : "border border-primary text-primary bg-white"
+//                     } rounded-full mt-1.5 ml-1 p-1`}
+//                   />
+//                 ),
+//               }))}
+//             />
+//           </ConfigProvider>
+//         </div>
+//       </div>
+//     </Modal>
+//   );
+// };
+
+// // Function to dynamically generate step descriptions
+// function getStepDescription(step: string, orderId: string) {
+//   switch (step) {
+//     case "Order Placed":
+//       return `Your order is successfully placed, Order id ${orderId}`;
+//     case "Processing":
+//       return "We have received your order and will check and confirm shortly";
+//     case "Confirmed":
+//       return "We have confirmed your order.";
+//     case "Packing":
+//       return "We are currently packing your order.";
+//     case "Delivering":
+//       return "Rider has picked up your order for delivery.";
+//     case "Delivered":
+//       return "You will receive your order soon.";
+//     default:
+//       return "";
+//   }
+// }
+
+// export default ProductTrackModal;
+
+
+"use client";
+
+import { ConfigProvider, Steps, Modal } from "antd";
 import { FaCheck } from "react-icons/fa6";
 
-interface ProductDetailModalProps {
-    isModalOpen: boolean;
-    handleOk: () => any;
-    handleCancel: () => any;
+interface OrderItem {
+  id: string | number;
+  productName: string;
+  quantity: number;
 }
-const ProductTrackModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handleOk, handleCancel }) => {
 
-    // const [current, setCurrent] = useState(0);
+interface Order {
+  orderId: string;
+  createdAt?: string;
+  status: string;
+  items?: OrderItem[];
+}
 
-    // const onChange = (value: number) => {
-    //     console.log('onChange:', value);
-    //     setCurrent(value);
-    // };
+interface ProductTrackModalProps {
+  isModalOpen: boolean;
+  handleOk: () => void;
+  handleCancel: () => void;
+  order?: Order;
+}
 
-    return (
-        <Modal
-            closable={{ 'aria-label': 'Custom Close Button' }}
-            className='w-full md:w-[800px]'
-            footer={false}
-            width={800}
-            open={isModalOpen}
-            onOk={handleOk}
-            onCancel={handleCancel}
-        >
-            <div>
-                <h2 className='text-2xl font-semibold mb-4'>Order Track</h2>
-            </div>
-            <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 border-t border-primary pt-8 pb-4 mb-6 text-sm text-gray-700 overflow-x-auto">
-                <span className='whitespace-nowrap'>Order Derail</span>
-                <span className="h-4 border-l border-gray-300"></span>
-                <span className='whitespace-nowrap'>#12345</span>
-                <span className="h-4 border-l border-gray-300"></span>
-                <span className='whitespace-nowrap'>15 May 2025</span>
-                <span className="h-4 border-l border-gray-300"></span>
-                <span className='whitespace-nowrap'>5 Items</span>
-                <span className="h-4 border-l border-gray-300"></span>
-                <span className="text-orange-500 whitespace-nowrap">To Ship</span>
-            </div>
-            <div className=" flex justify-center mb-10">
-                <div className=" w-[350px] shadow-[0px_10px_30px_rgba(0,0,0,0.1)] border border-primary rounded-xl p-4 flex justify-center">
-                    <ConfigProvider
-                        theme={{
-                            components: {
-                                Steps: {
-                                    "colorPrimary": "rgb(223,88,0)",
-                                    "colorPrimaryBorder": "rgb(223,88,0)",
-                                    "lineHeightSM": 2.6666666666666665,
-                                    "lineWidth": 1
-                                },
-                            },
-                        }}
-                    >
-                        <Steps
-                            direction="vertical"
-                            items={[
-                                {
-                                    title: 'Order Placed',
-                                    description: 'Your order is successfully placed to Faithful Together Order id #2239798',
-                                    icon: <FaCheck size={25} className=" bg-primary rounded-full mt-1.5 ml-1 p-1 text-white" />
-                                },
-                                {
-                                    title: 'Processing',
-                                    description: 'We have received your order, we will check and confirm shortly',
-                                    icon: <FaCheck size={25} className=" bg-primary rounded-full mt-1.5 ml-1 p-1 text-white" />
-                                },
-                                {
-                                    title: 'Confirmed',
-                                    description: 'We have confirm your order.',
-                                    icon: <FaCheck size={25} className=" bg-primary rounded-full mt-1.5 ml-1 p-1 text-white" />
-                                },
-                                {
-                                    title: 'Packing',
-                                    description: 'We are currently packing your order.',
-                                    icon: <FaCheck size={25} className=" bg-primary rounded-full mt-1.5 ml-1 p-1 text-white" />
-                                },
-                                {
-                                    title: 'Delivering',
-                                    description: 'Rider (Jhon Alex +123456789) has picked up your order for delivering.',
-                                    icon: <FaCheck size={25} className=" bg-primary rounded-full mt-1.5 ml-1 p-1 text-white" />
-                                },
-                                {
-                                    title: 'Delivered',
-                                    description: 'As soon as possible you will reveive your order.',
-                                    icon: <FaCheck size={25} className=" rounded-full p-1 mt-1.5 ml-1 p-1  text-primary border border-primary" />
-                                },
-                            ]}
-                        />
+const statusSteps = ["Order Placed", "Processing", "Confirmed", "Packing", "Delivering", "Delivered"];
 
-                    </ConfigProvider>
+const ProductTrackModal: React.FC<ProductTrackModalProps> = ({
+  isModalOpen,
+  handleOk,
+  handleCancel,
+  order,
+}) => {
+  if (!order) return null;
 
-                </div>
-            </div>
+  const itemCount = order.items?.length || 0;
+  const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "-";
 
+  // Highlight the current step or default to first
+  const currentStepIndex = statusSteps.findIndex(
+    (step) => step.toLowerCase() === order.status.toLowerCase()
+  );
+  const highlightedStep = currentStepIndex >= 0 ? currentStepIndex : 0;
 
-        </Modal >
-    );
+  return (
+    <Modal
+      closable
+      className="w-full md:w-[800px]"
+      footer={false}
+      width={800}
+      open={isModalOpen}
+      onOk={handleOk}
+      onCancel={handleCancel}
+    >
+      <h2 className="text-2xl font-semibold mb-4">Order Track</h2>
+
+      {/* Order Info */}
+      <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 border-t border-primary pt-8 pb-4 mb-6 text-sm text-gray-700 overflow-x-auto">
+        <span className="whitespace-nowrap">Order ID</span>
+        <span className="h-4 border-l border-gray-300"></span>
+        <span className="whitespace-nowrap">{order.orderId}</span>
+        <span className="h-4 border-l border-gray-300"></span>
+        <span className="whitespace-nowrap">{orderDate}</span>
+        <span className="h-4 border-l border-gray-300"></span>
+        <span className="whitespace-nowrap">{itemCount} Items</span>
+        <span className="h-4 border-l border-gray-300"></span>
+        <span className="text-orange-500 whitespace-nowrap">{order.status}</span>
+      </div>
+
+      {/* Steps */}
+      <div className="flex justify-center mb-10">
+        <div className="w-[350px] shadow-[0px_10px_30px_rgba(0,0,0,0.1)] border border-primary rounded-xl p-4">
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: "rgb(223,88,0)",
+                colorPrimaryBorder: "rgb(223,88,0)",
+              },
+            }}
+          >
+            <Steps
+              direction="vertical"
+              current={highlightedStep}
+              items={statusSteps.map((title, index) => ({
+                title,
+                description: getStepDescription(title, order.orderId),
+                icon: (
+                  <div
+                    className={`flex items-center justify-center w-8 h-8 rounded-full border ${
+                      index <= highlightedStep
+                        ? "bg-primary text-white border-primary"
+                        : "bg-white text-primary border-primary"
+                    }`}
+                  >
+                    <FaCheck size={16} />
+                  </div>
+                ),
+              }))}
+            />
+          </ConfigProvider>
+        </div>
+      </div>
+    </Modal>
+  );
 };
+
+// Function to dynamically generate step descriptions
+function getStepDescription(step: string, orderId: string) {
+  switch (step) {
+    case "Order Placed":
+      return `Your order is successfully placed. Order ID: ${orderId}`;
+    case "Processing":
+      return "We have received your order and will check and confirm shortly.";
+    case "Confirmed":
+      return "We have confirmed your order.";
+    case "Packing":
+      return "We are currently packing your order.";
+    case "Delivering":
+      return "Rider has picked up your order for delivery.";
+    case "Delivered":
+      return "You will receive your order soon.";
+    default:
+      return "";
+  }
+}
 
 export default ProductTrackModal;

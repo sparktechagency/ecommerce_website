@@ -1,158 +1,158 @@
-"use client"
-import { Breadcrumb, Select } from "antd";
+"use client";
+
+import { Breadcrumb, Select, Spin } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import { IoEyeOutline } from "react-icons/io5";
-import productPic from '../../../../public/products/wheel2.svg';
+import { CiDeliveryTruck } from "react-icons/ci";
 import { useState } from "react";
+
 import ProductDetailModal from "@/components/MyOrder/ProductDetailModal";
 import ProductTrackModal from "@/components/MyOrder/ProductTrackModal";
-import { CiDeliveryTruck } from "react-icons/ci";
+import productPic from '../../../../public/products/wheel2.svg';
+import { useGetMyOrdersQuery } from "@/redux/features/order/orderApi";
+
+interface OrderItem {
+  id: string;
+  productName: string;
+  productImages?: string[];
+  price: number;
+  discount?: number;
+}
+
+interface Address {
+  addressLine: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
+  type: "SHIPPING" | "BILLING";
+}
+
+interface Order {
+  orderId: string;
+  createdAt: string;
+  status: string;
+  totalAmount: number;
+  items: OrderItem[];
+  quantity: number;
+  shipping: Address;
+  billing: Address;
+}
 
 const MyOrder = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+  const { data: ordersData, isLoading, isError } = useGetMyOrdersQuery();
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isTrackModalOpen, setIsTrackModalOpen] = useState(false);
 
-    const showModal = () => {
-        setIsModalOpen(true);
-    };
+  const showDetailModal = (order: Order) => {
+    setSelectedOrder(order);
+    setIsModalOpen(true);
+  };
 
-    const handleOk = () => {
-        setIsModalOpen(false);
-    };
+  const showTrackModal = (order: Order) => {
+    setSelectedOrder(order);
+    setIsTrackModalOpen(true);
+  };
 
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
-    const [isTrackModalOpen, setIsTrackModalOpen] = useState(false);
+  if (isLoading) return <Spin size="large" className="mt-10" />;
+  if (isError) return <p className="text-red-500 mt-10">Failed to load orders.</p>;
 
-    const showTrackModal = () => {
-        setIsTrackModalOpen(true);
-    };
+  return (
+    <div className="container mx-auto px-4 md:px-0 py-16">
+      <Breadcrumb
+        items={[
+          { title: <Link href="/"><p className="dark:text-white">Home</p></Link> },
+          { title: <Link href="/myorder"><p className="dark:text-white">My Orders</p></Link> },
+        ]}
+      />
 
-    const handleTrackOk = () => {
-        setIsTrackModalOpen(false);
-    };
+      <div className="py-5 flex justify-end">
+        <Select
+          defaultValue="PROCESSING"
+          style={{ width: 200 }}
+          options={[
+            { value: 'PROCESSING', label: 'Processing' },
+            { value: 'DELIVERED', label: 'Delivered' },
+            { value: 'TO_SHIP', label: 'To Ship' },
+          ]}
+        />
+      </div>
 
-    const handleTrackCancel = () => {
-        setIsTrackModalOpen(false);
-    };
+      <div className="overflow-x-scroll md:overflow-hidden">
+        <table className="w-full border-separate border-spacing-y-8">
+          <thead>
+            <tr className="shadow-[0px_10px_30px_rgba(0,0,0,0.04)]">
+              <th className="p-4 text-left dark:text-white">Orders</th>
+              <th className="p-4 text-left dark:text-white">Price</th>
+              <th className="p-4 text-left dark:text-white">Quantity</th>
+              <th className="p-4 text-left dark:text-white">Subtotal</th>
+              <th className="p-4 text-left dark:text-white">Order Details</th>
+              <th className="p-4 text-left dark:text-white">Order Track</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ordersData?.data?.map((order: Order) => {
+              const firstItem = order.items[0];
+              const subtotal = order.items?.reduce(
+                (sum, item) => sum + (item.price - (item.discount || 0)) * order.quantity,
+                0
+              );
 
-    interface OrderItem {
-        key: string;
-        image: string;
-        name: string;
-        price: number;
-        quantity: number;
-        subtotal: number;
-    }
+              return (
+                <tr key={order.orderId} className="bg-white shadow-[0px_10px_30px_rgba(0,0,0,0.05)] rounded-md">
+                  <td className="p-4 flex items-center gap-3">
+                    <Image
+                      src={firstItem?.productImages?.[0] || productPic}
+                      alt={firstItem?.productName || "Product"}
+                      width={40}
+                      height={40}
+                    />
+                    {firstItem?.productName || "N/A"}
+                  </td>
+                  <td className="p-6">${order.totalAmount?.toFixed(2)}</td>
+                  <td className="p-6">{order.quantity.toString().padStart(2, "0")}</td>
+                  <td className="p-6">${subtotal?.toFixed(2)}</td>
+                  <td className="p-6">
+                    <IoEyeOutline
+                      onClick={() => showDetailModal(order)}
+                      size={25}
+                      className="cursor-pointer text-lg"
+                    />
+                  </td>
+                  <td className="p-6">
+                    <CiDeliveryTruck
+                      onClick={() => showTrackModal(order)}
+                      size={28}
+                      className="cursor-pointer text-lg"
+                    />
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
 
-    const data: OrderItem[] = [
-        {
-            key: "1",
-            image: "/tyre.png",
-            name: "MRF Tyre",
-            price: 650,
-            quantity: 1,
-            subtotal: 650,
-        },
-        {
-            key: "2",
-            image: "/tyre.png",
-            name: "MRF Tyre",
-            price: 550,
-            quantity: 2,
-            subtotal: 1100,
-        },
-        {
-            key: "3",
-            image: "/tyre.png",
-            name: "MRF Tyre",
-            price: 550,
-            quantity: 2,
-            subtotal: 1100,
-        },
-        {
-            key: "4",
-            image: "/tyre.png",
-            name: "MRF Tyre",
-            price: 550,
-            quantity: 2,
-            subtotal: 1100,
-        },
-        {
-            key: "5",
-            image: "/tyre.png",
-            name: "MRF Tyre",
-            price: 550,
-            quantity: 2,
-            subtotal: 1100,
-        },
-    ];
-
-    return (
-        <div className=" container mx-auto px-4 md:px-0 py-16">
-            <Breadcrumb
-                items={[
-                    {
-                        title: <Link href={`/`}><p className="dark:text-white">Home</p></Link>,
-                    },
-                    {
-                        title: <Link className="dark:text-white" href={`/myorder`}><p className="dark:text-white">My Orders</p></Link>,
-                    }
-                ]}
+        {selectedOrder && (
+          <>
+            <ProductDetailModal
+              isModalOpen={isModalOpen}
+              handleOk={() => setIsModalOpen(false)}
+              handleCancel={() => setIsModalOpen(false)}
+              order={selectedOrder}
             />
-            <div className=" py-5 flex justify-end">
-                <Select
-                    defaultValue="delivered"
-                    style={{ width: 200 }}
-                    options={[
-                        { value: 'delivered', label: 'Delivered' },
-                        { value: 'to ship', label: 'To Ship' },
-                    ]}
-                />
-            </div>
-
-            <div className="overflow-x-scroll md:overflow-hidden">
-                <table className="w-full border-separate border-spacing-y-8 ">
-                    <thead>
-                        <tr className="shadow-[0px_10px_30px_rgba(0,0,0,0.04)]">
-                            <th className="p-4 text-left dark:text-white">Orders</th>
-                            <th className="p-4 text-left dark:text-white">Price</th>
-                            <th className="p-4 text-left dark:text-white">Quantity</th>
-                            <th className="p-4 text-left dark:text-white">Subtotal</th>
-                            <th className="p-4 text-left dark:text-white">Order Details</th>
-                            <th className="p-4 text-left dark:text-white">Order Track</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data.map((item) => (
-                            <tr
-                                key={item.key}
-                                className="bg-white shadow-[0px_10px_30px_rgba(0,0,0,0.05)] rounded-md"
-                            >
-                                <td className="p-4 flex items-center gap-3">
-                                    <Image src={productPic} alt={item.name} width={40} height={40} />
-                                    {item.name}
-                                </td>
-                                <td className="p-6">${item.price}</td>
-                                <td className="p-6">{item.quantity.toString().padStart(2, "0")}</td>
-                                <td className="p-6">${item.subtotal}</td>
-                                <td className="p-6">
-                                    <IoEyeOutline onClick={showModal} size={25} className="cursor-pointer text-lg" />
-                                </td>
-                                <td className="p-6">
-                                    <CiDeliveryTruck onClick={showTrackModal} size={28} className="cursor-pointer text-lg" />
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                <ProductDetailModal isModalOpen={isModalOpen} handleOk={handleOk} handleCancel={handleCancel}></ProductDetailModal>
-                <ProductTrackModal isModalOpen={isTrackModalOpen} handleOk={handleTrackOk} handleCancel={handleTrackCancel}></ProductTrackModal>
-            </div>
-
-        </div>
-    );
+            <ProductTrackModal
+              isModalOpen={isTrackModalOpen}
+              handleOk={() => setIsTrackModalOpen(false)}
+              handleCancel={() => setIsTrackModalOpen(false)}
+              order={selectedOrder}
+            />
+          </>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default MyOrder;
