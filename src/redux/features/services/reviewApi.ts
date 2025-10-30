@@ -19,12 +19,29 @@ export interface ReviewData {
   reviews: Review[];
 }
 
+// export interface GetProductReviewsResponse {
+//   success: boolean;
+//   statusCode: number;
+//   message: string;
+//   data: ReviewData;
+// }
+
+
 export interface GetProductReviewsResponse {
   success: boolean;
   statusCode: number;
   message: string;
-  data: ReviewData;
+  data: Review[]; // <-- array directly
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  };
 }
+
 
 // For POST review
 export interface PostReviewRequest {
