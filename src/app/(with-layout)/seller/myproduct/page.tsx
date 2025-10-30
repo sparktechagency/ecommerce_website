@@ -156,9 +156,9 @@ const MyProduct = () => {
       const response = await deleteProduct(productId).unwrap();
       message.success(response.message || "Product deleted successfully!");
       refetch(); // refresh product list
-    } catch (err: any) {
+    } catch (err) {
       console.error("Delete error:", err);
-      message.error(err?.data?.message || "Failed to delete product");
+      message.error("Failed to delete product");
     }
   };
 

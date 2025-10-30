@@ -27,16 +27,17 @@ import {
   useGetEnginesByModelQuery,
 } from "@/redux/features/carBrand/carBrandApi";
 import { useGetAllCategoriesQuery } from "@/redux/features/categories/categoriesApi"
+// import { UploadChangeParam, UploadFile } from "antd/es/upload"
 
 
 
 //category 
-// adjust path
-const { Option } = Select;
-interface Brand {
-  brandId: string;
-  brandName: string;
-}
+// // adjust path
+// const { Option } = Select;
+// interface Brand {
+//   brandId: string;
+//   brandName: string;
+// }
 
 interface Model {
   modelId: string;
@@ -48,11 +49,17 @@ interface Engine {
   hp: number;
 }
 
+interface Brand {
+  brandId: string
+  brandName: string
+
+}
+
 
 interface ProductDetailModalProps {
   isModalOpen: boolean
-  handleOk: () => any
-  handleCancel: () => any
+  handleOk: () => void //boolean //any
+  handleCancel: () =>void //boolean //any
 }
 
 interface OEMReference {
@@ -89,6 +96,29 @@ interface Section {
   subSections: SubSection[]
 }
 
+
+interface ProductFormFields {
+  productName: string
+  productAvailability: "inStock" | "outOfStock"
+  price: number
+  stock?: number
+  discount?: number
+  fitVehicles?: string
+  newSectionName?: string
+  refType?: "OE" | "INTERNAL"
+  refNumber?: string
+  refBrandId?: string
+  shippingCountryCode?: string
+  shippingCountryName?: string
+  shippingCarrier?: string
+  shippingCost?: number
+  shippingDeliveryMin?: number
+  shippingDeliveryMax?: number
+  shippingIsDefault?: boolean
+  // for dynamic fields (section fields/subfields)
+}
+
+
 const AddProductModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handleOk, handleCancel }) => {
 
   //categroy 
@@ -96,7 +126,7 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handl
   const {
     data: categoriesData,
     isLoading: isCategoriesLoading,
-    isError: isCategoriesError,
+    // isError: isCategoriesError,
   } = useGetAllCategoriesQuery({ page: 1, limit: 100 });
   console.log(categoriesData);
 
@@ -107,6 +137,9 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handl
   const [modelId, setModelId] = useState<string>();
   const [modelName, setModelName] = useState<string>();
   const [hp, setHp] = useState<string>();
+
+  console.log(brandName);
+  console.log(modelName);
 
   // Generate years (1976 → current)
   const currentYear = new Date().getFullYear();
@@ -149,15 +182,15 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handl
   // Reset dependent fields
   useEffect(() => {
     setBrandId(undefined);
-    setBrandName(undefined);
+    // setBrandName(undefined);
     setModelId(undefined);
-    setModelName(undefined);
+    // setModelName(undefined);
     setHp(undefined);
   }, [year]);
 
   useEffect(() => {
     setModelId(undefined);
-    setModelName(undefined);
+    // setModelName(undefined);
     setHp(undefined);
   }, [brandId]);
 
@@ -176,9 +209,32 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handl
   const [oemReferences, setOemReferences] = useState<OEMReference[]>([])
   const [shippingInfo, setShippingInfo] = useState<ShippingInfo[]>([])
   const [sections, setSections] = useState<Section[]>([])
-  const [formData, setFormData] = useState<any>({})
-  const [addProduct, { isLoading, error }] = useAddProductMutation();
+  // const [formData, setFormData] = useState<any>({})
+  const [addProduct] = useAddProductMutation();
   const [categoryId, setCategoryId] = useState<string>();
+
+  const [formData, setFormData] = useState<ProductFormFields>({
+    productName: "",
+    productAvailability: "inStock",
+    price: 0,
+    stock: 0,
+    discount: 0,
+    fitVehicles: "",
+    newSectionName: "",
+    refType: undefined,
+    refNumber: "",
+    refBrandId: "",
+    shippingCountryCode: "",
+    shippingCountryName: "",
+    shippingCarrier: "",
+    shippingCost: 0,
+    shippingDeliveryMin: 0,
+    shippingDeliveryMax: 0,
+    shippingIsDefault: false,
+  })
+
+
+
   console.log(categoryId)
 
 
@@ -218,9 +274,17 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handl
 
   const [profilePic, setProfilePic] = useState<File | null>(null)
   const profilePicUrl = profilePic ? URL.createObjectURL(profilePic) : null
-  const handleProfilePicUpload = (e: any) => {
-    setProfilePic(e.file)
-  }
+  // const handleProfilePicUpload = (file: File) => {
+  //   setProfilePic(file)
+  // }
+
+
+  // const handleProfilePicUpload = (info: UploadChangeParam<UploadFile>) => {
+  //   const file = info.file.originFileObj;
+  //   if (file) {
+  //     setProfilePic(file);
+  //   }
+  // };
 
   const handleAddOEMReference = () => {
     const refType = form.getFieldValue("refType")
@@ -480,7 +544,7 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handl
 
       // 4️⃣ Upload
       const result = await addProduct(formDataToSend).unwrap();
-      message.success("✅ Product uploaded successfully!");
+      message.success(`Product uploaded successfully! ${result}`);
 
       // 5️⃣ Reset form
       form.resetFields();
@@ -491,9 +555,9 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handl
       SetNextComponent("details");
       editor?.commands.clearContent();
       handleOk();
-    } catch (error: any) {
+    } catch (error) {
       console.error("Upload error:", error);
-      message.error(error.message || "Error uploading product");
+      message.error("Error uploading product");
     } finally {
       setLoading(false);
     }
@@ -507,8 +571,10 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handl
       setFormData(form.getFieldsValue())
       SetNextComponent("description")
     } catch (error) {
-      message.error("Please fill in all required fields")
+      console.error("Upload error:", error);
+      message.error("Error uploading product");
     }
+
   }
 
   return (
@@ -703,131 +769,6 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handl
 
 
 
-                  {/* <Form.Item
-                    label="Category"
-                    name="category"
-                    rules={[{ required: true, message: "Category is required" }]}
-                  >
-                    <Select
-                      placeholder="Select Category"
-                      allowClear
-                      loading={isCategoriesLoading}
-                      notFoundContent={isCategoriesLoading ? <Spin size="small" /> : null}
-                    >
-                      {categoriesData?.data.map((cat) => (
-                        <Option key={cat.id} value={cat.id}>
-                          {cat.name}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Form.Item> */}
-
-
-                  {/* <Form.Item
-                    label="Category"
-                    name="category"
-                    rules={[{ required: true, message: "Category is required" }]}
-                  >
-                    <Select
-                      placeholder="Select Category"
-                      allowClear
-                      loading={isCategoriesLoading}
-                      value={categoryId}
-                      onChange={(val) => setCategoryId(val)}
-                    >
-                      {categoriesData?.data.map((cat) => (
-                        <Option key={cat.id} value={cat.id}>
-                          {cat.name} {cat.id}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Form.Item> */}
-
-                  {/* <Form.Item
-                    label="Category"
-                    name="category"
-                    rules={[{ required: true, message: "Category is required" }]}
-                  >
-                    <Select
-                      placeholder="Select Category"
-                      allowClear
-                      loading={isCategoriesLoading}
-                      value={categoryId} // state that holds selected category id
-                      onChange={(val: string) => {
-                        console.log("Selected Category ID:", val); // debug
-                        setCategoryId(val);
-                      }}
-                    >
-                      {categoriesData?.data.map((cat) => (
-                        <Option key={cat.id} value={cat.id}>
-                          {cat.name}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Form.Item> */}
-
-                  {/* <Form.Item
-                    label="Category"
-                    name="category"
-                    rules={[{ required: true, message: "Category is required" }]}
-                  >
-                    <Select
-                      placeholder="Select Category"
-                      allowClear
-                      loading={isCategoriesLoading}
-                      onChange={(val: string) => {
-                        // Optional: if you need categoryId elsewhere
-                        setCategoryId(val);
-                      }}
-                    >
-                      {categoriesData?.data.map((cat) => (
-                        <Option key={cat.id} value={cat.id}>
-                          {cat.name}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Form.Item> */}
-                  {/* 
-                  <Form.Item
-                    label="Category"
-                    name="category"
-                    rules={[{ required: true, message: "Category is required" }]}
-                  >
-                    <Select
-                      placeholder="Select Category"
-                      allowClear
-                      loading={isCategoriesLoading}
-                    >
-                      {categoriesData?.data.map((cat) => (
-                        <Option key={cat.id} value={cat.id}>
-                          {cat.name}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Form.Item> */}
-                  {/* 
-                  <Form.Item
-                    label="Category"
-                    name="category"
-                    rules={[{ required: true, message: "Category is required" }]}
-                  >
-                    <Select
-                      placeholder="Select Category"
-                      allowClear
-                      loading={isCategoriesLoading}
-                      options={categoriesData?.data.map(cat => ({ value: cat.id, label: cat.name }))}
-                    />
-                  </Form.Item> */}
-
-
-
-                  {/* <Form.Item label="Brand" name="brand" rules={[{ required: true, message: "Brand is required" }]}>
-                    <Select placeholder="Select Brand" allowClear>
-                      <Option value="68eb81dbf3e7ce80d2119818">BMW</Option>
-                      <Option value="brand2">Audi</Option>
-                      <Option value="brand3">Mercedes</Option>
-                    </Select>
-                  </Form.Item> */}
 
                   <Form.Item label="Price" name="price" rules={[{ required: true, message: "Price is required" }]}>
                     <Input type="number" placeholder="Enter price" />
@@ -841,37 +782,7 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handl
                     <Input type="number" placeholder="Enter discount percentage" />
                   </Form.Item>
 
-                  {/* <Form.Item label="Compatible Models" name="compatibleModels">
-                    <Input placeholder="Enter compatible models" />
-                  </Form.Item>
 
-                  <Form.Item label="Mounting Type" name="mountingType">
-                    <Input placeholder="Enter mounting type" />
-                  </Form.Item>
-
-                  <Form.Item label="Material" name="material">
-                    <Input placeholder="Enter material" />
-                  </Form.Item>
-
-                  <Form.Item label="Color" name="color">
-                    <Input placeholder="Enter color" />
-                  </Form.Item>
-
-                  <Form.Item label="Product Weight (kg)" name="productWeight">
-                    <Input type="number" placeholder="Enter weight" />
-                  </Form.Item>
-
-                  <Form.Item label="Product Length (mm)" name="productLength">
-                    <Input type="number" placeholder="Enter length" />
-                  </Form.Item>
-
-                  <Form.Item label="Product Width (mm)" name="width">
-                    <Input type="number" placeholder="Enter width" />
-                  </Form.Item>
-
-                  <Form.Item label="Product Height (mm)" name="height">
-                    <Input type="number" placeholder="Enter height" />
-                  </Form.Item> */}
 
                   <div className="border-t pt-4 mt-4">
                     <h3 className="text-lg font-semibold mb-3">Product Sections</h3>
@@ -1189,14 +1100,25 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handl
                       </div>
                     </>
                   ) : (
+                    // <Upload
+                    //   showUploadList={false}
+                    //   beforeUpload={() => false}
+                    //   onChange={handleProfilePicUpload}
+                    //   className=""
+                    // >
+                    //   <SlCloudUpload className=" cursor-pointer" size={32} />
+                    // </Upload>
+
                     <Upload
                       showUploadList={false}
-                      beforeUpload={() => false}
-                      onChange={handleProfilePicUpload}
-                      className=""
+                      beforeUpload={(file: File) => {
+                        setProfilePic(file) // update state directly
+                        return false // prevent automatic upload
+                      }}
                     >
-                      <SlCloudUpload className=" cursor-pointer" size={32} />
+                      <SlCloudUpload className="cursor-pointer" size={32} />
                     </Upload>
+
                   )}
                 </div>
               </div>
