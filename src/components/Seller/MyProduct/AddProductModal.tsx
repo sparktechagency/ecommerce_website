@@ -59,7 +59,7 @@ interface Brand {
 interface ProductDetailModalProps {
   isModalOpen: boolean
   handleOk: () => void //boolean //any
-  handleCancel: () =>void //boolean //any
+  handleCancel: () => void //boolean //any
 }
 
 interface OEMReference {
@@ -405,59 +405,59 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handl
     setSections(newSections)
   }
 
-  const handleAddSubSection = (sectionIndex: number) => {
-    const subSectionName = form.getFieldValue(`subsection_name_${sectionIndex}`)
-    if (subSectionName) {
-      const newSections = [...sections]
-      const newSubSection: SubSection = {
-        sectionName: subSectionName,
-        fields: [],
-      }
-      newSections[sectionIndex].subSections.push(newSubSection)
-      setSections(newSections)
-      form.setFieldsValue({ [`subsection_name_${sectionIndex}`]: "" })
-      message.success("Subsection added")
-    } else {
-      message.error("Please enter subsection name")
-    }
-  }
+  // const handleAddSubSection = (sectionIndex: number) => {
+  //   const subSectionName = form.getFieldValue(`subsection_name_${sectionIndex}`)
+  //   if (subSectionName) {
+  //     const newSections = [...sections]
+  //     const newSubSection: SubSection = {
+  //       sectionName: subSectionName,
+  //       fields: [],
+  //     }
+  //     newSections[sectionIndex].subSections.push(newSubSection)
+  //     setSections(newSections)
+  //     form.setFieldsValue({ [`subsection_name_${sectionIndex}`]: "" })
+  //     message.success("Subsection added")
+  //   } else {
+  //     message.error("Please enter subsection name")
+  //   }
+  // }
 
-  const handleRemoveSubSection = (sectionIndex: number, subSectionIndex: number) => {
-    const newSections = [...sections]
-    newSections[sectionIndex].subSections.splice(subSectionIndex, 1)
-    setSections(newSections)
-  }
+  // const handleRemoveSubSection = (sectionIndex: number, subSectionIndex: number) => {
+  //   const newSections = [...sections]
+  //   newSections[sectionIndex].subSections.splice(subSectionIndex, 1)
+  //   setSections(newSections)
+  // }
 
-  const handleAddFieldToSubSection = (sectionIndex: number, subSectionIndex: number) => {
-    const fieldName = form.getFieldValue(`subfield_name_${sectionIndex}_${subSectionIndex}`)
-    const fieldValue = form.getFieldValue(`subfield_value_${sectionIndex}_${subSectionIndex}`)
-    const fieldType = form.getFieldValue(`subfield_type_${sectionIndex}_${subSectionIndex}`)
+  // const handleAddFieldToSubSection = (sectionIndex: number, subSectionIndex: number) => {
+  //   const fieldName = form.getFieldValue(`subfield_name_${sectionIndex}_${subSectionIndex}`)
+  //   const fieldValue = form.getFieldValue(`subfield_value_${sectionIndex}_${subSectionIndex}`)
+  //   const fieldType = form.getFieldValue(`subfield_type_${sectionIndex}_${subSectionIndex}`)
 
-    if (fieldName && fieldValue !== undefined && fieldValue !== "") {
-      const newSections = [...sections]
-      const newField: Field = {
-        fieldName,
-        valueType: fieldType || "string",
-        ...(fieldType === "float" ? { valueFloat: Number.parseFloat(fieldValue) } : { valueString: fieldValue }),
-      }
-      newSections[sectionIndex].subSections[subSectionIndex].fields.push(newField)
-      setSections(newSections)
-      form.setFieldsValue({
-        [`subfield_name_${sectionIndex}_${subSectionIndex}`]: "",
-        [`subfield_value_${sectionIndex}_${subSectionIndex}`]: "",
-        [`subfield_type_${sectionIndex}_${subSectionIndex}`]: "string",
-      })
-      message.success("Field added to subsection")
-    } else {
-      message.error("Please fill in field name and value")
-    }
-  }
+  //   if (fieldName && fieldValue !== undefined && fieldValue !== "") {
+  //     const newSections = [...sections]
+  //     const newField: Field = {
+  //       fieldName,
+  //       valueType: fieldType || "string",
+  //       ...(fieldType === "float" ? { valueFloat: Number.parseFloat(fieldValue) } : { valueString: fieldValue }),
+  //     }
+  //     newSections[sectionIndex].subSections[subSectionIndex].fields.push(newField)
+  //     setSections(newSections)
+  //     form.setFieldsValue({
+  //       [`subfield_name_${sectionIndex}_${subSectionIndex}`]: "",
+  //       [`subfield_value_${sectionIndex}_${subSectionIndex}`]: "",
+  //       [`subfield_type_${sectionIndex}_${subSectionIndex}`]: "string",
+  //     })
+  //     message.success("Field added to subsection")
+  //   } else {
+  //     message.error("Please fill in field name and value")
+  //   }
+  // }
 
-  const handleRemoveFieldFromSubSection = (sectionIndex: number, subSectionIndex: number, fieldIndex: number) => {
-    const newSections = [...sections]
-    newSections[sectionIndex].subSections[subSectionIndex].fields.splice(fieldIndex, 1)
-    setSections(newSections)
-  }
+  // const handleRemoveFieldFromSubSection = (sectionIndex: number, subSectionIndex: number, fieldIndex: number) => {
+  //   const newSections = [...sections]
+  //   newSections[sectionIndex].subSections[subSectionIndex].fields.splice(fieldIndex, 1)
+  //   setSections(newSections)
+  // }
 
 
 
@@ -823,8 +823,8 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handl
                                 </Form.Item>
                                 <Form.Item name={`field_type_${sectionIndex}`} noStyle initialValue="string">
                                   <Select className="w-24">
-                                    <Option value="string">String</Option>
-                                    <Option value="float">Float</Option>
+                                    <Option value="string">Text</Option>
+                                    <Option value="float">Number</Option>
                                   </Select>
                                 </Form.Item>
                                 <Form.Item name={`field_value_${sectionIndex}`} noStyle>
@@ -864,99 +864,7 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handl
                             </div>
 
                             {/* Subsections */}
-                            <div className="bg-white p-3 rounded">
-                              <p className="text-sm font-semibold mb-2">Subsections</p>
-                              <div className="flex gap-2 mb-2">
-                                <Form.Item name={`subsection_name_${sectionIndex}`} noStyle>
-                                  <Input placeholder="Subsection name (e.g., Dimensions)" className="flex-1" />
-                                </Form.Item>
-                                <button
-                                  type="button"
-                                  onClick={() => handleAddSubSection(sectionIndex)}
-                                  className="bg-[#f56100] px-3 py-2 text-white cursor-pointer rounded"
-                                >
-                                  <IoAdd size={16} />
-                                </button>
-                              </div>
-
-                              {section.subSections.length > 0 && (
-                                <div className="space-y-2">
-                                  {section.subSections.map((subSection, subSectionIndex) => (
-                                    <div
-                                      key={subSectionIndex}
-                                      className="border-l-4 border-[#f56100] pl-3 py-2 bg-gray-100 rounded"
-                                    >
-                                      <div className="flex justify-between items-center mb-2">
-                                        <p className="font-semibold text-sm">{subSection.sectionName}</p>
-                                        <button
-                                          type="button"
-                                          onClick={() => handleRemoveSubSection(sectionIndex, subSectionIndex)}
-                                          className="text-red-500 cursor-pointer"
-                                        >
-                                          <MdDelete size={16} />
-                                        </button>
-                                      </div>
-
-                                      {/* Fields in subsection */}
-                                      <div className="flex gap-2 mb-2">
-                                        <Form.Item name={`subfield_name_${sectionIndex}_${subSectionIndex}`} noStyle>
-                                          <Input placeholder="Field name" className="flex-1" size="small" />
-                                        </Form.Item>
-                                        <Form.Item
-                                          name={`subfield_type_${sectionIndex}_${subSectionIndex}`}
-                                          noStyle
-                                          initialValue="string"
-                                        >
-                                          <Select className="w-20" size="small">
-                                            <Option value="string">String</Option>
-                                            <Option value="float">Float</Option>
-                                          </Select>
-                                        </Form.Item>
-                                        <Form.Item name={`subfield_value_${sectionIndex}_${subSectionIndex}`} noStyle>
-                                          <Input placeholder="Value" className="flex-1" size="small" />
-                                        </Form.Item>
-                                        <button
-                                          type="button"
-                                          onClick={() => handleAddFieldToSubSection(sectionIndex, subSectionIndex)}
-                                          className="bg-[#f56100] px-2 py-1 text-white cursor-pointer rounded text-sm"
-                                        >
-                                          <IoAdd size={14} />
-                                        </button>
-                                      </div>
-
-                                      {subSection.fields.length > 0 && (
-                                        <div className="space-y-1">
-                                          {subSection.fields.map((field, fieldIndex) => (
-                                            <div
-                                              key={fieldIndex}
-                                              className="flex justify-between items-center bg-white p-1 rounded text-xs"
-                                            >
-                                              <span>
-                                                {field.fieldName}:{" "}
-                                                {field.valueType === "float" ? field.valueFloat : field.valueString}
-                                              </span>
-                                              <button
-                                                type="button"
-                                                onClick={() =>
-                                                  handleRemoveFieldFromSubSection(
-                                                    sectionIndex,
-                                                    subSectionIndex,
-                                                    fieldIndex,
-                                                  )
-                                                }
-                                                className="text-red-500 cursor-pointer"
-                                              >
-                                                ×
-                                              </button>
-                                            </div>
-                                          ))}
-                                        </div>
-                                      )}
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
+                           
                           </div>
                         ))}
                       </div>

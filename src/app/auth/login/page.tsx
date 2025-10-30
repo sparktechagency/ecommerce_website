@@ -144,7 +144,7 @@ export default function LogInForm(): JSX.Element {
 
       setTimeout(() => {
         router.push("/");
-      }, 600);
+      }, 50);
     } catch (error) {
       const err = error as { data?: { message?: string }; message?: string };
       api.error({

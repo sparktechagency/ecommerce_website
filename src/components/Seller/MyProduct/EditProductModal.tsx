@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Form, Input, Select, Upload, Spin, Modal, message } from "antd";
+import { Form, Input, Upload, Spin, Modal, message } from "antd";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TextAlign from "@tiptap/extension-text-align";
@@ -193,7 +193,7 @@ const EditProductModal: React.FC<EditProductModalProps> = ({
                     <p className="text-red-500">Failed to load product details.</p>
                 ) : nextComponent === "details" ? (
                     <>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
+                        {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
                             <div className="flex items-center w-full">
                                 <span className="bg-[#f56100] py-[11px] px-4 text-white">1</span>
                                 <Select placeholder="Year" className="w-full" />
@@ -210,7 +210,7 @@ const EditProductModal: React.FC<EditProductModalProps> = ({
                                 <span className="bg-[#f56100] py-[11px] px-4 text-white">4</span>
                                 <Select placeholder="Engine Power" className="w-full" />
                             </div>
-                        </div>
+                        </div> */}
 
                         <div className="mt-8">
                             <Form form={form} layout="vertical" className="mx-auto p-5 bg-white rounded-md">
@@ -254,29 +254,6 @@ const EditProductModal: React.FC<EditProductModalProps> = ({
                                 <EditorContent editor={editor} />
                             </div>
                         </div>
-                        {/* <div className="mb-5">
-              <h2 className="text-xl">Product Images</h2>
-              <div className="h-30 flex items-center justify-center rounded-2xl border border-dashed border-primary mt-4">
-                {profilePic ? (
-                  <Image
-                    src={profilePicUrl || ""}
-                    width={500}
-                    height={500}
-                    alt="image"
-                    className="border-4 w-32"
-                  />
-                ) : (
-                  <Upload
-                    showUploadList={false}
-                    beforeUpload={() => false}
-                    onChange={handleProfilePicUpload}
-                  >
-                    <SlCloudUpload className="cursor-pointer" size={32} />
-                  </Upload>
-                )}
-              </div>
-            </div> */}
-
 
                         <div className="mb-5">
                             <h2 className="text-xl">Product Images</h2>
