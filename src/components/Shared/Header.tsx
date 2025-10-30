@@ -6,7 +6,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import Cookies from "js-cookie";
-import { ConfigProvider, Input, message } from "antd";
+import { ConfigProvider, Input, } from "antd";
 import { FiSearch } from "react-icons/fi";
 import { IoIosHeartEmpty } from "react-icons/io";
 import { PiShoppingCartLight } from "react-icons/pi";
@@ -22,10 +22,11 @@ import { useGetCartQuery } from "@/redux/features/cart/cartApi";
 import { useGetWishlistQuery } from "@/redux/features/wishlist/wishlistApi";
 import { useSwitchUserRoleMutation } from "@/redux/features/auth/switchRoleApi";
 import { RootState } from "@/redux/store";
-
+import { App } from "antd";
 const Header = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const { message } = App.useApp();
 
   const user = useSelector((state: RootState) => state.logInUser?.user);
 

@@ -14,22 +14,42 @@ export interface ProductReviewItem {
   price: number;
   discount: number;
   productImages: string[];
+  data:string;
 }
+
+// export interface ProductReviewsResponse {
+//   success: boolean;
+//   statusCode: number;
+//   message: string;
+//   data: ProductReviewItem[];
+//   meta: {
+//     page: number;
+//     limit: number;
+//     total: number;
+//     totalPages: number;
+//     hasNextPage: boolean;
+//     hasPrevPage: boolean;
+//   };
+// }
+
 
 export interface ProductReviewsResponse {
   success: boolean;
   statusCode: number;
   message: string;
-  data: ProductReviewItem[];
-  meta: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-    hasNextPage: boolean;
-    hasPrevPage: boolean;
+  data: {
+    data: ProductReviewItem[];
+    meta: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+      hasNextPage: boolean;
+      hasPrevPage: boolean;
+    };
   };
 }
+
 
 // 🧩 API endpoint
 export const reviewApi = baseApi.injectEndpoints({
