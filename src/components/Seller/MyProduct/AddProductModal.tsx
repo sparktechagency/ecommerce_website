@@ -27,6 +27,7 @@ import {
   useGetEnginesByModelQuery,
 } from "@/redux/features/carBrand/carBrandApi";
 import { useGetAllCategoriesQuery } from "@/redux/features/categories/categoriesApi"
+import { useRouter } from "next/navigation"
 // import { UploadChangeParam, UploadFile } from "antd/es/upload"
 
 
@@ -139,7 +140,7 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handl
   const [hp, setHp] = useState<string>();
   // const [brandeID ,setBrandeId] = useState<string>();
 
-  
+
   console.log("brand id ", brandId);
 
   console.log(brandName);
@@ -409,62 +410,8 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handl
     setSections(newSections)
   }
 
-  // const handleAddSubSection = (sectionIndex: number) => {
-  //   const subSectionName = form.getFieldValue(`subsection_name_${sectionIndex}`)
-  //   if (subSectionName) {
-  //     const newSections = [...sections]
-  //     const newSubSection: SubSection = {
-  //       sectionName: subSectionName,
-  //       fields: [],
-  //     }
-  //     newSections[sectionIndex].subSections.push(newSubSection)
-  //     setSections(newSections)
-  //     form.setFieldsValue({ [`subsection_name_${sectionIndex}`]: "" })
-  //     message.success("Subsection added")
-  //   } else {
-  //     message.error("Please enter subsection name")
-  //   }
-  // }
 
-  // const handleRemoveSubSection = (sectionIndex: number, subSectionIndex: number) => {
-  //   const newSections = [...sections]
-  //   newSections[sectionIndex].subSections.splice(subSectionIndex, 1)
-  //   setSections(newSections)
-  // }
-
-  // const handleAddFieldToSubSection = (sectionIndex: number, subSectionIndex: number) => {
-  //   const fieldName = form.getFieldValue(`subfield_name_${sectionIndex}_${subSectionIndex}`)
-  //   const fieldValue = form.getFieldValue(`subfield_value_${sectionIndex}_${subSectionIndex}`)
-  //   const fieldType = form.getFieldValue(`subfield_type_${sectionIndex}_${subSectionIndex}`)
-
-  //   if (fieldName && fieldValue !== undefined && fieldValue !== "") {
-  //     const newSections = [...sections]
-  //     const newField: Field = {
-  //       fieldName,
-  //       valueType: fieldType || "string",
-  //       ...(fieldType === "float" ? { valueFloat: Number.parseFloat(fieldValue) } : { valueString: fieldValue }),
-  //     }
-  //     newSections[sectionIndex].subSections[subSectionIndex].fields.push(newField)
-  //     setSections(newSections)
-  //     form.setFieldsValue({
-  //       [`subfield_name_${sectionIndex}_${subSectionIndex}`]: "",
-  //       [`subfield_value_${sectionIndex}_${subSectionIndex}`]: "",
-  //       [`subfield_type_${sectionIndex}_${subSectionIndex}`]: "string",
-  //     })
-  //     message.success("Field added to subsection")
-  //   } else {
-  //     message.error("Please fill in field name and value")
-  //   }
-  // }
-
-  // const handleRemoveFieldFromSubSection = (sectionIndex: number, subSectionIndex: number, fieldIndex: number) => {
-  //   const newSections = [...sections]
-  //   newSections[sectionIndex].subSections[subSectionIndex].fields.splice(fieldIndex, 1)
-  //   setSections(newSections)
-  // }
-
-
-
+  const router = useRouter();
 
   const handleSubmitProduct = async () => {
     try {
@@ -559,6 +506,11 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handl
       SetNextComponent("details");
       editor?.commands.clearContent();
       handleOk();
+
+      router.refresh();
+      setTimeout(() => {
+        window.location.reload(); // Full page reload
+      }, 1000); // 1 second delay
     } catch (error) {
       console.error("Upload error:", error);
       message.error("Error uploading product");
