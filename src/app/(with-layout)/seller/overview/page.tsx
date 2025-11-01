@@ -114,6 +114,7 @@ const Overview = () => {
   const currentOrdersCount = dashboardData?.data?.currentOrders || 0;
   const totalOrdersCount = dashboardData?.data?.totalOrders || 0;
   const availableBalance = dashboardData?.data?.totalSalesAmount || 0;
+  const SellerName = dashboardData?.data?.sellerName || "Seller" ;
 
   return (
     <div className="container mx-auto px-4 md:px-0 py-8 md:py-16">
@@ -122,7 +123,7 @@ const Overview = () => {
         <Image src={logo} width={400} height={400} alt="logo" className="w-22 rounded-full" />
         <div>
           <h1 className="text-3xl sm:text-4xl font-semibold dark:text-white">
-            Welcome Back, Hatem!
+            Welcome Back, {SellerName}!
           </h1>
           <p className="mt-1 dark:text-white">
             Here’s an overview of your business performance and activities today.

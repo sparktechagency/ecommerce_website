@@ -6,6 +6,7 @@ export interface DashboardSummary {
   totalOrders: number;
   totalSalesAmount: number;
   currentOrders: number;
+  sellerName: string ;
 }
 
 export interface DashboardSummaryResponse {

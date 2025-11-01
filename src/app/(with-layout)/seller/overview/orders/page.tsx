@@ -156,6 +156,24 @@ import { CiSearch } from "react-icons/ci";
 import { useGetCurrentOrdersQuery} from "@/redux/features/order/seller/orderApi";
 import { useUpdateOrderStatusMutation } from "@/redux/features/seller/orderApi";
 
+
+
+interface OrderItem {
+  orderId: string;
+  customerName: string;
+  customerImage: string;
+  createdAt: string;
+  status: string;
+  paymentStatus?: string;
+  items?: {
+    productName: string;
+    productImages: string[];
+    price?: number;
+  }[];
+}
+
+
+
 const { Option } = Select;
 
 const Orders = () => {
@@ -165,7 +183,7 @@ const Orders = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
   const [loadingOrderId, setLoadingOrderId] = useState<string | null>(null);
-  const [localOrders, setLocalOrders] = useState<any[]>([]);
+  const [localOrders, setLocalOrders] = useState<OrderItem[]>([]);
 
   // Initialize localOrders when API data changes
   useEffect(() => {

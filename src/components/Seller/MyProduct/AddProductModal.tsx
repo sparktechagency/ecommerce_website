@@ -137,6 +137,9 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handl
   const [modelId, setModelId] = useState<string>();
   const [modelName, setModelName] = useState<string>();
   const [hp, setHp] = useState<string>();
+  // const [brandeID ,setBrandeId] = useState<string>();
+
+  
   console.log("brand id ", brandId);
 
   console.log(brandName);

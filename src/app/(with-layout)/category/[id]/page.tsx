@@ -2,38 +2,23 @@
 import { IoArrowForward } from "react-icons/io5";
 import image from '../../../../../public/slide-image.png'
 import ProductCart, { Product } from "@/components/Home/ProductCart";
-import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
-import mobile from '../../../../../public/mobile.png'
-import mobile2 from '../../../../../public/mobile2.png'
-import mobile3 from '../../../../../public/mobile3.png'
-import Image from "next/image";
-import { useState } from "react";
-import { MdOutlineArrowBackIosNew, MdOutlineArrowForwardIos } from "react-icons/md";
+
+// import { useState } from "react";
 import { useGetProductsByCategoryQuery } from "@/redux/features/categories/categoriesApi";
 import { useParams } from "next/navigation";
-import { Swiper as SwiperClass } from 'swiper';
+// import { Swiper as SwiperClass } from 'swiper';
 import ProductSkeleton from "@/utils/ProductSkeleton";
 import Link from "next/link";
 
 const Category = () => {
-  const [swiper, setSwiper] = useState<SwiperClass | null>(null);
-  const [select, setSelect] = useState<string | null>(null);
+  // const [swiper, setSwiper] = useState<SwiperClass | null>(null);
+  // const [select, setSelect] = useState<string | null>(null);
 
   const params = useParams();
   const categoryId = params?.id as string; // <-- get category id from the route
   const { data: productData, isLoading: prodLoading } = useGetProductsByCategoryQuery(categoryId ?? "");
   const products: Product[] = productData?.data ?? [];
-
-  const items = [
-    { src: mobile, alt: 'Engine Oil', title: 'Engine Oil' },
-    { src: mobile2, alt: 'Exhaust', title: 'Exhaust' },
-    { src: mobile3, alt: 'Spark Plug', title: 'Spark Plug' },
-    { src: mobile, alt: 'Head Light', title: 'Head Light' },
-    { src: mobile3, alt: 'Wheel', title: 'Wheel' },
-    { src: mobile2, alt: 'Engine', title: 'Engine' },
-    { src: mobile, alt: 'Spark Plug', title: 'Spark Plug' },
-  ];
 
   return (
     <div className="container mx-auto px-4 md:px-0 py-8 md:py-16">
