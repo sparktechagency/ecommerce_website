@@ -57,7 +57,7 @@ const Footer = () => {
         <div>
           <h2 className="text-2xl text-white mb-4">Exclusive</h2>
           <p className="text-xl text-white mb-4">Subscribe</p>
-          <p className="text-lg text-white mb-3">Get 10% off your first order</p>
+          {/* <p className="text-lg text-white mb-3">Get 10% off your first order</p> */}
           <ConfigProvider theme={{
             components: {
               Input: {

@@ -103,10 +103,9 @@ const CategoryComponent = () => {
         {catLoading &&
           Array.from({ length: 6 }).map((_, index) => (
             <SwiperSlide key={index}>
-              <div className="border flex flex-col items-center justify-center h-[170px] rounded animate-pulse bg-gray-200 dark:bg-gray-700">
+              <div className="border border-gray-200 flex flex-col items-center justify-center h-[170px] rounded animate-pulse bg-gray-200 dark:bg-gray-700">
                 <div className="h-24 w-24 bg-gray-300 rounded mb-2"></div>
                 <div className="h-4 w-3/4 bg-gray-300 rounded mb-1"></div>
-                <div className="h-3 w-1/2 bg-gray-300 rounded"></div>
               </div>
             </SwiperSlide>
           ))}
