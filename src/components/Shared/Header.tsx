@@ -189,7 +189,13 @@ const Header = () => {
                 Log In
               </Link>
             )}
+            {user?.role === "SELLER" && (
+              <Link href="/seller/overview" className="text-lg hover:text-primary no-underline">
+                Dashboard
+              </Link>
+            )}
           </div>
+
 
 
           {/* Search, Wishlist, Cart, User */}
@@ -214,29 +220,34 @@ const Header = () => {
               />
             </ConfigProvider>
 
-            {/* Wishlist */}
-            <div className="relative">
-              <Link href={`/wishlist`}>
-                <IoIosHeartEmpty className="w-8 h-8 cursor-pointer dark:text-white" />
-              </Link>
-              {!isWishlistLoading && wishlistCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-yellow-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-semibold">
-                  {wishlistCount}
-                </span>
-              )}
-            </div>
+            {/* Wishlist & Cart only for Buyer */}
+            {user?.role !== "SELLER" && (
+              <>
+                {/* Wishlist */}
+                <div className="relative">
+                  <Link href={`/wishlist`}>
+                    <IoIosHeartEmpty className="w-8 h-8 cursor-pointer dark:text-white" />
+                  </Link>
+                  {!isWishlistLoading && wishlistCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-yellow-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-semibold">
+                      {wishlistCount}
+                    </span>
+                  )}
+                </div>
 
-            {/* Cart */}
-            <div className="relative">
-              <Link href={`/cart`}>
-                <PiShoppingCartLight className="w-8 h-8 cursor-pointer dark:text-white" />
-              </Link>
-              {!isCartLoading && cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-semibold">
-                  {cartCount}
-                </span>
-              )}
-            </div>
+                {/* Cart */}
+                <div className="relative">
+                  <Link href={`/cart`}>
+                    <PiShoppingCartLight className="w-8 h-8 cursor-pointer dark:text-white" />
+                  </Link>
+                  {!isCartLoading && cartCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-semibold">
+                      {cartCount}
+                    </span>
+                  )}
+                </div>
+              </>
+            )}
 
             {/* User Submenu */}
             {token && (
@@ -248,6 +259,7 @@ const Header = () => {
               </div>
             )}
           </div>
+
 
           {/* Mobile Menu Icon */}
           <div className="block lg:hidden">

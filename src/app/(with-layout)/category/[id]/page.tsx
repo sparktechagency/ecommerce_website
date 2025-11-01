@@ -56,42 +56,6 @@ const Category = () => {
         <div className="xl:w-[60%] h-[400px] bg-cover bg-center" style={{ backgroundImage: `url(${image.src})` }}></div>
       </div>
 
-      {/* ---------- Brands Section (Static) ---------- */}
-      <div>
-        <h2 className=" text-3xl lg:text-4xl xl:text-6xl text-center mt-14 md:mt-20">Brands</h2>
-      </div>
-
-      {/* ---------- Categories Carousel ---------- */}
-      <div className=" flex justify-between items-center gap-5 mt-8 md:mt-14 mb-8">
-        <button onClick={() => swiper?.slidePrev()}>
-          <MdOutlineArrowBackIosNew className="cursor-pointer w-6 md:w-10 h-6 md:h-10" />
-        </button>
-        <Swiper
-          spaceBetween={30}
-          breakpoints={{
-            1200: { slidesPerView: 5 },
-            1024: { slidesPerView: 3 },
-            800: { slidesPerView: 3 },
-            600: { slidesPerView: 3 },
-            480: { slidesPerView: 2 },
-            320: { slidesPerView: 1 },
-          }}
-          onSwiper={(swiperInstance) => setSwiper(swiperInstance)}
-          className="flex"
-        >
-          {items.map((item, index) => (
-            <SwiperSlide key={index}>
-              <div onClick={() => setSelect(item.title)} className={`${item.title === select && " "} flex flex-col items-center justify-center  rounded cursor-pointer`}>
-                <Image src={item.src} alt={item.alt} width={500} height={500} className="dark:text-white w-52" />
-                <h3 className="text-xl text-center mt-4 dark:text-white">{item.title}</h3>
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-        <button onClick={() => swiper?.slideNext()}>
-          <MdOutlineArrowForwardIos className="cursor-pointer w-6 md:w-10 h-6 md:h-10" />
-        </button>
-      </div>
 
       {/* ---------- Explore Products Section (Dynamic) ---------- */}
       <div className=" pt-16">

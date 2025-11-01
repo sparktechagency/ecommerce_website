@@ -137,6 +137,7 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handl
   const [modelId, setModelId] = useState<string>();
   const [modelName, setModelName] = useState<string>();
   const [hp, setHp] = useState<string>();
+  console.log("brand id ", brandId);
 
   console.log(brandName);
   console.log(modelName);
@@ -601,69 +602,6 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handl
           </div>
           {nextCompoment === "details" ? (
             <>
-              {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
-                <div className="flex items-center w-full">
-                  <span className="bg-[#f56100] py-[11px] px-4 text-white">1</span>
-                  <Select
-                    placeholder="Year"
-                    className="w-full"
-                    options={[
-                      { value: "2025", label: "2025" },
-                      { value: "2024", label: "2024" },
-                      { value: "2023", label: "2023" },
-                      { value: "2022", label: "2022" },
-                      { value: "2021", label: "2021" },
-                    ]}
-                  />
-                </div>
-                <div className="flex items-center w-full">
-                  <span className="bg-[#f56100] py-[11px] px-4 text-white">2</span>
-                  <Select
-                    placeholder="Brand"
-                    className="w-full"
-                    options={[
-                      { value: "toyota", label: "Toyota" },
-                      { value: "honda", label: "Honda" },
-                      { value: "ford", label: "Ford" },
-                      { value: "chevrolet", label: "Chevrolet" },
-                      { value: "bmw", label: "BMW" },
-                      { value: "audi", label: "Audi" },
-                      { value: "mercedes", label: "Mercedes-Benz" },
-                    ]}
-                  />
-                </div>
-                <div className="flex items-center w-full">
-                  <span className="bg-[#f56100] py-[11px] px-4 text-white">3</span>
-                  <Select
-                    placeholder="Model"
-                    className="w-full"
-                    options={[
-                      { value: "camry", label: "Toyota Camry" },
-                      { value: "accord", label: "Honda Accord" },
-                      { value: "mustang", label: "Ford Mustang" },
-                      { value: "impala", label: "Chevrolet Impala" },
-                      { value: "x5", label: "BMW X5" },
-                      { value: "a4", label: "Audi A4" },
-                      { value: "c_class", label: "Mercedes-Benz C-Class" },
-                    ]}
-                  />
-                </div>
-                <div className="flex items-center w-full">
-                  <span className="bg-[#f56100] py-[11px] px-4 text-white">4</span>
-                  <Select
-                    placeholder="Engine Power"
-                    className="w-full"
-                    options={[
-                      { value: "150", label: "150 HP" },
-                      { value: "200", label: "200 HP" },
-                      { value: "250", label: "250 HP" },
-                      { value: "300", label: "300 HP" },
-                      { value: "350", label: "350 HP" },
-                      { value: "400", label: "400 HP" },
-                    ]}
-                  />
-                </div>
-              </div> */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
                 {/* Year */}
                 <div className="flex items-center w-full">
@@ -864,7 +802,7 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handl
                             </div>
 
                             {/* Subsections */}
-                           
+
                           </div>
                         ))}
                       </div>
@@ -883,9 +821,20 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({ isModalOpen, handl
                       <Form.Item name="refNumber" noStyle initialValue="">
                         <Input placeholder="Reference number" className="w-1/3" />
                       </Form.Item>
-                      <Form.Item name="refBrandId" noStyle initialValue="">
+                      {/* <Form.Item name="refBrandId" noStyle initialValue="">
                         <Input placeholder="Brand ID (for OE)" className="w-1/4" />
+                      </Form.Item> */}
+
+
+                      <Form.Item name="refBrandId" noStyle>
+                        <Input
+                          placeholder="Brand ID (auto-filled from Engine Power)"
+                          className="w-1/4"
+                          value={brandId}
+                          disabled
+                        />
                       </Form.Item>
+
                       <button
                         type="button"
                         onClick={handleAddOEMReference}
