@@ -98,9 +98,21 @@ const About = () => {
                 <h2 className="text-2xl md:text-3xl lg:text-4xl mb-2">{member.name}</h2>
                 <p className="text-md md:text-lg lg:text-xl mb-3">{member.role}</p>
                 <div className="flex gap-4 items-center">
-                  {member.twitter && <FaXTwitter size={25} />}
-                  {member.instagram && <FaInstagram size={25} />}
-                  {member.linkedin && <RiLinkedinLine size={25} />}
+                  {member.twitter && (
+                    <a href={member.twitter} target="_blank" rel="noopener noreferrer">
+                      <FaXTwitter size={25} className="hover:text-primary transition" />
+                    </a>
+                  )}
+                  {member.instagram && (
+                    <a href={member.instagram} target="_blank" rel="noopener noreferrer">
+                      <FaInstagram size={25} className="hover:text-primary transition" />
+                    </a>
+                  )}
+                  {member.linkedin && (
+                    <a href={member.linkedin} target="_blank" rel="noopener noreferrer">
+                      <RiLinkedinLine size={25} className="hover:text-primary transition" />
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
