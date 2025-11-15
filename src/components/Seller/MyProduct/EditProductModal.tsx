@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Spin, Modal, message, Upload } from "antd";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -185,9 +187,11 @@ const [selectedValues, setSelectedValues] = useState<{
 }>({});
 
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const handleSelectChange = (values: typeof selectedValues) =>
-    setSelectedValues(values);
+
+// const handleSelectChange = useCallback((values: typeof selectedValues) => {
+//   setSelectedValues(values);
+// }, []);
+
 
     useEffect(() => {
         setBrandId(undefined);
@@ -207,17 +211,17 @@ const [selectedValues, setSelectedValues] = useState<{
         setHp(undefined);
     }, [modelId]);
 
-  useEffect(() => {
-    handleSelectChange({
-      year,
-      brandId,
-      brandName,
-      modelId,
-      modelName,
-      hp,
-      categoryId,
-    });
-  }, [year, brandId, brandName, modelId, modelName, hp, categoryId, handleSelectChange]);
+  // useEffect(() => {
+  //   handleSelectChange({
+  //     year,
+  //     brandId,
+  //     brandName,
+  //     modelId,
+  //     modelName,
+  //     hp,
+  //     categoryId,
+  //   });
+  // }, [year, brandId, brandName, modelId, modelName, hp, categoryId, handleSelectChange]);
 
 
 
@@ -463,72 +467,111 @@ const [selectedValues, setSelectedValues] = useState<{
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             {/* 1️⃣ Year */}
-            <Select
-                placeholder="Select Year"
-                options={yearOptions}
-                value={year}
-                onChange={(val: string) => setYear(val)}
-                className="w-full"
-            />
+<Select
+  placeholder="Select Year"
+  options={yearOptions}
+  value={year}
+  onChange={(val: string) => {
+    setYear(val);
+    setSelectedValues((prev) => ({ ...prev, year: val }));
+  }}
+  className="w-full"
+/>
+
 
             {/* 2️⃣ Brand */}
-            <Select
-                placeholder="Select Brand"
-                loading={isBrandsLoading}
-                options={brandOptions}
-                value={brandId}
-                onChange={(val: string) => {
-                    setBrandId(val);
-                    const selected = (brandsData?.data as Brand[] | undefined)?.find((b) => b.brandId === val);
-                    setBrandName(selected?.brandName);
-                }}
-                disabled={!year}
-                className="w-full"
-            />
+     <Select
+  placeholder="Select Brand"
+  loading={isBrandsLoading}
+  options={brandOptions}
+  value={brandId}
+  onChange={(val: string) => {
+    setBrandId(val);
+    const selected = (brandsData?.data as Brand[] | undefined)?.find(
+      (b) => b.brandId === val
+    );
+    const name = selected?.brandName;
+
+    setBrandName(name);
+
+    setSelectedValues((prev) => ({
+      ...prev,
+      brandId: val,
+      brandName: name,
+    }));
+  }}
+  disabled={!year}
+  className="w-full"
+/>
+
 
             {/* 3️⃣ Model */}
-            <Select
-                placeholder="Select Model"
-                loading={isModelsLoading}
-                options={modelOptions}
-                value={modelId}
-                onChange={(val: string) => {
-                    setModelId(val);
-                    const selected = (modelsData?.data as Model[] | undefined)?.find((m) => m.modelId === val);
-                    setModelName(selected?.modelName);
-                }}
-                disabled={!brandId}
-                className="w-full"
-            />
+ <Select
+  placeholder="Select Model"
+  loading={isModelsLoading}
+  options={modelOptions}
+  value={modelId}
+  onChange={(val: string) => {
+    setModelId(val);
+    const selected = (modelsData?.data as Model[] | undefined)?.find(
+      (m) => m.modelId === val
+    );
+    const name = selected?.modelName;
+
+    setModelName(name);
+
+    setSelectedValues((prev) => ({
+      ...prev,
+      modelId: val,
+      modelName: name,
+    }));
+  }}
+  disabled={!brandId}
+  className="w-full"
+/>
 
        
     {/* Engine Power (Multiple Selection) */}
                 <div className="flex items-center w-full">
       
-                  <Select
-                    placeholder="Engine Power"
-                    className="w-full"
-                    mode="multiple"
-                    loading={isEnginesLoading}
-                    options={hpOptions}
-                    value={hp} // Using fitVehicles as the value to store selected MongoDB _id(s)
-                     onChange={(val: string) => setHp(val)}
-                    disabled={!modelId}
-                  />
+         <Select
+  placeholder="Engine Power"
+  className="w-full"
+  mode="multiple"
+  loading={isEnginesLoading}
+  options={hpOptions}
+  value={hp}
+  onChange={(val: any) => {
+    // TODO: val multiple hole ekhane handle koro, ekhon just first value dhorlam
+    const first = Array.isArray(val) ? val[0] : val;
+    setHp(first);
+    setSelectedValues((prev) => ({
+      ...prev,
+      hp: first,
+      kw: first, // jodi kw hishebe pathate chao
+    }));
+  }}
+  disabled={!modelId}
+/>
+
                 </div>
             {/* 5️⃣ Category */}
-            <Select
-                placeholder="Select Category"
-                allowClear
-                loading={isCategoriesLoading}
-                options={(categoriesData?.data as Category[] | undefined)?.map((cat) => ({
-                    value: cat.id,
-                    label: cat.name,
-                }))}
-                value={categoryId}
-                onChange={(val: string) => setCategoryId(val)}
-                className="w-full"
-            />
+    <Select
+  placeholder="Select Category"
+  allowClear
+  loading={isCategoriesLoading}
+  options={(categoriesData?.data as Category[] | undefined)?.map((cat) => ({
+    value: cat.id,
+    label: cat.name,
+  }))}
+  value={categoryId}
+  onChange={(val: string) => {
+    setCategoryId(val);
+    setSelectedValues((prev) => ({ ...prev, categoryId: val }));
+  }}
+  className="w-full"
+/>
+
         </div>
 
 

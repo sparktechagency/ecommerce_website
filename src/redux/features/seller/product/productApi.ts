@@ -57,6 +57,9 @@ export const productApi = baseApi.injectEndpoints({
         url: "/products/my-products",
         method: "GET",
       }),
+           providesTags: ["Product"]
+     
+
     }),
 
     deleteProduct: builder.mutation<DeleteProductResponse, string>({
@@ -73,6 +76,8 @@ export const productApi = baseApi.injectEndpoints({
         method: "POST",
         body: formData, 
       }),
+  invalidatesTags: ["Product"]
+
     }),
 
     updateProduct: builder.mutation<AddProductResponse, { productId: string; formData: FormData }>({

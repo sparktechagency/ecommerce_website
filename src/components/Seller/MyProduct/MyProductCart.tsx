@@ -66,12 +66,12 @@ const MyProductCart: React.FC<MyProductCartProps> = ({
   };
 
   return (
-    <div className="overflow-hidden rounded border border-white hover:shadow-lg transition cursor-pointer relative">
+    <div className="overflow-hidden rounded border border-gray-100 hover:shadow-lg transition cursor-pointer relative">
       {contextHolder} 
-      <div className="relative bg-[#f2fcf6] px-4 py-8">
+      <div className="relative bg-[#f2fcf6] px-4 py-8 ">
         {discount > 0 && (
-          <div className="absolute left-4 top-3 rounded text-md bg-orange-500 px-4 py-1 text-white">
-            -{discount}%
+          <div className="absolute left-14 top-3 rounded text-md bg-orange-500 px-4 py-1 text-white">
+            {discount}%
           </div>
         )}
 
@@ -97,9 +97,9 @@ const MyProductCart: React.FC<MyProductCartProps> = ({
           <Image
             src={images[0] || "/placeholder.svg"}
             alt={name}
-            width={200}
-            height={200}
-            className="w-[200px] object-contain"
+            width={500}
+            height={500}
+            className=" object-cover"
           />
         </div>
       </div>

@@ -14,14 +14,19 @@ const MyProduct = () => {
   const [deleteProduct] = useDeleteProductMutation();
   const showModal = () => setIsModalOpen(true);
   const handleCancel = () => setIsModalOpen(false);
-  const handleOk = () => {
-    setIsModalOpen(false);          
-    console.log('here');
-    message.success("Product added successfully!"); 
-    setTimeout(() => {
-      window.location.reload();     
-    }, 200);                       
-  };
+  // const handleOk = () => {
+  //   setIsModalOpen(false);          
+  //   console.log('here');
+  //   message.success("Product added successfully!"); 
+  //   setTimeout(() => {
+  //     window.location.reload();     
+  //   }, 200);                       
+  // };
+const handleOk = async () => {
+  setIsModalOpen(false);
+  message.success("Product added successfully!");
+  await refetch();  // <-- THE REAL FIX
+};
 
 
   const handleDelete = async (productId: string) => {
@@ -56,11 +61,7 @@ const MyProduct = () => {
             <IoAdd size={25} />
             Add Product
           </button>
-          <AddProductModal
-            isModalOpen={isModalOpen}
-            handleOk={handleOk}
-            handleCancel={handleCancel}
-          />
+     
         </div>
 
 
@@ -79,6 +80,11 @@ const MyProduct = () => {
           />
         ))}
       </div>
+           <AddProductModal
+            isModalOpen={isModalOpen}
+            handleOk={handleOk}
+            handleCancel={handleCancel}
+          />
     </div>
   );
 };

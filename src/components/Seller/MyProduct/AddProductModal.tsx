@@ -397,6 +397,7 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({
     setSections(newSections);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const router = useRouter();
 
 
@@ -514,10 +515,10 @@ const AddProductModal: React.FC<ProductDetailModalProps> = ({
       handleOk(); // Close the modal
 
       // Optionally, refresh the page after a successful upload
-      router.refresh();
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      // router.refresh();
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 1000);
     } catch (error) {
       console.error("Upload error:", error);
       toast.error("Error uploading product"); // Show an error message if something goes wrong
