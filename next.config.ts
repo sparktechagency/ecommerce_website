@@ -4,22 +4,24 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
-    domains: [
-      "lerirides.nyc3.digitaloceanspaces.com",
-      "avatar.iran.liara.run",
-      "hatem-s3-bucket.s3.eu-north-1.amazonaws.com", // <-- add this
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'lerirides.nyc3.digitaloceanspaces.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'avatar.iran.liara.run',
+      },
+      {
+        protocol: 'https',
+        hostname: 'hatem-s3-bucket.s3.eu-north-1.amazonaws.com',
+      },
     ],
   },
-  webpack: (config) => {
-    const originalWarn = console.warn;
-    console.warn = (...args) => {
-      if (typeof args[0] === "string" && args[0].includes("[antd: compatible]")) {
-        return;
-      }
-      originalWarn(...args);
-    };
-    return config;
-  },
+  // Add empty turbopack config to acknowledge Turbopack usage
+  turbopack: {},
+  // Remove webpack config when using Turbopack
 };
 
 export default nextConfig;
