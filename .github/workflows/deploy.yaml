@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 22.18.0
       - name: Install Dependencies
-        run: npm install --frozen-lockfile
+        run: npm install
       - name: Build App
         run: npm run build  
   deploy:
@@ -31,7 +31,7 @@ jobs:
         with:
           node-version: 22.18.0
       - name: Install Dependencies
-        run: npm install --frozen-lockfile
+        run: npm install
       - name: Build App
         run: npm run build  
       - name: Configure SSH
@@ -65,7 +65,7 @@ jobs:
           ssh $EC2_USER@$EC2_HOST "echo \"$ENV_FILE\" > ~/hatem_website/.env"
           
           # install production dependencies on EC2
-          ssh $EC2_USER@$EC2_HOST "cd ~/hatem_website && export PATH=$PATH:/run/user/1000/fnm_multishells/2125_1762145897069/bin && npm install --frozen-lockfile"
+          ssh $EC2_USER@$EC2_HOST "cd ~/hatem_website && export PATH=$PATH:/run/user/1000/fnm_multishells/2125_1762145897069/bin && npm install"
           
           # Stop existing PM2 process if it exists
           ssh $EC2_USER@$EC2_HOST "cd ~/hatem_website && export PATH=$PATH:/run/user/1000/fnm_multishells/2125_1762145897069/bin && pm2 delete hatem_website || true"
