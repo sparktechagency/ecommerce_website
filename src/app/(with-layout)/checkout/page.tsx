@@ -43,7 +43,7 @@ const CheckoutPage = () => {
     : data?.data
       ? [data.data]
       : [];
-
+console.log("checkouts------->",checkouts);
 
   useEffect(() => {
     if (addressesData?.data?.length) {

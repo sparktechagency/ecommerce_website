@@ -16,6 +16,7 @@ import { LuShoppingBag } from "react-icons/lu";
 import { RxHamburgerMenu } from "react-icons/rx";
 
 import logo from "../../../public/logo.svg";
+import avatar from "../../../public/avatar.png";
 import darkLogo from "../../../public/dark-logo.svg";
 import MobileMenu from "./MobileMenu";
 import { logout, setUser } from "@/redux/features/auth/authSlice";
@@ -30,6 +31,8 @@ const Header = () => {
   const router = useRouter();
   const { message } = App.useApp();
   const user = useSelector((state: RootState) => state.logInUser?.user);
+  // console.log("user from header--->",user);
+  const userImg =user?.image
   const token = user?.role === "BUYER"
     ? Cookies.get("hatem-ecommerce-token")
     : Cookies.get("hatem-seller-token");
@@ -178,6 +181,7 @@ const handleSearch = () => {
           <Link href="/">
             <Image
               className="w-42"
+          
               src={isDarkMode ? darkLogo : logo}
               width={150}
               height={50}
@@ -272,14 +276,22 @@ const handleSearch = () => {
             )}
 
             {/* User Submenu */}
-            {token && (
-              <div
-                onClick={() => setSubMenu(!subMenu)}
-                className="bg-[#df5800] flex items-center justify-center rounded-full p-2 mb-0.5 cursor-pointer"
-              >
-                <GoPerson className="w-6 h-6 text-white" />
-              </div>
-            )}
+{/* User Submenu */}
+{token && (
+  <div
+    onClick={() => setSubMenu(!subMenu)}
+    className="  cursor-pointer"
+  >
+    <Image
+      alt="user"
+      src={userImg ? userImg : avatar}
+     width={300}
+     height={300}
+      className="object-cover w-full h-full rounded-full"
+    />
+  
+  </div>
+)}
           </div>
 
 
