@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { HiOutlineShoppingCart } from "react-icons/hi";
+
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useDeleteWishlistItemMutation } from "@/redux/features/wishlist/wishlistApi";
 import { notification } from "antd";
@@ -88,12 +88,12 @@ const ListedProductCart = ({ product }: ListedProductCartProps) => {
         </div>
       </div>
 
-      <button
+      {/* <button
         className="flex gap-2 w-full items-center justify-center bg-primary py-3 text-white rounded-b cursor-pointer"
       >
         <HiOutlineShoppingCart size={25} />
         Add To Cart
-      </button>
+      </button> */}
 
       <div className="p-4">
         <h3 className="text-lg font-bold text-gray-900 dark:text-white">
