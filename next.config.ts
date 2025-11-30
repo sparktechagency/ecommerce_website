@@ -17,6 +17,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'hatem-s3-bucket.s3.eu-north-1.amazonaws.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+      },
     ],
   },
   // Add empty turbopack config to acknowledge Turbopack usage

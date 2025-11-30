@@ -1,16 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { JSX, useEffect } from "react";
 import { Form, Input, notification } from "antd";
-import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
+// import { GoogleLogin} from "@react-oauth/google";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { useLogInMutation, useSocialLoginMutation } from "@/redux/features/auth/authApi";
 import { setUser } from "@/redux/features/auth/authSlice";
 import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode";
-import { requestForToken } from "@/utils/firebase";
+
+import { useGoogleAuth } from "@/hooks/useGoogleAuth";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { FcGoogle } from "react-icons/fc";
 
 
 interface LogInFormValues {
@@ -18,11 +21,11 @@ interface LogInFormValues {
   password: string;
 }
 
-interface GoogleUser {
-  email: string;
-  name: string;
-  picture: string;
-}
+// interface GoogleUser {
+//   email: string;
+//   name: string;
+//   picture: string;
+// }
 
 interface AuthResponseData {
   data?: {
@@ -44,10 +47,14 @@ export default function LogInForm(): JSX.Element {
   const [api, contextHolder] = notification.useNotification();
   const [form] = Form.useForm<LogInFormValues>();
   const [logIn, { isLoading }] = useLogInMutation();
-  const [socialLogin] = useSocialLoginMutation();
+
   const router = useRouter();
   const dispatch = useDispatch();
-
+  // Google Auth
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { signInWithGoogle, loading: googleLoading } = useGoogleAuth();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [socialLogin, { isLoading: socialLoading }] = useSocialLoginMutation();
   useEffect(() => {
     const token = Cookies.get("hatem-ecommerce-token");
     const user = localStorage.getItem("hatem-ecommerce-user");
@@ -97,51 +104,47 @@ export default function LogInForm(): JSX.Element {
   };
 
 
-  const handleGoogleLogin = async (credentialResponse: CredentialResponse): Promise<void> => {
+
+
+
+   // Google Login Handler
+  const handleGoogleLogin = async (): Promise<void> => {
     try {
-      if (!credentialResponse.credential) return;
-
-      const decoded = jwtDecode<GoogleUser>(credentialResponse.credential);
-
-      let fcmToken = await requestForToken();
-      if (!fcmToken) {
+      const user = await signInWithGoogle();
+console.log("google user--->",user);
+      if (!user) {
         api.warning({
-          message: "Notification Permission Denied",
-          description: "You must allow notifications for login to work.",
+          message: "Cancelled",
+          description: "Google sign in was cancelled.",
         });
-        fcmToken = "fallback-fcm-token-" + Date.now();
+        return;
       }
 
-      console.log("📲 Using FCM token:", fcmToken);
-
-      const payload = {
-        email: decoded.email,
-        fcmToken,
+      // Send to backend
+      const data = await socialLogin({
+        email: user.email ?? "",
         plateForm: "GOOGLE",
-        image: decoded.picture,
-        fullName: decoded.name,
+        image: user.photoURL ?? "",
+        fullName: user.displayName ?? "",
         phoneNumber: "",
         address: "",
-      };
+      }).unwrap();
 
-      console.log("🚀 Social Login Payload:", payload);
-
-      const data = await socialLogin(payload).unwrap();
       handleAuthSuccess(data);
 
       api.success({
-        message: "Google Login",
+        message: "Google Login Successful",
         description: "You are logged in successfully!",
+        placement: "topRight",
       });
 
-      setTimeout(() => {
-        router.push("/");
-      }, 50);
-    } catch (error) {
-      const err = error as { data?: { message?: string }; message?: string };
+      setTimeout(() => router.push("/"), 800);
+
+    } catch (error: any) {
+      console.error("Google Login Error:", error);
       api.error({
-        message: "Google login failed",
-        description: err.data?.message || err.message || "Something went wrong.",
+        message: "Google Login Failed",
+        description: error?.data?.message || error?.message || "Something went wrong.",
       });
     }
   };
@@ -190,16 +193,28 @@ export default function LogInForm(): JSX.Element {
         </Form>
 
         {/* Social Login */}
-
-        <div className="w-full max-w-sm">
-          <GoogleLogin
+        {/* <GoogleLogin
             onSuccess={handleGoogleLogin}
             onError={() => console.log("Google login failed")}
             theme="outline"
             width="100%"
             text="signin_with"
             shape="rectangular"
-          />
+          /> */}
+        <div className="w-full max-w-sm">
+  
+             <button
+      onClick={handleGoogleLogin}
+      disabled={googleLoading}
+      className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+    >
+      {googleLoading ? (
+        <AiOutlineLoading3Quarters className="w-5 h-5 animate-spin" />
+      ) : (
+        <FcGoogle className="w-5 h-5" />
+      )}
+      <span>{googleLoading ? "Signing in..." : "Continue with Google"}</span>
+    </button>
         </div>
 
 

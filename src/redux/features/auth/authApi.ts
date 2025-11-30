@@ -70,7 +70,7 @@ interface UpdatePasswordResponse {
 
 interface SocialLoginRequest {
   email: string;
-  fcmToken: string;
+  // fcmToken: string;
   plateForm:string;
   image?: string;
   fullName?: string;
