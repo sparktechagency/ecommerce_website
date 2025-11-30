@@ -203,52 +203,59 @@ const CheckoutPage = () => {
                 save: true,
               }}
             >
-              <Form.Item<FieldType>
-                label="Name"
-                name="name"
-                rules={[{ required: true, message: "Please input your name!" }]}
-              >
-                <Input />
-              </Form.Item>
+  <Form.Item<FieldType>
+  label={<span className="dark:text-white">Name</span>}
+  name="name"
+  rules={[{ required: true, message: "Please input your name!" }]}
+>
+  <Input />
+</Form.Item>
 
               <Form.Item<FieldType>
-                label="Street Address"
+               label={<span className="dark:text-white">Street Address</span>}
                 name="street"
+                className="dark:text-white"
                 rules={[{ required: true, message: "Please input your street address!" }]}
               >
                 <Input />
               </Form.Item>
 
-              <Form.Item<FieldType> label="Apartment, floor, etc." name="apartment">
+              <Form.Item<FieldType>  label={<span className="dark:text-white">Apartment, floor, etc.</span>} name="apartment">
                 <Input />
               </Form.Item>
 
               <Form.Item<FieldType>
-                label="Town/City"
+              
+                  label={<span className="dark:text-white">Town/City</span>}
                 name="city"
+                className="dark:text-white"
                 rules={[{ required: true, message: "Please input your town/city!" }]}
               >
                 <Input />
               </Form.Item>
 
               <Form.Item<FieldType>
-                label="Phone Number"
+                label={<span className="dark:text-white">Phone Number</span>}
                 name="phone"
+                className="dark:text-white"
                 rules={[{ required: true, message: "Please input your number!" }]}
               >
                 <Input />
               </Form.Item>
 
               <Form.Item<FieldType>
-                label="Email Address"
+                label={<span className="dark:text-white">Email Address</span>}
                 name="email"
+                className="dark:text-white"
                 rules={[{ required: true, message: "Please input your email!" }]}
               >
                 <Input />
               </Form.Item>
 
-              <Form.Item<FieldType> name="save" valuePropName="checked">
-                <Checkbox>Save this information for faster check-out next time</Checkbox>
+              <Form.Item<FieldType> name="save" valuePropName="checked" >
+                <Checkbox > <span className="dark:text-white">
+      Save this information for faster check-out next time
+    </span></Checkbox>
               </Form.Item>
 
               <Form.Item>

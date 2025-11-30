@@ -39,7 +39,7 @@ const Category = () => {
       {/* ---------- Explore Products Section (Dynamic) ---------- */}
       <div className=" pt-16">
         <div className="flex gap-2 items-center mb-5">
-          <span className="bg-primary h-10 px-[10px] rounded-md"></span>
+          <span className="bg-primary h-10  rounded-md"></span>
           <p className="text-primary font-semibold text-lg">Our Products</p>
         </div>
         <div className="flex justify-between items-center mb-16">
