@@ -3,7 +3,8 @@
 import ListedProductCart, { Product } from "@/components/Wishlist/ListedProductCart";
 import {
   useGetWishlistQuery,
-  useDeleteWishlistItemMutation,
+
+  useDeleteAllWishlistItemMutation,
 } from "@/redux/features/wishlist/wishlistApi";
 import Link from "next/link";
 import { message, Spin } from "antd";
@@ -17,7 +18,8 @@ export interface WishlistItem {
 
 const Wishlist = () => {
   const { data: wishlist, isLoading, isError } = useGetWishlistQuery();
-  const [deleteWishlistItem] = useDeleteWishlistItemMutation();
+  // const [deleteWishlistItem] = useDeleteWishlistItemMutation();
+  const [deleteAllWishlistItem] = useDeleteAllWishlistItemMutation();
   const [clearing, setClearing] = useState(false);
   const handleClearWishlist = async () => {
     if (!wishlist || wishlist.length === 0) return;
@@ -25,7 +27,7 @@ const Wishlist = () => {
     setClearing(true);
     try {
       for (const item of wishlist) {
-        await deleteWishlistItem(item.id).unwrap();
+        await deleteAllWishlistItem(item.id).unwrap();
       }
       message.success("Wishlist cleared successfully");
     } catch (error: unknown) {

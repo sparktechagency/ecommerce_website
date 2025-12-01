@@ -287,8 +287,8 @@ const handleSearch = () => {
     <Image
       alt="user"
       src={userImg ? userImg : avatar}
-     width={300}
-     height={300}
+     width={80}
+     height={80}
       className="object-cover w-full h-full rounded-full"
     />
   

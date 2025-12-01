@@ -29,7 +29,7 @@ export interface Product {
 }
 
 export interface WishlistItem {
-  id: string;
+  productId: string;
   product: Product;
 }
 
@@ -49,9 +49,9 @@ const ProductCart: React.FC<ProductCartProps> = ({ product }) => {
   const [addToWishlist] = useAddToWishlistMutation();
   const [deleteWishlistItem] = useDeleteWishlistItemMutation();
   const [api, contextHolder] = notification.useNotification();
-
+console.log("wishlist check--->",wishlist);
   const wishlistItem: WishlistItem | undefined = wishlist?.find(
-    (item: WishlistItem) => item.product.id === product.id
+    (item: WishlistItem) => item.productId === product.id
   );
   const isAdded: boolean = Boolean(wishlistItem);
 
@@ -74,7 +74,7 @@ const ProductCart: React.FC<ProductCartProps> = ({ product }) => {
       }
 
       if (isAdded && wishlistItem) {
-        await deleteWishlistItem(wishlistItem.id).unwrap();
+        await deleteWishlistItem(wishlistItem?.productId).unwrap();
         api.open({
           type: "success",
           message: "Wishlist",

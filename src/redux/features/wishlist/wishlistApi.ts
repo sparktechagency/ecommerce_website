@@ -98,6 +98,16 @@ export const wishlistApi = baseApi.injectEndpoints({
         { type: "Wishlist", id: "LIST" },
       ],
     }),
+    deleteAllWishlistItem: builder.mutation<{ success: boolean; id: string }, string>({
+      query: () => ({
+        url: `/favorite-products`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, id) => [
+        { type: "Wishlist", id },
+        { type: "Wishlist", id: "LIST" },
+      ],
+    }),
   }),
   overrideExisting: false,
 });
@@ -106,4 +116,5 @@ export const {
   useGetWishlistQuery,
   useAddToWishlistMutation,
   useDeleteWishlistItemMutation,
+  useDeleteAllWishlistItemMutation
 } = wishlistApi;

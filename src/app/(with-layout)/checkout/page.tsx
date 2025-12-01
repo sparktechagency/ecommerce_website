@@ -5,7 +5,7 @@ import { Breadcrumb, Checkbox, ConfigProvider, Form, Input, message } from "antd
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useGetCheckoutQuery, CheckoutData, CheckoutItem } from "@/redux/features/checkout/checkoutApi";
+import { useGetCheckoutQuery, CheckoutItem } from "@/redux/features/checkout/checkoutApi";
 import {
   useCreatePaymentSessionMutation,
   usePurchaseWithCODMutation
@@ -30,6 +30,7 @@ type FieldType = {
 const CheckoutPage = () => {
 
   const router = useRouter();
+  // const { data, isLoading, isError } = useGetCheckoutQuery();
   const { data, isLoading, isError } = useGetCheckoutQuery();
   const [createPaymentSession, { data: sessionData, isLoading: paymentLoading }] = useCreatePaymentSessionMutation();
   const [placeOrder, { isLoading: orderLoading }] = usePurchaseWithCODMutation();
@@ -38,12 +39,13 @@ const CheckoutPage = () => {
   const [updateAddress] = useUpdateAddressMutation();
   const [billingAddress, setBillingAddress] = useState<Address | null>(null);
   const [loading, setLoading] = useState(false);
-  const checkouts: CheckoutData[] = Array.isArray(data?.data)
+  const checkouts = Array.isArray(data?.data)
     ? data.data
     : data?.data
       ? [data.data]
       : [];
-console.log("checkouts------->",checkouts);
+      const cost = checkouts[0]?.items[0]?.product?.shippings[0]?.cost
+console.log("checkoutsff------->",checkouts[0]?.items[0]?.product?.shippings[0]?.cost);
 
   useEffect(() => {
     if (addressesData?.data?.length) {
@@ -301,7 +303,7 @@ console.log("checkouts------->",checkouts);
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium dark:text-white">Shipping:</span>
-                  <span className="font-medium dark:text-white">${checkout?.shippingCost||"Free"}</span>
+                  <span className="font-medium dark:text-white">${cost||"Free"}</span>
                 </div>
                 <div className="flex justify-between border-t pt-2">
                   <span className="font-medium dark:text-white">Total:</span>

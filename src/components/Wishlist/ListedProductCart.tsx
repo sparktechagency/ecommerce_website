@@ -1,9 +1,11 @@
 "use client";
 import Image from "next/image";
-
+import Cookies from "js-cookie";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useDeleteWishlistItemMutation } from "@/redux/features/wishlist/wishlistApi";
 import { notification } from "antd";
+import { HiOutlineShoppingCart } from "react-icons/hi";
+import { useAddToCartMutation } from "@/redux/features/cart/cartApi";
 
 export interface Product {
   id: string; 
@@ -12,13 +14,13 @@ export interface Product {
   discount?: number;
   productImages?: string[];
 }
-
+interface AddToCartRequest { productId: string }
 interface ListedProductCartProps {
   product: Product;
 }
 
 const ListedProductCart = ({ product }: ListedProductCartProps) => {
-
+  const [addToCart] = useAddToCartMutation();
   const [deleteWishlistItem, { isLoading }] = useDeleteWishlistItemMutation();
   const title = product.productName;
   const discount = product.discount ? product.discount / 100 : 0;
@@ -50,7 +52,47 @@ const ListedProductCart = ({ product }: ListedProductCartProps) => {
       });
     }
   };
+  const handleAddToCart = async () => {
+    try {
+      const token = Cookies.get("hatem-ecommerce-token");
+      if (!token) {
+        api.open({
+          type: "warning",
+          message: "Login Required",
+          description: "Please log in to add products to your cart.",
+          placement: "topRight",
+        });
+        return;
+      }
 
+      const payload: AddToCartRequest = { productId: product.id };
+      const response = await addToCart(payload).unwrap();
+
+      api.open({
+        type: "success",
+        message: "Cart",
+        description: response.message || "Product added to cart successfully!",
+        placement: "topRight",
+      });
+    } catch (err: unknown) {
+      let errorMessage = "Failed to add product to cart";
+      if (err && typeof err === "object" && "data" in err) {
+        const fetchError = err as { data?: { message?: string } };
+        errorMessage = fetchError.data?.message || errorMessage;
+      } else if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+
+      api.open({
+        type: "error",
+        message: "Cart Error",
+        description: errorMessage,
+        placement: "topRight",
+      });
+
+      console.error("Add to cart failed:", err);
+    }
+  };
 
   return (
     <div className="overflow-hidden rounded shadow-md">
@@ -88,12 +130,12 @@ const ListedProductCart = ({ product }: ListedProductCartProps) => {
         </div>
       </div>
 
-      {/* <button
-        className="flex gap-2 w-full items-center justify-center bg-primary py-3 text-white rounded-b cursor-pointer"
+      <button
+        className="flex gap-2 w-full items-center justify-center bg-primary py-3 text-white rounded-b cursor-pointer relative"   onClick={handleAddToCart} 
       >
         <HiOutlineShoppingCart size={25} />
         Add To Cart
-      </button> */}
+      </button>
 
       <div className="p-4">
         <h3 className="text-lg font-bold text-gray-900 dark:text-white">
