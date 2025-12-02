@@ -140,7 +140,7 @@ const EditProductModal: React.FC<EditProductModalProps> = ({
   }
 
   const [year, setYear] = useState<string>();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const [refBrandId, setRefBrandId] = useState<string>();
   const [brandName, setBrandName] = useState<string>();
   const [modelId, setModelId] = useState<string>();

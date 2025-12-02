@@ -23,9 +23,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Add empty turbopack config to acknowledge Turbopack usage
-  turbopack: {},
-  // Remove webpack config when using Turbopack
+
 };
 
 export default nextConfig;

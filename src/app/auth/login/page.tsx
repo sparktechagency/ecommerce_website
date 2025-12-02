@@ -51,7 +51,7 @@ export default function LogInForm(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
   // Google Auth
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const { signInWithGoogle, loading: googleLoading } = useGoogleAuth();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [socialLogin, { isLoading: socialLoading }] = useSocialLoginMutation();
