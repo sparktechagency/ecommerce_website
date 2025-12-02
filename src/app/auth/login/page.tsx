@@ -62,6 +62,7 @@ export default function LogInForm(): JSX.Element {
   }, [router]);
 
   const handleAuthSuccess = (data: AuthResponseData): void => {
+    console.log("data from auth success------>",data);
     if (!data?.data) return;
 
     const userData = {
@@ -71,9 +72,10 @@ export default function LogInForm(): JSX.Element {
       role: data.data.role || data.data.roles?.[0] || "",
       image: data.data.image || "",
     };
-
     const accessToken = data.data.accessToken || "";
     const refreshToken = data.data.refreshToken || "";
+    console.log("access token from login page--->",accessToken);
+    console.log("refresh token from login page--->",refreshToken);
 
     dispatch(setUser({ user: userData, accessToken, refreshToken }));
     Cookies.set("hatem-ecommerce-token", accessToken, { expires: 7 });
@@ -138,7 +140,7 @@ console.log("google user--->",user);
         placement: "topRight",
       });
 
-      setTimeout(() => router.push("/"), 800);
+      setTimeout(() => router.push("/"), 200);
 
     } catch (error: any) {
       console.error("Google Login Error:", error);

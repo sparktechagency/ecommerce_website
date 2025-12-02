@@ -8,6 +8,7 @@ const baseQuery = fetchBaseQuery({
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).logInUser?.accessToken;
 
+    // console.log("check token:", (getState() as RootState).logInUser);
     console.log("Sending JWT:", token);
 
     if (token) {
