@@ -7,13 +7,14 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import Cookies from "js-cookie";
-import { ConfigProvider, Input, } from "antd";
+import { ConfigProvider, Input, Modal } from "antd";
 import { FiSearch } from "react-icons/fi";
 import { IoIosHeartEmpty } from "react-icons/io";
 import { PiShoppingCartLight } from "react-icons/pi";
 import { GoPerson, GoVersions } from "react-icons/go";
 import { LuShoppingBag } from "react-icons/lu";
 import { RxHamburgerMenu } from "react-icons/rx";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 
 import logo from "../../../public/logo.svg";
 import avatar from "../../../public/avatar.png";
@@ -26,20 +27,21 @@ import { useSwitchUserRoleMutation } from "@/redux/features/auth/switchRoleApi";
 import { RootState } from "@/redux/store";
 import { App } from "antd";
 import { useGetUserProfileQuery } from "@/redux/features/auth/authApi";
-const Header = () => {
 
+const Header = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { message } = App.useApp();
   const user = useSelector((state: RootState) => state.logInUser?.user);
-  // console.log("user from header--->",user);
-   const {data:myProfile}=useGetUserProfileQuery(undefined)
-  const userImg =myProfile?.data?.image
-  const token = user?.role === "BUYER"
-    ? Cookies.get("hatem-ecommerce-token")
-    : Cookies.get("hatem-seller-token");
+  const { data: myProfile } = useGetUserProfileQuery(undefined);
+  const userImg = myProfile?.data?.image;
+  const token =
+    user?.role === "BUYER"
+      ? Cookies.get("hatem-ecommerce-token")
+      : Cookies.get("hatem-seller-token");
 
   const [isDarkMode, setIsDarkMode] = useState(false);
+  
   useEffect(() => {
     const storedMode = localStorage.getItem("darkMode");
     if (storedMode === "true") {
@@ -64,14 +66,15 @@ const Header = () => {
   const showDrawer = () => setOpen(true);
   const onClose = () => setOpen(false);
 
-
   const [subMenu, setSubMenu] = useState(false);
   const subMenuRef = useRef<HTMLDivElement>(null);
 
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (subMenuRef.current && !subMenuRef.current.contains(event.target as Node)) {
+      if (
+        subMenuRef.current &&
+        !subMenuRef.current.contains(event.target as Node)
+      ) {
         setSubMenu(false);
       }
     };
@@ -79,16 +82,17 @@ const Header = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-
-  const { data: cartData, isLoading: isCartLoading } = useGetCartQuery(undefined, {
-    refetchOnMountOrArgChange: true,
-  });
+  const { data: cartData, isLoading: isCartLoading } = useGetCartQuery(
+    undefined,
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
   const cartCount = cartData?.data?.length || 0;
 
-
-  const { data: wishlistData, isLoading: isWishlistLoading } = useGetWishlistQuery();
+  const { data: wishlistData, isLoading: isWishlistLoading } =
+    useGetWishlistQuery();
   const wishlistCount = wishlistData?.length || 0;
-
 
   const handleLogOut = () => {
     dispatch(logout());
@@ -102,20 +106,35 @@ const Header = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Handle input change
-  const handleInputChange = (e:any) => {
-  const value = e.target.value;
-  setSearchQuery(value);
-  // update url as user types
-  router.push(`?query=${encodeURIComponent(value)}`);
+  const handleInputChange = (e: any) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    router.push(`?query=${encodeURIComponent(value)}`);
   };
 
-  // Handle form submission (search query)
-const handleSearch = () => {
-  if (searchQuery.trim()) {
-    router.push(`?query=${searchQuery}`);
-  }
-};
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      router.push(`?query=${searchQuery}`);
+    }
+  };
+
+  // Modal for role switch confirmation
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  // Show the confirmation modal
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  // Handle the modal confirm action (switch role)
+  const handleOk = async () => {
+    await handleRoleSwitch();
+  };
+
+  // Handle modal cancel action (close modal)
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
 
   const [switchUserRole, { isLoading }] = useSwitchUserRoleMutation();
 
@@ -127,12 +146,12 @@ const handleSearch = () => {
       const res = await switchUserRole({ role: newRole }).unwrap();
 
       if (!res?.data?.accessToken) {
+        setIsModalVisible(false);
         return message.error("No access token received from server!");
       }
 
       const accessToken = res.data.accessToken;
 
-   
       if (newRole === "SELLER") {
         Cookies.remove("hatem-ecommerce-token");
         localStorage.removeItem("hatem-ecommerce-token");
@@ -141,7 +160,6 @@ const handleSearch = () => {
         localStorage.removeItem("hatem-seller-token");
       }
 
-   
       if (newRole === "SELLER") {
         Cookies.set("hatem-seller-token", accessToken, { expires: 7 });
         localStorage.setItem("hatem-seller-token", accessToken);
@@ -150,29 +168,40 @@ const handleSearch = () => {
         localStorage.setItem("hatem-ecommerce-token", accessToken);
       }
 
-     
-      dispatch(setUser({
-        user: { ...user, role: newRole },
-        accessToken: accessToken,
-        refreshToken: "",
-      }));
+      dispatch(
+        setUser({
+          user: { ...user, role: newRole },
+          accessToken: accessToken,
+          refreshToken: "",
+        })
+      );
 
+      setIsModalVisible(false); // Close modal on success
+      setSubMenu(false); // Close submenu
       message.success(res.message || "Role switched successfully!");
       router.replace(newRole === "SELLER" ? "/seller/overview" : "/myorder");
-
     } catch (err: unknown) {
       console.error("Switch Role Error:", err);
-      message.error((err as { data?: { message?: string } })?.data?.message ?? "Failed to switch role");
+      setIsModalVisible(false); // Close modal on error
+      message.error(
+        (err as { data?: { message?: string } })?.data?.message ??
+          "Failed to switch role"
+      );
     }
   };
+
+  // Get the target role for display in modal
+  const targetRole = user?.role === "BUYER" ? "Seller" : "Buyer";
 
   return (
     <header>
       {/* Top Banner */}
       <div className="bg-[#df5800] h-12 text-sm md:text-md text-center text-white flex items-center justify-center px-3 md:px-0">
-        Summer Sale For All Parking Light And Free Express Delivery {" "}
+        Summer Sale For All Parking Light And Free Express Delivery{" "}
         <Link href={`/product`}>
-          <span className="ml-2 font-semibold underline cursor-pointer">ShopNow</span>
+          <span className="ml-2 font-semibold underline cursor-pointer">
+            ShopNow
+          </span>
         </Link>
       </div>
 
@@ -183,7 +212,6 @@ const handleSearch = () => {
           <Link href="/">
             <Image
               className="w-42"
-          
               src={isDarkMode ? darkLogo : logo}
               width={150}
               height={50}
@@ -191,33 +219,41 @@ const handleSearch = () => {
             />
           </Link>
 
-          
           {/* Desktop Links */}
           <div className="hidden lg:flex items-center justify-between gap-12 text-black dark:text-white">
             <Link href="/" className="text-lg hover:text-primary no-underline">
               Home
             </Link>
-            <Link href="/contact" className="text-lg hover:text-primary no-underline">
+            <Link
+              href="/contact"
+              className="text-lg hover:text-primary no-underline"
+            >
               Contact
             </Link>
-            <Link href="/about" className="text-lg hover:text-primary no-underline">
+            <Link
+              href="/about"
+              className="text-lg hover:text-primary no-underline"
+            >
               About
             </Link>
             {!token && (
-              <Link href="/auth/login" className="text-lg hover:text-primary no-underline">
+              <Link
+                href="/auth/login"
+                className="text-lg hover:text-primary no-underline"
+              >
                 Log In
               </Link>
             )}
             {user?.role === "SELLER" && (
-              <Link href="/seller/overview" className="text-lg hover:text-primary no-underline">
+              <Link
+                href="/seller/overview"
+                className="text-lg hover:text-primary no-underline"
+              >
                 Dashboard
               </Link>
             )}
           </div>
 
-
-
-  
           <div className="hidden w-[380px] lg:flex items-center justify-between gap-4">
             <ConfigProvider
               theme={{
@@ -231,21 +267,15 @@ const handleSearch = () => {
                 },
               }}
             >
-              {/* <Input
+              <Input
                 style={{ backgroundColor: "#f0f0f0" }}
                 suffix={<FiSearch className="text-black w-6 h-6" />}
                 className="w-[280px]"
                 placeholder="What are you looking for?"
-              /> */}
-                  <Input
-      style={{ backgroundColor: "#f0f0f0" }}
-      suffix={<FiSearch className="text-black w-6 h-6" />}
-      className="w-[280px]"
-      placeholder="What are you looking for?"
-      value={searchQuery}
-      onChange={handleInputChange}
-      onPressEnter={handleSearch} 
-    />
+                value={searchQuery}
+                onChange={handleInputChange}
+                onPressEnter={handleSearch}
+              />
             </ConfigProvider>
 
             {/* Wishlist & Cart only for Buyer */}
@@ -278,28 +308,29 @@ const handleSearch = () => {
             )}
 
             {/* User Submenu */}
-{/* User Submenu */}
-{token && (
-  <div
-    onClick={() => setSubMenu(!subMenu)}
-    className="  cursor-pointer"
-  >
-    <Image
-      alt="user"
-      src={userImg ? userImg : avatar}
-     width={80}
-     height={80}
-      className="object-cover w-full h-full rounded-full"
-    />
-  
-  </div>
-)}
+            {token && (
+              <div
+                onClick={() => setSubMenu(!subMenu)}
+                className="cursor-pointer"
+              >
+                <Image
+                  alt="user"
+                  src={userImg ? userImg : avatar}
+                  width={80}
+                  height={80}
+                  className="object-cover w-full h-full rounded-full"
+                />
+              </div>
+            )}
           </div>
-
 
           {/* Mobile Menu Icon */}
           <div className="block lg:hidden">
-            <RxHamburgerMenu onClick={showDrawer} size={25} className="text-black dark:text-white" />
+            <RxHamburgerMenu
+              onClick={showDrawer}
+              size={25}
+              className="text-black dark:text-white"
+            />
           </div>
 
           {/* Submenu */}
@@ -313,29 +344,44 @@ const handleSearch = () => {
                 <p className="text-gray-200 dark:text-black">Dark Mode:</p>
                 <button
                   onClick={handleToggle}
-                  className={`w-14 h-6 flex items-center rounded-full p-1 ${isDarkMode ? "bg-gray-700" : "bg-gray-300"}`}
+                  className={`w-14 h-6 flex items-center rounded-full p-1 ${
+                    isDarkMode ? "bg-gray-700" : "bg-gray-300"
+                  }`}
                 >
-                  <div className={`w-4 h-4 bg-white rounded-full transition-all ${isDarkMode ? "translate-x-8" : ""}`}></div>
+                  <div
+                    className={`w-4 h-4 bg-white rounded-full transition-all ${
+                      isDarkMode ? "translate-x-8" : ""
+                    }`}
+                  ></div>
                 </button>
               </div>
 
               {/* Account Links */}
               <Link href={`/myprofile`} className="flex items-center gap-3 mb-4">
                 <GoPerson className="w-6 h-6 text-white dark:text-black" />
-                <p className="text-md text-white dark:text-black">Manage My Account</p>
+                <p className="text-md text-white dark:text-black">
+                  Manage My Account
+                </p>
               </Link>
 
-              {/* Switch Role */}
-              <div className="flex items-center gap-3 mb-4 cursor-pointer" onClick={handleRoleSwitch}>
+              {/* Switch Role - NOW TRIGGERS MODAL */}
+              <div
+                className="flex items-center gap-3 mb-4 cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={showModal} // Changed from handleRoleSwitch to showModal
+              >
                 {user?.role === "BUYER" ? (
                   <>
                     <GoVersions className="w-6 h-6 text-white dark:text-black" />
-                    <p className="text-md text-white dark:text-black">{isLoading ? "Switching..." : "Switch to Seller"}</p>
+                    <p className="text-md text-white dark:text-black">
+                      Switch to Seller
+                    </p>
                   </>
                 ) : (
                   <>
                     <LuShoppingBag className="w-6 h-6 text-white dark:text-black" />
-                    <p className="text-md text-white dark:text-black">{isLoading ? "Switching..." : "Switch to Buyer"}</p>
+                    <p className="text-md text-white dark:text-black">
+                      Switch to Buyer
+                    </p>
                   </>
                 )}
               </div>
@@ -343,14 +389,24 @@ const handleSearch = () => {
               {/* Role-specific Links */}
               {user?.role === "SELLER" ? (
                 <div className="flex flex-col gap-2 mb-4">
-                  <Link href={`/seller/myproduct`} className="flex items-center gap-3">
+                  <Link
+                    href={`/seller/myproduct`}
+                    className="flex items-center gap-3"
+                  >
                     <LuShoppingBag className="w-6 h-6 text-white dark:text-black" />
-                    <p className="text-md text-white dark:text-black">My Products</p>
+                    <p className="text-md text-white dark:text-black">
+                      My Products
+                    </p>
                   </Link>
 
-                  <Link href={`/seller/overview`} className="flex items-center gap-3 mt-1">
+                  <Link
+                    href={`/seller/overview`}
+                    className="flex items-center gap-3 mt-1"
+                  >
                     <GoVersions className="w-6 h-6 text-white dark:text-black" />
-                    <p className="text-md text-white dark:text-black">Seller Overview</p>
+                    <p className="text-md text-white dark:text-black">
+                      Seller Overview
+                    </p>
                   </Link>
                 </div>
               ) : (
@@ -360,9 +416,11 @@ const handleSearch = () => {
                 </Link>
               )}
 
-
               {/* Logout */}
-              <div onClick={handleLogOut} className="flex items-center gap-3 mb-2 cursor-pointer">
+              <div
+                onClick={handleLogOut}
+                className="flex items-center gap-3 mb-2 cursor-pointer"
+              >
                 <GoPerson className="w-6 h-6 text-white dark:text-black" />
                 <p className="text-md text-white dark:text-black">Logout</p>
               </div>
@@ -373,6 +431,44 @@ const handleSearch = () => {
           <MobileMenu open={open} onClose={onClose} />
         </div>
       </nav>
+
+      {/* Role Switch Confirmation Modal */}
+      <Modal
+        title={
+          <div className="flex items-center gap-2">
+            <ExclamationCircleOutlined className="text-orange-500 text-xl" />
+            <span>Confirm Role Switch</span>
+          </div>
+        }
+        open={isModalVisible} // Changed from 'visible' to 'open'
+        onOk={handleOk}
+        onCancel={handleCancel}
+        confirmLoading={isLoading}
+        okText={isLoading ? "Switching..." : `Yes, Switch to ${targetRole}`}
+        cancelText="Cancel"
+        okButtonProps={{
+          className: "bg-[#df5800] hover:bg-[#c54d00]",
+          disabled: isLoading,
+        }}
+        cancelButtonProps={{
+          disabled: isLoading,
+        }}
+        maskClosable={!isLoading}
+        closable={!isLoading}
+        centered
+      >
+        <div className="py-4">
+          <p className="text-gray-600 text-base">
+            Are you sure you want to switch your role from{" "}
+            <span className="font-semibold text-gray-800">
+              {user?.role === "BUYER" ? "Buyer" : "Seller"}
+            </span>{" "}
+            to{" "}
+            <span className="font-semibold text-gray-800">{targetRole}</span>?
+          </p>
+        
+        </div>
+      </Modal>
     </header>
   );
 };
