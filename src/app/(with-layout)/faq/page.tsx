@@ -53,7 +53,11 @@ const FaqPage = () => {
       {/* FAQ List */}
       <Collapse accordion>
         {faqs?.map((faq) => (
-          <Panel header={faq.question} key={faq.id}>
+             <Panel
+            header={<span className="dark:text-white">{faq.question}</span>} 
+            key={faq.id}
+            className="dark:text-white"
+          >
             <p dangerouslySetInnerHTML={{ __html: faq.answer }} />
           </Panel>
         ))}
