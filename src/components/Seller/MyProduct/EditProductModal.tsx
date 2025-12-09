@@ -25,6 +25,7 @@ import {
   useGetEnginesByModelQuery,
   useGetModelsByBrandQuery,
 } from "@/redux/features/carBrand/carBrandApi";
+import toast from "react-hot-toast";
 
 export interface Field {
   fieldName: string;
@@ -417,20 +418,20 @@ for (let [key, value] of formData.entries()) {
 
 
       await updateProduct({ productId, formData }).unwrap();
-      message.success(" Product updated successfully!");
+     toast.success(" Product updated successfully!");
       handleOk();
     } catch (err) {
       console.error(err);
-      message.error("Failed to update product");
+      toast.error("Failed to update product");
     } finally {
       setLoading(false);
     }
   };
 
   ///
-
+// console.log("is modal open--->",isModalOpen);
   return (
-    +
+    
     <Modal
       closable
       className="w-full md:w-[800px]"

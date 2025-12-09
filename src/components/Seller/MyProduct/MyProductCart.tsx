@@ -32,6 +32,7 @@ const MyProductCart: React.FC<MyProductCartProps> = ({
 }) => {
   const router = useRouter();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  // console.log("is edit open",isEditModalOpen);
   const [api, contextHolder] = notification.useNotification();
   const discountedPrice = discount > 0 ? price - price * (discount / 100) : price;
   const handleCardClick = () => {
@@ -61,6 +62,7 @@ const MyProductCart: React.FC<MyProductCartProps> = ({
 
 
   const showEditModal = (e: React.MouseEvent) => {
+    // console.log("hit edit button");
     e.stopPropagation();
     setIsEditModalOpen(true);
   };
