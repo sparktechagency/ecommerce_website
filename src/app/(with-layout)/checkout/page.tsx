@@ -1,21 +1,34 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState, useEffect } from "react";
-import { Breadcrumb, Checkbox, ConfigProvider, Form, Input, message } from "antd";
+import { useState, useEffect, useRef } from "react";
+import {
+  Breadcrumb,
+  Checkbox,
+  ConfigProvider,
+  Form,
+  Input,
+  message,
+  Select,
+} from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useGetCheckoutQuery, CheckoutItem } from "@/redux/features/checkout/checkoutApi";
+import {
+  useGetCheckoutQuery,
+  CheckoutItem,
+} from "@/redux/features/checkout/checkoutApi";
 import {
   useCreatePaymentSessionMutation,
-  usePurchaseWithCODMutation
+  usePurchaseWithCODMutation,
 } from "@/redux/features/payment/paymentApi";
 import {
   useAddAddressMutation,
   useGetAddressesQuery,
   useUpdateAddressMutation,
-  Address
+  Address,
 } from "@/redux/features/address/addressApi";
+import { FiPrinter } from "react-icons/fi";
 
 type FieldType = {
   name?: string;
@@ -26,14 +39,33 @@ type FieldType = {
   email?: string;
   save?: boolean;
 };
-
+interface ShippingOption {
+  id: string;
+  cost: number;
+  countryCode: string;
+  countryName: string;
+  carrier: string;
+  deliveryMin: number;
+  deliveryMax: number;
+}
+interface SelectedShipping {
+  [itemId: string]: ShippingOption | null;
+}
 const CheckoutPage = () => {
-
+    const receiptRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+    const [selectedShipping, setSelectedShipping] = useState<SelectedShipping>(
+      {}
+    );
+    const [shipingId, setShippingId] = useState<string | null>(null)
   // const { data, isLoading, isError } = useGetCheckoutQuery();
   const { data, isLoading, isError } = useGetCheckoutQuery();
-  const [createPaymentSession, { data: sessionData, isLoading: paymentLoading }] = useCreatePaymentSessionMutation();
-  const [placeOrder, { isLoading: orderLoading }] = usePurchaseWithCODMutation();
+  const [
+    createPaymentSession,
+    { data: sessionData, isLoading: paymentLoading },
+  ] = useCreatePaymentSessionMutation();
+  const [placeOrder, { isLoading: orderLoading }] =
+    usePurchaseWithCODMutation();
   const { data: addressesData } = useGetAddressesQuery();
   const [addAddress] = useAddAddressMutation();
   const [updateAddress] = useUpdateAddressMutation();
@@ -42,14 +74,19 @@ const CheckoutPage = () => {
   const checkouts = Array.isArray(data?.data)
     ? data.data
     : data?.data
-      ? [data.data]
-      : [];
-      const cost = checkouts[0]?.items[0]?.product?.shippings[0]?.cost
-console.log("checkoutsff------->",checkouts[0]?.items[0]?.product?.shippings[0]?.cost);
+    ? [data.data]
+    : [];
+  const cost = checkouts[0]?.items[0]?.product?.shippings[0]?.cost;
+  console.log(
+    "checkoutsff------->",
+    checkouts[0]?.items[0]?.product?.shippings[0]?.cost
+  );
 
   useEffect(() => {
     if (addressesData?.data?.length) {
-      const billing = addressesData.data.find(addr => addr.type === "BILLING");
+      const billing = addressesData.data.find(
+        (addr) => addr.type === "BILLING"
+      );
       if (billing) setBillingAddress(billing);
     }
   }, [addressesData]);
@@ -60,7 +97,6 @@ console.log("checkoutsff------->",checkouts[0]?.items[0]?.product?.shippings[0]?
     }
   }, [sessionData]);
 
-
   const handleBillingAddressSave = async (values: FieldType) => {
     if (!values.save) return;
     const billingData = {
@@ -69,13 +105,15 @@ console.log("checkoutsff------->",checkouts[0]?.items[0]?.product?.shippings[0]?
       state: "",
       postalCode: "",
       country: "",
-      type: "BILLING", 
-    } as const; 
-
+      type: "BILLING",
+    } as const;
 
     try {
       if (billingAddress) {
-        const res = await updateAddress({ id: billingAddress.id, data: billingData }).unwrap();
+        const res = await updateAddress({
+          id: billingAddress.id,
+          data: billingData,
+        }).unwrap();
         console.log("Update Address Response:", res);
         message.success("Billing address updated successfully!");
       } else {
@@ -89,18 +127,138 @@ console.log("checkoutsff------->",checkouts[0]?.items[0]?.product?.shippings[0]?
     }
   };
 
+  // Print receipt functionality
+const handlePrint = () => {
+  const printContent = receiptRef.current;
+  if (!printContent) return;
+
+  const printWindow = window.open("", "", "width=800,height=600");
+  if (!printWindow) return;
+
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Order Receipt</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+          }
+          .receipt-header {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+          }
+          .receipt-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+          }
+          .receipt-total {
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 2px solid #000;
+          }
+          .shipping-info {
+            background: #f5f5f5;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+          }
+          .hidden {
+            display: none;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="receipt-header">
+          <h2>Order Receipt</h2>
+          <p>Order ID: ${checkouts[0]?.id}</p>
+          <p>Date: ${new Date().toLocaleDateString()}</p>
+        </div>
+        <div>
+          ${checkouts[0]?.items.map((item: CheckoutItem) => {
+            return `
+              <div class="receipt-item">
+                <div class="flex items-center gap-3">
+                  <img src="${item.product.productImages[0]}" width="48" height="48" class="object-contain" />
+                  <div>
+                    <span>${item.product.productName}</span>
+                    <span>Qty: ${item.quantity}</span>
+                  </div>
+                </div>
+                <span>$${item.product.price * item.quantity}</span>
+              </div>
+            `;
+          }).join('')}
+        </div>
+
+        <div class="receipt-total">
+          <div class="receipt-item">
+            <span>Subtotal:</span>
+            <span>$${checkouts[0]?.totalAmount}</span>
+          </div>
+          <div class="receipt-item">
+            <span>Shipping:</span>
+            <span>$${cost || "Free"}</span>
+          </div>
+          <div class="receipt-item">
+            <span>Total:</span>
+            <span>$${calculateGrandTotal(checkouts[0])}</span>
+          </div>
+        </div>
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.print();
+  printWindow.close();
+};
+
+
+
+
+  // Calculate total shipping cost
+  const calculateShippingCost = (checkoutId: string) => {
+    const checkout = checkouts.find((c) => c.id === checkoutId);
+    if (!checkout) return 0;
+
+    let totalShipping = 0;
+    checkout.items?.forEach((item: CheckoutItem) => {
+      const shipping = selectedShipping[item.id];
+      if (shipping) {
+        totalShipping += shipping.cost;
+      }
+    });
+    return totalShipping;
+  };
+
+  // Calculate grand total (subtotal + shipping)
+  const calculateGrandTotal = (checkout: any) => {
+    const shippingCost = calculateShippingCost(checkout.id);
+    return checkout.totalAmount + shippingCost;
+  }
+
+
+
+
+
 
   const onFinish = async (values: FieldType) => {
     console.log("Form Values Submitted:", values);
 
     const { name, street, apartment, city, phone, email, save } = values;
 
-
     if (!name || !street || !city || !phone || !email) {
       return message.error("Please fill in all required fields.");
     }
 
- 
     const paymentInput = document.querySelector(
       'input[name="payment"]:checked'
     ) as HTMLInputElement;
@@ -112,7 +270,6 @@ console.log("checkoutsff------->",checkouts[0]?.items[0]?.product?.shippings[0]?
       message.error("Checkout ID not found. Please refresh and try again.");
       return;
     }
-
 
     const productIds: string[] = checkouts.flatMap((checkout) =>
       checkout.items.map((item: CheckoutItem) => item.product.id)
@@ -131,15 +288,18 @@ console.log("checkoutsff------->",checkouts[0]?.items[0]?.product?.shippings[0]?
     };
 
     console.log("Order Data to send:", orderData, "Checkout ID:", checkoutId);
-
+    console.log("selected shipping---->",selectedShipping)
+const paymentData={
+checkoutId,
+shippingId:shipingId
+}
     try {
       setLoading(true);
 
       await handleBillingAddressSave(values);
 
       if (paymentMethod === "online") {
-
-        const sessionRes = await createPaymentSession({ checkoutId }).unwrap();
+        const sessionRes = await createPaymentSession(paymentData).unwrap();
         console.log("Stripe Session Response:", sessionRes);
 
         if (sessionRes?.data?.redirectUrl) {
@@ -163,18 +323,51 @@ console.log("checkoutsff------->",checkouts[0]?.items[0]?.product?.shippings[0]?
     }
   };
 
-
-  if (isLoading) return <p className="text-center py-16">Loading checkout data...</p>;
-  if (isError) return <p className="text-center py-16 text-red-500">Failed to load checkout data</p>;
+  if (isLoading)
+    return <p className="text-center py-16">Loading checkout data...</p>;
+  if (isError)
+    return (
+      <p className="text-center py-16 text-red-500">
+        Failed to load checkout data
+      </p>
+    );
   if (checkouts.length === 0)
-    return <p className="text-center py-16 text-gray-500 dark:text-gray-300">No checkouts found</p>;
+    return (
+      <p className="text-center py-16 text-gray-500 dark:text-gray-300">
+        No checkouts found
+      </p>
+    );
+  // Handle shipping selection change
+  const handleShippingChange = (itemId: string, shippingId: string, item:any) => {
+    console.log("s id------->",shippingId);
+    setShippingId(shippingId);
+    const shipping = item.product.shippings.find(
+      (s: ShippingOption) => s.id === shippingId
+    );
+    setSelectedShipping((prev) => ({
+      ...prev,
+      [itemId]: shipping || null,
+    }));
+  };
 
   return (
     <div className="container mx-auto px-3 md:px-0 py-16">
       <Breadcrumb
         items={[
-          { title: <Link href="/"><p className="dark:text-white">Home</p></Link> },
-          { title: <Link href="/cart"><p className="dark:text-white">Cart</p></Link> },
+          {
+            title: (
+              <Link href="/">
+                <p className="dark:text-white">Home</p>
+              </Link>
+            ),
+          },
+          {
+            title: (
+              <Link href="/cart">
+                <p className="dark:text-white">Cart</p>
+              </Link>
+            ),
+          },
           { title: <p className="dark:text-white">Checkout</p> },
         ]}
       />
@@ -182,11 +375,17 @@ console.log("checkoutsff------->",checkouts[0]?.items[0]?.product?.shippings[0]?
       <div className="flex flex-col lg:flex-row items-start justify-between gap-20 mt-8">
         {/* Billing Form */}
         <div className="w-full sm:w-[450px]">
-          <h1 className="text-3xl md:text-4xl font-semibold mb-5 dark:text-white">Billing Details</h1>
+          <h1 className="text-3xl md:text-4xl font-semibold mb-5 dark:text-white">
+            Billing Details
+          </h1>
           <ConfigProvider
             theme={{
               components: {
-                Input: { controlHeight: 40, borderRadius: 2, colorBgContainer: "rgb(245,245,245)" },
+                Input: {
+                  controlHeight: 40,
+                  borderRadius: 2,
+                  colorBgContainer: "rgb(245,245,245)",
+                },
                 Checkbox: { colorPrimary: "rgb(223,88,0)" },
               },
             }}
@@ -205,33 +404,46 @@ console.log("checkoutsff------->",checkouts[0]?.items[0]?.product?.shippings[0]?
                 save: true,
               }}
             >
-  <Form.Item<FieldType>
-  label={<span className="dark:text-white">Name</span>}
-  name="name"
-  rules={[{ required: true, message: "Please input your name!" }]}
->
-  <Input />
-</Form.Item>
-
               <Form.Item<FieldType>
-               label={<span className="dark:text-white">Street Address</span>}
-                name="street"
-                className="dark:text-white"
-                rules={[{ required: true, message: "Please input your street address!" }]}
+                label={<span className="dark:text-white">Name</span>}
+                name="name"
+                rules={[{ required: true, message: "Please input your name!" }]}
               >
                 <Input />
               </Form.Item>
 
-              <Form.Item<FieldType>  label={<span className="dark:text-white">Apartment, floor, etc.</span>} name="apartment">
+              <Form.Item<FieldType>
+                label={<span className="dark:text-white">Street Address</span>}
+                name="street"
+                className="dark:text-white"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your street address!",
+                  },
+                ]}
+              >
                 <Input />
               </Form.Item>
 
               <Form.Item<FieldType>
-              
-                  label={<span className="dark:text-white">Town/City</span>}
+                label={
+                  <span className="dark:text-white">
+                    Apartment, floor, etc.
+                  </span>
+                }
+                name="apartment"
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item<FieldType>
+                label={<span className="dark:text-white">Town/City</span>}
                 name="city"
                 className="dark:text-white"
-                rules={[{ required: true, message: "Please input your town/city!" }]}
+                rules={[
+                  { required: true, message: "Please input your town/city!" },
+                ]}
               >
                 <Input />
               </Form.Item>
@@ -240,7 +452,9 @@ console.log("checkoutsff------->",checkouts[0]?.items[0]?.product?.shippings[0]?
                 label={<span className="dark:text-white">Phone Number</span>}
                 name="phone"
                 className="dark:text-white"
-                rules={[{ required: true, message: "Please input your number!" }]}
+                rules={[
+                  { required: true, message: "Please input your number!" },
+                ]}
               >
                 <Input />
               </Form.Item>
@@ -249,15 +463,20 @@ console.log("checkoutsff------->",checkouts[0]?.items[0]?.product?.shippings[0]?
                 label={<span className="dark:text-white">Email Address</span>}
                 name="email"
                 className="dark:text-white"
-                rules={[{ required: true, message: "Please input your email!" }]}
+                rules={[
+                  { required: true, message: "Please input your email!" },
+                ]}
               >
                 <Input />
               </Form.Item>
 
-              <Form.Item<FieldType> name="save" valuePropName="checked" >
-                <Checkbox > <span className="dark:text-white">
-      Save this information for faster check-out next time
-    </span></Checkbox>
+              <Form.Item<FieldType> name="save" valuePropName="checked">
+                <Checkbox>
+                  {" "}
+                  <span className="dark:text-white">
+                    Save this information for faster check-out next time
+                  </span>
+                </Checkbox>
               </Form.Item>
 
               <Form.Item>
@@ -266,7 +485,9 @@ console.log("checkoutsff------->",checkouts[0]?.items[0]?.product?.shippings[0]?
                   className="w-full bg-primary text-white py-3 rounded font-medium mt-2"
                   disabled={loading || paymentLoading || orderLoading}
                 >
-                  {loading || paymentLoading || orderLoading ? "Processing..." : "Place Order"}
+                  {loading || paymentLoading || orderLoading
+                    ? "Processing..."
+                    : "Place Order"}
                 </button>
               </Form.Item>
             </Form>
@@ -275,10 +496,26 @@ console.log("checkoutsff------->",checkouts[0]?.items[0]?.product?.shippings[0]?
 
         {/* Order Summary */}
         <div className="w-full sm:w-[440px] p-6 space-y-6">
-          {checkouts.map((checkout) => (
-            <div key={checkout.id} className="border p-4 rounded-lg dark:border-gray-600 space-y-4">
+              {/* Print Button */}
+                    <div className="flex justify-end">
+                      <button
+                        onClick={handlePrint}
+                        className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                      >
+                        <FiPrinter className="w-5 h-5 dark:text-white" />
+                        <span className="dark:text-white">Print Receipt</span>
+                      </button>
+                    </div>
+          {/* {checkouts.map((checkout) => (
+            <div
+              key={checkout.id}
+              className="border p-4 rounded-lg dark:border-gray-600 space-y-4"
+            >
               {checkout?.items?.map((item: CheckoutItem) => (
-                <div key={item.id} className="flex items-center justify-between">
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between"
+                >
                   <div className="flex items-center gap-3">
                     <Image
                       src={item.product.productImages[0]}
@@ -287,7 +524,9 @@ console.log("checkoutsff------->",checkouts[0]?.items[0]?.product?.shippings[0]?
                       height={48}
                       className="object-contain"
                     />
-                    <span className="font-medium dark:text-white">{item.product.productName}</span>
+                    <span className="font-medium dark:text-white">
+                      {item.product.productName}
+                    </span>
                   </div>
                   <span className="font-medium dark:text-white">
                     ${item.product.price} × {item.quantity}
@@ -295,23 +534,29 @@ console.log("checkoutsff------->",checkouts[0]?.items[0]?.product?.shippings[0]?
                 </div>
               ))}
 
-              {/* Summary */}
+         
               <div className="border-t pt-3 space-y-2">
                 <div className="flex justify-between">
                   <span className="font-medium dark:text-white">Subtotal:</span>
-                  <span className="font-medium dark:text-white">${checkout.totalAmount}</span>
+                  <span className="font-medium dark:text-white">
+                    ${checkout.totalAmount}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium dark:text-white">Shipping:</span>
-                  <span className="font-medium dark:text-white">${cost||"Free"}</span>
+                  <span className="font-medium dark:text-white">
+                    ${cost || "Free"}
+                  </span>
                 </div>
                 <div className="flex justify-between border-t pt-2">
                   <span className="font-medium dark:text-white">Total:</span>
-                  <span className="font-medium dark:text-white">${checkout.totalAmount}</span>
+                  <span className="font-medium dark:text-white">
+                    ${checkout.totalAmount}
+                  </span>
                 </div>
               </div>
 
-              {/* Payment */}
+         
               <div className="space-y-2 mt-2">
                 <div className="flex items-center space-x-2">
                   <input
@@ -321,7 +566,10 @@ console.log("checkoutsff------->",checkouts[0]?.items[0]?.product?.shippings[0]?
                     value="online"
                     className="w-4 h-4 accent-black dark:accent-white"
                   />
-                  <label htmlFor="online" className="dark:text-white cursor-pointer">
+                  <label
+                    htmlFor="online"
+                    className="dark:text-white cursor-pointer"
+                  >
                     Online Payment
                   </label>
                 </div>
@@ -334,13 +582,230 @@ console.log("checkoutsff------->",checkouts[0]?.items[0]?.product?.shippings[0]?
                     defaultChecked
                     className="w-4 h-4 accent-black dark:accent-white"
                   />
-                  <label htmlFor="cash" className="dark:text-white cursor-pointer">
+                  <label
+                    htmlFor="cash"
+                    className="dark:text-white cursor-pointer"
+                  >
                     Cash on delivery
                   </label>
                 </div>
               </div>
             </div>
-          ))}
+          ))} */}
+
+
+      {/* Receipt Content - Printable */}
+          <div ref={receiptRef}>
+            {checkouts.map((checkout) => (
+              <div
+                key={checkout.id}
+                className="border p-4 rounded-lg dark:border-gray-600 space-y-4"
+              >
+                {/* Receipt Header for Print */}
+                <div className="receipt-header hidden print:block text-center pb-4 border-b-2 border-black">
+                  <h2 className="text-xl font-bold">Order Receipt</h2>
+                  <p className="text-sm text-gray-500">
+                    Order ID: {checkout.id}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Date: {new Date().toLocaleDateString()}
+                  </p>
+                </div>
+
+                {/* Products */}
+        {checkout?.items?.map((item: any) => {
+  console.log("Log the item before rendering JSX",item);  // Log the item before rendering JSX
+
+  return (
+    <div key={item.id} className="space-y-3">
+      {/* Product Info */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Image
+            src={item.product.productImages[0]}
+            alt={item.product.productName}
+            width={48}
+            height={48}
+            className="object-contain rounded"
+          />
+          <div>
+            <span className="font-medium dark:text-white block">
+              {item.product.productName}
+            </span>
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              Qty: {item.quantity}
+            </span>
+          </div>
+        </div>
+        <span className="font-medium dark:text-white">
+          ${item.product.price * item.quantity}
+        </span>
+      </div>
+
+      {/* Shipping Dropdown */}
+      {item.product.shippings && item.product.shippings.length > 0 && (
+        <div className="ml-12">
+          <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
+            Select Shipping Option:
+          </label>
+          <ConfigProvider
+            theme={{
+              components: {
+                Select: {
+                  controlHeight: 40,
+                  borderRadius: 6,
+                },
+              },
+            }}
+          >
+            <Select
+              className="w-full"
+              placeholder="Select shipping"
+              value={selectedShipping[item.id]?.id}
+              onChange={(value) =>
+                handleShippingChange(item.id, value, item)
+              }
+              options={item.product.shippings.map(
+                (shipping: ShippingOption) => ({
+                  value: shipping.id,
+                  label: (
+                    <div className="flex justify-between items-center w-full">
+                      <span>
+                        {shipping.countryName} ({shipping.carrier})
+                      </span>
+                      <span className="font-medium">
+                        ${shipping.cost} •{" "}
+                        {shipping.deliveryMin === shipping.deliveryMax
+                          ? `Max ${shipping.deliveryMin} days`
+                          : `Max ${shipping.deliveryMax} days`}
+                      </span>
+                    </div>
+                  ),
+                })
+              )}
+            />
+          </ConfigProvider>
+
+          {/* Selected Shipping Info */}
+          {selectedShipping[item.id] && (
+            <div className="mt-2 p-2 bg-gray-50 dark:bg-gray-800 rounded text-sm shipping-info">
+              <div className="flex justify-between">
+                <span className="text-gray-600 dark:text-gray-300">
+                  {selectedShipping[item.id]?.carrier} to{" "}
+                  {selectedShipping[item.id]?.countryName}
+                </span>
+                <span className="font-medium text-primary">
+                  +${selectedShipping[item.id]?.cost}
+                </span>
+              </div>
+              <p className="text-gray-500 dark:text-gray-400 text-xs mt-1">
+                Estimated delivery:{" "}
+                {selectedShipping[item.id]?.deliveryMin ===
+                selectedShipping[item.id]?.deliveryMax
+                  ? `${selectedShipping[item.id]?.deliveryMin} days`
+                  : `${selectedShipping[item.id]?.deliveryMin}-${selectedShipping[item.id]?.deliveryMax} days`}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Divider between items */}
+      <div className="border-b dark:border-gray-600" />
+    </div>
+  );
+})}
+
+                {/* Summary */}
+                <div className="pt-3 space-y-2">
+                  <div className="flex justify-between receipt-item">
+                    <span className="text-gray-600 dark:text-gray-300">
+                      Subtotal:
+                    </span>
+                    <span className="font-medium dark:text-white">
+                      ${checkout.totalAmount}
+                    </span>
+                  </div>
+                  <div className="flex justify-between receipt-item">
+                    <span className="text-gray-600 dark:text-gray-300">
+                      Shipping:
+                    </span>
+                    <span className="font-medium dark:text-white">
+                      {calculateShippingCost(checkout.id) > 0
+                        ? `$${calculateShippingCost(checkout.id)}`
+                        : "Free"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between border-t dark:border-gray-600 pt-3 receipt-total">
+                    <span className="text-lg font-bold dark:text-white">
+                      Total:
+                    </span>
+                    <span className="text-lg font-bold text-primary">
+                      ${calculateGrandTotal(checkout)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Payment Options */}
+                <div className="space-y-3 mt-4 pt-4 border-t dark:border-gray-600">
+                  <h3 className="font-medium dark:text-white">Payment Method</h3>
+                  <div className="flex items-center space-x-3 p-3 border dark:border-gray-600 rounded-lg hover:border-primary dark:hover:border-primary transition-colors cursor-pointer">
+                    <input
+                      type="radio"
+                      name="payment"
+                      id="online"
+                      value="online"
+                      className="w-4 h-4 accent-primary"
+                    />
+                    <label
+                      htmlFor="online"
+                      className="dark:text-white cursor-pointer flex-1"
+                    >
+                      <span className="font-medium">Online Payment</span>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Pay securely with card
+                      </p>
+                    </label>
+                  </div>
+                  <div className="flex items-center space-x-3 p-3 border dark:border-gray-600 rounded-lg hover:border-primary dark:hover:border-primary transition-colors cursor-pointer">
+                    <input
+                      type="radio"
+                      name="payment"
+                      id="cash"
+                      value="cash"
+                      defaultChecked
+                      className="w-4 h-4 accent-primary"
+                    />
+                    <label
+                      htmlFor="cash"
+                      className="dark:text-white cursor-pointer flex-1"
+                    >
+                      <span className="font-medium">Cash on Delivery</span>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Pay when you receive
+                      </p>
+                    </label>
+                  </div>
+                </div>
+
+           
+              </div>
+            ))}
+          </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         </div>
       </div>
     </div>
