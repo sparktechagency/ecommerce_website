@@ -418,7 +418,7 @@ for (let [key, value] of formData.entries()) {
 
 
       await updateProduct({ productId, formData }).unwrap();
-     toast.success(" Product updated successfully!");
+     toast.success("Product updated successfully!");
       handleOk();
     } catch (err) {
       console.error(err);

@@ -1,23 +1,26 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import Link from "next/link";
-import ProductCart, { Product } from "./ProductCart";
+import ProductCart from "./ProductCart";
 import { useGetAllProductsQuery } from "@/redux/features/products/productsApi";
 import ProductSkeleton from "@/utils/ProductSkeleton";
 import { useSearchParams } from "next/navigation";
 
-interface ApiResponse {
-  success: boolean;
-  statusCode: number;
-  message: string;
-  data: Product[];
-}
+
+
 
 const ExploreProducts = () => {
+const page =1
   const searchParams = useSearchParams();
   const searchTerm = searchParams.get('query');
-const { data, isLoading } = useGetAllProductsQuery(searchTerm || undefined) as {
-  data?: ApiResponse;
+const { data, isLoading } = useGetAllProductsQuery({
+  searchTerm: searchTerm || '',
+  page
+
+}) as {
+  data?: any;
   isLoading: boolean;
+
 };
 
   // console.log("query--->",encodeURIComponent(query||""));
@@ -37,7 +40,7 @@ const { data, isLoading } = useGetAllProductsQuery(searchTerm || undefined) as {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-10">
         {isLoading
           ? [...Array(8)].map((_, index) => <ProductSkeleton key={index} />)
-          : data?.data?.map((product) => (
+          : data?.data?.map((product:any) => (
               <ProductCart
                 key={product.id}
                 product={{
