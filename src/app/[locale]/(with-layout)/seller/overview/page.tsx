@@ -13,6 +13,7 @@ import { Pagination, Spin } from "antd";
 import { useGetCurrentOrdersQuery } from "@/redux/features/order/seller/orderApi";
 import { useGetMyProductReviewsQuery } from "@/redux/features/review/seller/reviewApi";
 import { useGetDashboardSummaryQuery } from "@/redux/features/seller/dashboardSummary/dashboardApi";
+import { useTranslations } from "next-intl";
 
 // Define Review interface matching LastReviews props
 interface Review {
@@ -46,7 +47,7 @@ interface OrderItem {
 const Overview = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
-
+const t = useTranslations('sellerOverview')
   // Fetch current orders, reviews, and dashboard summary
   const { data: ordersData, isLoading: isOrdersLoading } = useGetCurrentOrdersQuery();
   const { data: reviewsData, isLoading: isReviewsLoading } = useGetMyProductReviewsQuery();
@@ -111,7 +112,7 @@ const Overview = () => {
     }))
     : [];
 
-  // ✅ Use API values for summary cards
+  //  Use API values for summary cards
   const currentOrdersCount = dashboardData?.data?.currentOrders || 0;
   const totalOrdersCount = dashboardData?.data?.totalOrders || 0;
   const availableBalance = dashboardData?.data?.totalSalesAmount || 0;
@@ -124,10 +125,10 @@ const Overview = () => {
         <Image src={logo} width={400} height={400} alt="logo" className="w-22 rounded-full" />
         <div>
           <h1 className="text-3xl sm:text-4xl font-semibold dark:text-white">
-            Welcome Back, {SellerName}!
+           {t('welcomeMessage')} {SellerName}!
           </h1>
           <p className="mt-1 dark:text-white">
-            Here’s an overview of your business performance and activities today.
+           {t('overviewDescription')}
           </p>
         </div>
       </div>
@@ -136,7 +137,7 @@ const Overview = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
         <div className="px-4 py-8 border border-primary rounded-lg flex items-center justify-between">
           <div>
-            <p className="text-lg text-gray-600 mb-2 dark:text-white">Current Orders</p>
+            <p className="text-lg text-gray-600 mb-2 dark:text-white">{t('currentOrders')}s</p>
             <p className="text-3xl font-bold dark:text-white">{currentOrdersCount}</p>
           </div>
           <div className="bg-primary rounded-full p-3">
@@ -146,7 +147,7 @@ const Overview = () => {
 
         <div className="px-4 py-8 border border-primary rounded-lg flex items-center justify-between">
           <div>
-            <p className="text-lg text-gray-600 mb-2 dark:text-white">Available Balance</p>
+            <p className="text-lg text-gray-600 mb-2 dark:text-white">{t('availableBalance')}</p>
             <p className="text-3xl font-bold dark:text-white">${availableBalance.toFixed(2)}</p>
           </div>
           <div className="bg-primary rounded-full p-3">
@@ -156,7 +157,7 @@ const Overview = () => {
 
         <div className="px-4 py-8 border border-primary rounded-lg flex items-center justify-between">
           <div>
-            <p className="text-lg text-gray-600 mb-2 dark:text-white">Total Orders</p>
+            <p className="text-lg text-gray-600 mb-2 dark:text-white">{t('totalOrders')}</p>
             <p className="text-3xl font-bold dark:text-white">{totalOrdersCount}</p>
           </div>
           <div className="bg-primary rounded-full p-3">

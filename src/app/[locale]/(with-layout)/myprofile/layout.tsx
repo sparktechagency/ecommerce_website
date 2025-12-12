@@ -11,6 +11,7 @@ import {
 } from "@/redux/features/auth/authApi";
 import { useGetContactUsInfoQuery } from "@/redux/features/contactUs/contactUsApi";
 import ProfileLayoutSkeleton from "@/utils/ProfileLayoutSkeleton";
+import { useTranslations } from "next-intl";
 
 
 
@@ -30,6 +31,7 @@ interface ProfileLayoutProps {
 }
 
 const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
+  const t = useTranslations('profileLayout')
   const {
     data: userData,
     isLoading: isUserLoading,
@@ -105,14 +107,14 @@ const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
             {
               title: (
                 <Link href="/">
-                  <p className="dark:text-white">Home</p>
+                  <p className="dark:text-white">{t('breadcrumbs.home')}</p>
                 </Link>
               ),
             },
             {
               title: (
                 <Link href="/myprofile">
-                  <p className="dark:text-white">My Account</p>
+                  <p className="dark:text-white">{t('breadcrumbs.myAccount')}</p>
                 </Link>
               ),
             },
@@ -166,16 +168,15 @@ const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
             {/* Left Column */}
             <div className="space-y-8">
               <div className="space-y-2">
-                <h1 className="text-2xl font-medium">Welcome to your account!</h1>
+                <h1 className="text-2xl font-medium">{t('welcomeMessage')}</h1>
                 <p className="text-gray-600 dark:text-gray-300">
-                  Update your details, manage addresses and keep your account secure.
+                  {t('accountDescription')}
                 </p>
               </div>
 
               <div className="space-y-4">
                 <p>
-                  If you need any help{" "}
-                  <span className="text-orange-500">contact us:</span>
+           {t('contactUs')}
                 </p>
 
                 <div className="flex items-center gap-3">

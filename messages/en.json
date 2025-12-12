@@ -139,6 +139,39 @@
         "description": "Could not submit your message. Please try again."
       }
     }
+  },
+    "sellerOverview": {
+    "welcomeMessage": "Welcome Back,",
+    "overviewDescription": "Here's an overview of your business performance and activities today.",
+    "currentOrders": "Current Orders",
+    "availableBalance": "Available Balance",
+    "totalOrders": "Total Orders",
+    "currentOrdersCount": "Current Orders Count",
+    "availableBalanceAmount": "Available Balance Amount",
+    "totalOrdersCount": "Total Orders Count",
+    "orderCardTitle": "Orders",
+    "balanceCardTitle": "Balance",
+    "transactionsTableTitle": "Transactions Table",
+    "paginationTitle": "Page"
+  },
+   "profileLayout": {
+    "breadcrumbs": {
+      "home": "Home",
+      "myAccount": "My Account"
+    },
+    "avatar": {
+      "uploadProfileImage": "Upload Profile Image",
+      "cameraButton": "Change Camera"
+    },
+    "welcomeMessage": "Welcome to your account!",
+    "accountDescription": "Update your details, manage addresses and keep your account secure.",
+    "contactUs": "If you need any help contact us:",
+    "contactDetails": {
+      "phone": "Phone",
+      "email": "Email",
+      "location": "Location"
+    },
+    "profileName": "{fullName}"
   }
 
 

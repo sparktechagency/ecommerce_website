@@ -134,6 +134,39 @@
         "description": "Impossible de soumettre votre message. Veuillez réessayer."
       }
     }
+  },
+    "sellerOverview": {
+    "welcomeMessage": "Bienvenue,",
+    "overviewDescription": "Voici un aperçu de vos performances commerciales et de vos activités aujourd'hui.",
+    "currentOrders": "Commandes en cours",
+    "availableBalance": "Solde disponible",
+    "totalOrders": "Commandes totales",
+    "currentOrdersCount": "Nombre de commandes en cours",
+    "availableBalanceAmount": "Montant du solde disponible",
+    "totalOrdersCount": "Nombre total de commandes",
+    "orderCardTitle": "Commandes",
+    "balanceCardTitle": "Solde",
+    "transactionsTableTitle": "Tableau des transactions",
+    "paginationTitle": "Page"
+  },
+    "profileLayout": {
+    "breadcrumbs": {
+      "home": "Accueil",
+      "myAccount": "Mon compte"
+    },
+    "avatar": {
+      "uploadProfileImage": "Télécharger l'image du profil",
+      "cameraButton": "Changer la caméra"
+    },
+    "welcomeMessage": "Bienvenue dans votre compte!",
+    "accountDescription": "Mettez à jour vos informations, gérez les adresses et gardez votre compte sécurisé.",
+    "contactUs": "Si vous avez besoin d'aide contactez-nous:",
+    "contactDetails": {
+      "phone": "Téléphone",
+      "email": "Email",
+      "location": "Emplacement"
+    },
+    "profileName": "{fullName}"
   }
 
 }

@@ -133,5 +133,38 @@
         "description": "تعذر إرسال رسالتك. يرجى المحاولة مرة أخرى."
       }
     }
+  },
+    "sellerOverview": {
+    "welcomeMessage": "مرحبًا بك مجددًا،",
+    "overviewDescription": "إليك نظرة عامة على أداء عملك وأنشطتك اليوم.",
+    "currentOrders": "الطلبات الحالية",
+    "availableBalance": "الرصيد المتاح",
+    "totalOrders": "إجمالي الطلبات",
+    "currentOrdersCount": "عدد الطلبات الحالية",
+    "availableBalanceAmount": "مقدار الرصيد المتاح",
+    "totalOrdersCount": "عدد الطلبات الإجمالي",
+    "orderCardTitle": "الطلبات",
+    "balanceCardTitle": "الرصيد",
+    "transactionsTableTitle": "جدول المعاملات",
+    "paginationTitle": "الصفحة"
+  },
+    "profileLayout": {
+    "breadcrumbs": {
+      "home": "الرئيسية",
+      "myAccount": "حسابي"
+    },
+    "avatar": {
+      "uploadProfileImage": "رفع صورة الملف الشخصي",
+      "cameraButton": "تغيير الكاميرا"
+    },
+    "welcomeMessage": "مرحبًا بك في حسابك!",
+    "accountDescription": "قم بتحديث تفاصيلك، إدارة العناوين وتأمين حسابك.",
+    "contactUs": "إذا كنت بحاجة إلى أي مساعدة اتصل بنا:",
+    "contactDetails": {
+      "phone": "الهاتف",
+      "email": "البريد الإلكتروني",
+      "location": "الموقع"
+    },
+    "profileName": "{fullName}"
   }
 }
