@@ -100,6 +100,40 @@
     "copyright": {
       "text": "Copyright Sparedoc 2025. Tous droits réservés"
     }
+  },
+   "contact": {
+    "callToUs": {
+      "title": "Appelez-nous",
+      "description": "Nous sommes disponibles du samedi au jeudi de 8h à 16h",
+      "phone": "Téléphone"
+    },
+    "writeToUs": {
+      "title": "Écrivez-nous",
+      "description": "Remplissez notre formulaire et nous vous contacterons dans les 24 heures.",
+      "email": "Email"
+    },
+    "form": {
+      "name": "Votre nom",
+      "email": "Votre email",
+      "phone": "Votre téléphone",
+      "message": "Votre message",
+      "submit": "Envoyer le message",
+      "submitting": "Envoi en cours..."
+    },
+    "breadcrumb": {
+      "home": "Accueil",
+      "contact": "Contact"
+    },
+    "notification": {
+      "success": {
+        "message": "Support soumis",
+        "description": "Votre message a été soumis avec succès!"
+      },
+      "error": {
+        "message": "Échec",
+        "description": "Impossible de soumettre votre message. Veuillez réessayer."
+      }
+    }
   }
 
 }

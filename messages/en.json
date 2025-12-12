@@ -105,7 +105,41 @@
       "text": "Copyright Sparedoc 2025. All rights reserved"
     }
   
-}
+},
+  "contact": {
+    "callToUs": {
+      "title": "Call To Us",
+      "description": "We are available from Saturday to Thursday from 8 AM to 4 PM",
+      "phone": "Phone"
+    },
+    "writeToUs": {
+      "title": "Write To Us",
+      "description": "Fill out our form and we will contact you within 24 hours.",
+      "email": "Email"
+    },
+    "form": {
+      "name": "Your Name",
+      "email": "Your Email",
+      "phone": "Your Phone",
+      "message": "Your Message",
+      "submit": "Send Message",
+      "submitting": "Submitting..."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "contact": "Contact"
+    },
+    "notification": {
+      "success": {
+        "message": "Support Submitted",
+        "description": "Your message has been submitted successfully!"
+      },
+      "error": {
+        "message": "Failed",
+        "description": "Could not submit your message. Please try again."
+      }
+    }
+  }
 
 
 

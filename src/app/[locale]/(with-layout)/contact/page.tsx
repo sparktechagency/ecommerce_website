@@ -1,4 +1,5 @@
 "use client";
+
 import { Breadcrumb, ConfigProvider, Form, FormProps, Input, Spin, notification } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import Link from "next/link";
@@ -6,6 +7,8 @@ import { FiPhone } from "react-icons/fi";
 import { MdOutlineEmail } from "react-icons/md";
 import { useGetContactUsInfoQuery } from "@/redux/features/contactUs/contactUsApi";
 import { useCreateSupportMutation } from "@/redux/features/support/supportApi";
+import { useTranslations } from "next-intl";
+
 
 type FieldType = {
   name?: string;
@@ -15,11 +18,13 @@ type FieldType = {
 };
 
 const Contact = () => {
+  const  t  = useTranslations();
   const { data, isLoading, isError } = useGetContactUsInfoQuery();
   const contact = data?.data;
   const [form] = Form.useForm<FieldType>();
   const [createSupport, { isLoading: isSubmitting }] = useCreateSupportMutation();
   const [api, contextHolder] = notification.useNotification();
+
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     try {
       if (!values.email || !values.phone || !values.message) return;
@@ -32,14 +37,13 @@ const Contact = () => {
 
       api.open({
         type: "success",
-        message: "Support Submitted",
-        description: "Your message has been submitted successfully!",
+        message: t('Support Submitted'),
+        description: t('Your message has been submitted successfully!'),
         placement: "topRight",
       });
       form.resetFields();
-
     } catch (err: unknown) {
-      let description = "Could not submit your message. Please try again.";
+      let description = 'Could not submit your message. Please try again.';
       if (
         typeof err === "object" &&
         err !== null &&
@@ -51,7 +55,7 @@ const Contact = () => {
 
       api.open({
         type: "error",
-        message: "Failed",
+        message: t('Failed'),
         description,
         placement: "topRight",
       });
@@ -68,19 +72,18 @@ const Contact = () => {
   if (isError)
     return (
       <div className="flex justify-center items-center h-96">
-        <p className="text-red-500 text-lg">Failed to load contact info.</p>
+        <p className="text-red-500 text-lg">{t('contact.errorMessage')}</p>
       </div>
     );
 
   return (
-
     <div className="relative px-3 md:px-0">
       {contextHolder}
       <div className="container mx-auto py-16">
         <Breadcrumb
           items={[
-            { title: <Link href="/"><p className="dark:text-white">Home</p></Link> },
-            { title: <Link href="/contact"><p className="dark:text-white">Contact</p></Link> },
+            { title: <Link href="/"><p className="dark:text-white">{t('contact.breadcrumb.home')}</p></Link> },
+            { title: <Link href="/contact"><p className="dark:text-white">{t('contact.breadcrumb.contact')}</p></Link> },
           ]}
         />
 
@@ -90,24 +93,19 @@ const Contact = () => {
             <div className="border-b pb-7">
               <div className="flex gap-4 items-center">
                 <FiPhone className="bg-primary text-white p-2 rounded-full" size={40} />
-                <p className="font-semibold text-xl">Call To Us</p>
+                <p className="font-semibold text-xl">{t('contact.callToUs.title')}</p>
               </div>
-              <p className="text-lg py-5">
-                We are available from Saturday to Thursday
-                <br /> From 8 AM to 4 PM
-              </p>
-              <p className="text-lg">Phone: {contact?.phoneNumber || "+8801611112222"}</p>
+              <p className="text-lg py-5">{t('contact.callToUs.description')}</p>
+              <p className="text-lg">{t('contact.callToUs.phone')}: {contact?.phoneNumber || "+8801611112222"}</p>
             </div>
 
             <div className="mt-8">
               <div className="flex gap-4 items-center">
                 <MdOutlineEmail className="bg-primary text-white p-2 rounded-full" size={40} />
-                <p className="font-semibold text-xl">Write To Us</p>
+                <p className="font-semibold text-xl">{t('contact.writeToUs.title')}</p>
               </div>
-              <p className="text-lg py-6">
-                Fill out our form and we will contact you within 24 hours.
-              </p>
-              <p className="text-lg pt-0 pb-6">Email: {contact?.email || "support@example.com"}</p>
+              <p className="text-lg py-6">{t('contact.writeToUs.description')}</p>
+              <p className="text-lg pt-0 pb-6">{t('contact.writeToUs.email')}: {contact?.email || "support@example.com"}</p>
             </div>
           </div>
 
@@ -119,25 +117,25 @@ const Contact = () => {
               }}
             >
               <Form<FieldType>
-                form={form} 
+                form={form}
                 layout="vertical"
                 onFinish={onFinish}
                 autoComplete="off"
               >
                 <div className="flex flex-col md:flex-row gap-5">
                   <Form.Item<FieldType> name="name" className="w-full">
-                    <Input placeholder="Your Name" />
+                    <Input placeholder={t('contact.form.name')} />
                   </Form.Item>
-                  <Form.Item<FieldType> name="email" className="w-full" rules={[{ required: true, message: "Please input your email!" }]}>
-                    <Input placeholder="Your Email" />
+                  <Form.Item<FieldType> name="email" className="w-full" rules={[{ required: true, message: t('contact.form.email') }]}>
+                    <Input placeholder={t('contact.form.email')} />
                   </Form.Item>
-                  <Form.Item<FieldType> name="phone" className="w-full" rules={[{ required: true, message: "Please input your phone!" }]}>
-                    <Input placeholder="Your Phone" />
+                  <Form.Item<FieldType> name="phone" className="w-full" rules={[{ required: true, message: t('contact.form.phone') }]}>
+                    <Input placeholder={t('contact.form.phone')} />
                   </Form.Item>
                 </div>
 
-                <Form.Item<FieldType> name="message" rules={[{ required: true, message: "Please input your message!" }]}>
-                  <TextArea rows={8} placeholder="Your Message" />
+                <Form.Item<FieldType> name="message" rules={[{ required: true, message: t('contact.form.message') }]}>
+                  <TextArea rows={8} placeholder={t('contact.form.message')} />
                 </Form.Item>
 
                 <div className="flex justify-end mt-10">
@@ -146,7 +144,7 @@ const Contact = () => {
                     disabled={isSubmitting}
                     className="bg-primary text-white px-10 md:px-14 py-2 md:py-4 cursor-pointer rounded"
                   >
-                    {isSubmitting ? "Submitting..." : "Send Message"}
+                    {isSubmitting ? t('contact.form.submitting') : t('contact.form.submit')}
                   </button>
                 </div>
               </Form>

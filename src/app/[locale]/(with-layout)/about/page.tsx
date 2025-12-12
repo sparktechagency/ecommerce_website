@@ -4,19 +4,17 @@ import Link from "next/link";
 import Image from "next/image";
 import { FaInstagram, FaXTwitter } from "react-icons/fa6";
 import { RiLinkedinLine } from "react-icons/ri";
-import our_story from "../../../../public/our_story.png";
-import delivery from "../../../../public/service/delivery.svg";
-import customer_service from "../../../../public/service/customer_service.svg";
-import money_back from "../../../../public/service/money_back.svg";
+import our_story from "../../../../../public/our_story.png";
 import { useGetAboutUsQuery } from "@/redux/features/aboutUs/aboutUsApi";
 import { useGetFoundingTeamsQuery } from "@/redux/features/foundingTeam/foundingTeam";
-
+import ServiceFeatures from "@/components/Home/ServiceFeatures";
+import { useTranslations } from "next-intl";
 const removeHTMLTags = (str: string) => {
   return str.replace(/<\/?[^>]+(>|$)/g, ""); // Regex to remove all HTML tags
 };
 
 const About = () => {
-
+const t = useTranslations('nav')
   const { data, isLoading, isError } = useGetAboutUsQuery();
   const about = data?.data;
   const { data: teamData, isLoading: isTeamLoading, isError: isTeamError } = useGetFoundingTeamsQuery();
@@ -44,14 +42,14 @@ const About = () => {
             {
               title: (
                 <Link href="/">
-                  <p className="dark:text-white">Home</p>
+                  <p className="dark:text-white">{t('home')}</p>
                 </Link>
               ),
             },
             {
               title: (
                 <Link href="/about">
-                  <p className="dark:text-white">About</p>
+                  <p className="dark:text-white">{t('about')}</p>
                 </Link>
               ),
             },
@@ -116,45 +114,7 @@ const About = () => {
 
 
         {/* Service Section */}
-        <div className="px-3 xl:px-0 xl:w-[1100px] mx-auto py-16 md:py-20 dark:text-white">
-          <div className="flex flex-col md:flex-row gap-16 md:gap-0 justify-between">
-            <div className="flex flex-col justify-center items-center">
-              <Image
-                src={delivery}
-                height={500}
-                width={500}
-                alt="delivery"
-                className="w-18 bg-primary rounded-full p-3 outline-[14px] outline-[#fff1e8] mb-10"
-              />
-              <h2 className="text-xl font-bold mb-2">FAST DELIVERY</h2>
-              <p>Free delivery for all orders over $140</p>
-            </div>
-
-            <div className="flex flex-col justify-center items-center">
-              <Image
-                src={customer_service}
-                height={500}
-                width={500}
-                alt="customer service"
-                className="w-18 bg-primary rounded-full p-3 outline-[14px] outline-[#fff1e8] mb-10"
-              />
-              <h2 className="text-xl font-bold mb-2">24/7 CUSTOMER SERVICE</h2>
-              <p>Friendly 24/7 customer support</p>
-            </div>
-
-            <div className="flex flex-col justify-center items-center">
-              <Image
-                src={money_back}
-                height={500}
-                width={500}
-                alt="money back"
-                className="w-18 bg-primary rounded-full p-3 outline-[14px] outline-[#fff1e8] mb-10"
-              />
-              <h2 className="text-xl font-bold mb-2">MONEY BACK GUARANTEE</h2>
-              <p>We return money within 30 days</p>
-            </div>
-          </div>
-        </div>
+        <ServiceFeatures></ServiceFeatures>
       </div>
     </div>
   );
