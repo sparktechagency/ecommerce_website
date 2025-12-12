@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import logo from "../../../../../public/seller/seller-icon.svg";
+
+import logo from "../../../../../../public/seller/seller-icon.svg";
 import { LuCalendarCheck } from "react-icons/lu";
 import { PiWallet } from "react-icons/pi";
 import CurrentOrders from "@/components/Seller/Overview/CurrentOrders";
@@ -35,7 +36,7 @@ interface OrderItem {
   productImages: string[];
   productDescription?: string;
   timeAgo?: string;
-  status: string; // ❗ Must exist
+  status: string; //  Must exist
 }
 
 

@@ -22,7 +22,7 @@ export function middleware(request: NextRequest) {
         
         if (!token) {
             // Get the locale from the pathname
-            const locale = pathname.startsWith('/ar') ? 'ar' : 'en';
+            const locale = pathname.startsWith('/en') ? 'en' : 'ar';
             const redirectUrl = `/${locale}/auth/login`;
             return NextResponse.redirect(new URL(redirectUrl, request.url));
         }
@@ -39,7 +39,7 @@ export const config = {
         // - _next (Next.js internals)
         // - Static files
         '/',
-        '/(ar|en)/:path*',
+        '/(en|ar)/:path*',
         '/((?!api|_next|_vercel|.*\\..*).*)'
     ],
 };

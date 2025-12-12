@@ -8,7 +8,7 @@ import { CiDeliveryTruck } from "react-icons/ci";
 import { useState } from "react";
 import ProductDetailModal from "@/components/MyOrder/ProductDetailModal";
 import ProductTrackModal from "@/components/MyOrder/ProductTrackModal";
-import productPic from "../../../../public/products/wheel2.svg";
+import productPic from "../../../../../public/products/wheel2.svg";
 import { useGetMyOrdersQuery, Order } from "@/redux/features/order/orderApi";
 
 const MyOrder = () => {

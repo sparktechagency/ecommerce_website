@@ -1,0 +1,22 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "about": "À propos",
+    "searchPlaceholder": "Rechercher",
+    "contact": "Contact",
+    "login": "Se connecter",
+    "dashboard": "Tableau de bord",
+    "darkmode": "Mode sombre",
+    "swithToBuyer": "Passer à l'acheteur",
+    "swithToSeller": "Passer au vendeur",
+    "manageAcount": "Gérer le compte",
+    "myProduct": "Mes produits",
+    "sellerOverview": "Vue d'ensemble du vendeur",
+    "logout": "Se déconnecter",
+     "summerSale": "Vente d'été",
+    "shopNow": "Achetez maintenant",
+    "cancel": "Annuler",
+     "buyer": "Acheteur",
+    "seller": "Vendeur"
+  
+}}
